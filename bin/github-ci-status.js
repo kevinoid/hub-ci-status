@@ -114,8 +114,9 @@ function githubCiStatusCmd(args, options, callback) {
     }
 
     const [owner, repo, ref] = argOpts._;
+    const auth = process.env.GITHUB_TOKEN;
     // eslint-disable-next-line promise/catch-or-return
-    githubCiStatus(owner, repo, ref)
+    githubCiStatus(owner, repo, ref, { auth })
       .then((combinedStatus) => {
         options.stdout.write(`${combinedStatus.state}\n`);
         return 0;

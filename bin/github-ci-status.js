@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * An executable command which will be added to $PATH.
+ * Executable script to query the CI status for a commit on GitHub.
  *
- * @copyright Copyright 2017-2020 Kevin Locke <kevin@kevinlocke.name>
+ * @copyright Copyright 2017-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
  */
 
@@ -10,7 +10,7 @@
 
 const Yargs = require('yargs/yargs');
 const packageJson = require('../package.json');
-const modulename = require('..');
+const githubCiStatus = require('..');
 
 /** Options for command entry points.
  *
@@ -33,7 +33,7 @@ const modulename = require('..');
  * @param {!CommandOptions} options Options.
  * @param {function(number)} callback Callback with exit code.
  */
-function modulenameCmd(args, options, callback) {
+function githubCiStatusCmd(args, options, callback) {
   if (typeof callback !== 'function') {
     throw new TypeError('callback must be a function');
   }
@@ -72,7 +72,7 @@ function modulenameCmd(args, options, callback) {
       'flatten-duplicate-arrays': false,
       'greedy-arrays': false,
     })
-    .usage('Usage: $0 [options] [args...]')
+    .usage('Usage: $0 [options] <owner> <repo> <ref>')
     .help()
     .alias('help', 'h')
     .alias('help', '?')
@@ -105,38 +105,37 @@ function modulenameCmd(args, options, callback) {
       return;
     }
 
-    if (argOpts._.length !== 1) {
-      options.stderr.write('Error: Exactly one argument is required.\n');
+    if (argOpts._.length !== 3) {
+      options.stderr.write(
+        `Error: Expected 3 arguments, got ${argOpts._.length}.\n`,
+      );
       callback(1);
       return;
     }
 
-    // Parse arguments then call API function with parsed options
-    const cmdOpts = {
-      files: argOpts._,
-      verbosity: argOpts.verbose - argOpts.quiet,
-    };
+    const [owner, repo, ref] = argOpts._;
     // eslint-disable-next-line promise/catch-or-return
-    modulename.func(cmdOpts)
-      .then(
-        () => 0,
-        (err) => {
-          options.stderr.write(`${err}\n`);
-          return 1;
-        },
-      )
+    githubCiStatus(owner, repo, ref)
+      .then((combinedStatus) => {
+        options.stdout.write(`${combinedStatus.state}\n`);
+        return 0;
+      })
+      .catch((err) => {
+        options.stderr.write(`${err}\n`);
+        return 1;
+      })
       // Note: nextTick for unhandledException (like util.callbackify)
       .then((exitCode) => process.nextTick(callback, exitCode));
   });
 }
 
-modulenameCmd.default = modulenameCmd;
-module.exports = modulenameCmd;
+githubCiStatusCmd.default = githubCiStatusCmd;
+module.exports = githubCiStatusCmd;
 
 if (require.main === module) {
   // This file was invoked directly.
   // Note:  Could pass process.exit as callback to force immediate exit.
-  modulenameCmd(process.argv, process, (exitCode) => {
+  githubCiStatusCmd(process.argv, process, (exitCode) => {
     process.exitCode = exitCode;
   });
 }

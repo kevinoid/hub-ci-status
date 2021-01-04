@@ -1,15 +1,23 @@
 /**
- * @copyright Copyright 2016-2020 Kevin Locke <kevin@kevinlocke.name>
+ * @copyright Copyright 2016-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
  */
 
 'use strict';
 
-exports.func =
-async function func(options) {
-  if (options !== undefined && typeof options !== 'object') {
-    throw new TypeError('options must be an object');
-  }
+const { Octokit } = require('@octokit/rest');
+const packageJson = require('./package.json');
 
-  // Do stuff
+module.exports =
+async function githubCiStatus(owner, repo, ref, options) {
+  const octokit = new Octokit({
+    userAgent: `${packageJson.name}/${packageJson.version}`,
+    ...options,
+  });
+  const response = await octokit.repos.getCombinedStatusForRef({
+    owner,
+    repo,
+    ref,
+  });
+  return response.data;
 };

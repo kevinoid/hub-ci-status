@@ -10,6 +10,7 @@
 
 const Yargs = require('yargs/yargs');
 
+const { resolveCommit } = require('../lib/git-utils.js');
 const { getProjectName } = require('../lib/github-utils.js');
 const packageJson = require('../package.json');
 const githubCiStatus = require('..');
@@ -117,10 +118,13 @@ function githubCiStatusCmd(args, options, callback) {
 
     let exitCode = 0;
     try {
-      const [owner, repo] = await getProjectName();
       const ref = argOpts._[0] || 'HEAD';
+      const [[owner, repo], sha] = await Promise.all([
+        getProjectName(),
+        resolveCommit(ref),
+      ]);
       const auth = process.env.GITHUB_TOKEN;
-      const combinedStatus = await githubCiStatus(owner, repo, ref, { auth });
+      const combinedStatus = await githubCiStatus(owner, repo, sha, { auth });
       options.stdout.write(`${combinedStatus.state}\n`);
     } catch (err) {
       exitCode = 1;

@@ -9,6 +9,8 @@
 'use strict';
 
 const Yargs = require('yargs/yargs');
+
+const { getProjectName } = require('../lib/github-utils.js');
 const packageJson = require('../package.json');
 const githubCiStatus = require('..');
 
@@ -72,7 +74,7 @@ function githubCiStatusCmd(args, options, callback) {
       'flatten-duplicate-arrays': false,
       'greedy-arrays': false,
     })
-    .usage('Usage: $0 [options] <owner> <repo> <ref>')
+    .usage('Usage: $0 [options] [ref]')
     .help()
     .alias('help', 'h')
     .alias('help', '?')
@@ -105,9 +107,9 @@ function githubCiStatusCmd(args, options, callback) {
       return;
     }
 
-    if (argOpts._.length !== 3) {
+    if (argOpts._.length > 1) {
       options.stderr.write(
-        `Error: Expected 3 arguments, got ${argOpts._.length}.\n`,
+        `Error: Expected at most 1 argument, got ${argOpts._.length}.\n`,
       );
       callback(1);
       return;
@@ -115,7 +117,8 @@ function githubCiStatusCmd(args, options, callback) {
 
     let exitCode = 0;
     try {
-      const [owner, repo, ref] = argOpts._;
+      const [owner, repo] = await getProjectName();
+      const ref = argOpts._[0] || 'HEAD';
       const auth = process.env.GITHUB_TOKEN;
       const combinedStatus = await githubCiStatus(owner, repo, ref, { auth });
       options.stdout.write(`${combinedStatus.state}\n`);

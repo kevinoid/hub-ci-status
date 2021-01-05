@@ -89,7 +89,7 @@ function githubCiStatusCmd(args, options, callback) {
     .version(`${packageJson.name} ${packageJson.version}`)
     .alias('version', 'V')
     .strict();
-  yargs.parse(args, (errYargs, argOpts, output) => {
+  yargs.parse(args, async (errYargs, argOpts, output) => {
     if (errYargs) {
       options.stderr.write(`${output || errYargs}\n`);
       callback(1);
@@ -113,20 +113,18 @@ function githubCiStatusCmd(args, options, callback) {
       return;
     }
 
-    const [owner, repo, ref] = argOpts._;
-    const auth = process.env.GITHUB_TOKEN;
-    // eslint-disable-next-line promise/catch-or-return
-    githubCiStatus(owner, repo, ref, { auth })
-      .then((combinedStatus) => {
-        options.stdout.write(`${combinedStatus.state}\n`);
-        return 0;
-      })
-      .catch((err) => {
-        options.stderr.write(`${err}\n`);
-        return 1;
-      })
-      // Note: nextTick for unhandledException (like util.callbackify)
-      .then((exitCode) => process.nextTick(callback, exitCode));
+    let exitCode = 0;
+    try {
+      const [owner, repo, ref] = argOpts._;
+      const auth = process.env.GITHUB_TOKEN;
+      const combinedStatus = await githubCiStatus(owner, repo, ref, { auth });
+      options.stdout.write(`${combinedStatus.state}\n`);
+    } catch (err) {
+      exitCode = 1;
+      options.stderr.write(`${err}\n`);
+    }
+
+    callback(exitCode);
   });
 }
 

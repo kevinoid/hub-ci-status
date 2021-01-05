@@ -166,55 +166,6 @@ describe('gitUtils', () => {
         ));
   });
 
-  describe('.getRemote', () => {
-    after(checkoutDefault);
-
-    Object.keys(BRANCH_REMOTES).forEach((branch) => {
-      const remoteRef = BRANCH_REMOTES[branch];
-      if (!remoteRef) {
-        return;
-      }
-      const remote = remoteRef.split('/')[0];
-      it(`resolves ${branch} to ${remote}`,
-        () => gitUtils.getRemote(branch, options).then((result) => {
-          assert.strictEqual(result, remote);
-        }));
-    });
-
-    it('rejects branch without remote with Error',
-      () => gitUtils.getRemote('branchnoremote', options).then(
-        neverCalled,
-        (err) => {
-          assert.instanceOf(err, Error);
-        },
-      ));
-  });
-
-  describe('.getRemoteUrl', () => {
-    Object.keys(REMOTES).forEach((remoteName) => {
-      const remoteUrl = REMOTES[remoteName];
-      it(`resolves ${remoteName} to ${remoteUrl}`,
-        () => gitUtils.getRemoteUrl(remoteName, options)
-          .then((resultUrl) => {
-            assert.strictEqual(resultUrl, remoteUrl);
-          }));
-    });
-
-    it('rejects invalid remote with Error',
-      () => gitUtils.getRemoteUrl('invalidremote', options).then(
-        neverCalled,
-        (err) => {
-          assert.instanceOf(err, Error);
-        },
-      ));
-
-    it('uses ls-remote default for unspecified remote',
-      () => gitUtils.getRemoteUrl(null, options)
-        .then((resultUrl) => {
-          assert.strictEqual(resultUrl, REMOTES.origin);
-        }));
-  });
-
   describe('.gitUrlIsLocalNotSsh', () => {
     [
       { url: '.', result: true },

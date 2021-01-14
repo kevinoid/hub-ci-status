@@ -42,6 +42,46 @@ function coerceWait(arg) {
   return val;
 }
 
+function getStateMarker(state) {
+  // Use same status markers as `hub ci-status`
+  // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L158-L171
+  switch (state) {
+    case 'success':
+      return '✔︎';
+
+    case 'action_required':
+    case 'cancelled':
+    case 'error':
+    case 'failure':
+    case 'timed_out':
+      return '✖︎';
+
+    case 'neutral':
+      return '◦';
+
+    case 'pending':
+      return '●';
+
+    default:
+      return '';
+  }
+}
+
+function formatStatus(status, contextWidth) {
+  const stateMarker = getStateMarker(status.state);
+  const context = status.context.padEnd(contextWidth);
+  const targetUrl = status.target_url ? `\t${status.target_url}` : '';
+  return `${stateMarker}\t${context}${targetUrl}`;
+}
+
+function formatStatuses(statuses) {
+  const maxWidth = statuses.reduce(
+    (max, { context }) => Math.max(max, context.length),
+    0,
+  );
+  return statuses.map((status) => formatStatus(status, maxWidth)).join('\n');
+}
+
 function getState(combinedStatus) {
   const bestSeverity = combinedStatus.statuses.reduce((maxSeverity, status) => {
     const severity = stateBySeverity.indexOf(status.state);
@@ -182,6 +222,8 @@ function githubCiStatusCmd(args, options, callback) {
 
     let exitCode = 0;
     try {
+      const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
+
       const ref = argOpts._[0] || 'HEAD';
       const [[owner, repo], sha] = await Promise.all([
         getProjectName(),
@@ -192,8 +234,14 @@ function githubCiStatusCmd(args, options, callback) {
         auth,
         wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
       });
+
       const state = getState(combinedStatus);
-      options.stdout.write(`${state || 'no status'}\n`);
+      if (verbosity >= 0) {
+        const formatted =
+          verbosity === 0 ? state : formatStatuses(combinedStatus.statuses);
+        options.stdout.write(`${formatted || 'no status'}\n`);
+      }
+
       exitCode = stateToExitCode(state);
     } catch (err) {
       exitCode = 1;

@@ -18,6 +18,7 @@ success</samp></pre>
 
 ## Features
 
+* `--wait` flag allows waiting until the status is not `pending`.
 
 ## Installation
 

@@ -7,17 +7,30 @@
 
 const { Octokit } = require('@octokit/rest');
 const packageJson = require('./package.json');
+const retryAsync = require('./lib/retry-async.js');
+
+function shouldRetry({ state }) {
+  return state === 'pending';
+}
 
 module.exports =
-async function githubCiStatus(owner, repo, ref, options) {
+function githubCiStatus(owner, repo, ref, options) {
   const octokit = new Octokit({
     userAgent: `${packageJson.name}/${packageJson.version}`,
     ...options,
   });
-  const response = await octokit.repos.getCombinedStatusForRef({
-    owner,
-    repo,
-    ref,
+
+  async function getStatus() {
+    const response = await octokit.repos.getCombinedStatusForRef({
+      owner,
+      repo,
+      ref,
+    });
+    return response.data;
+  }
+
+  return !options.wait ? getStatus() : retryAsync(getStatus, {
+    maxWaitMs: options.wait,
+    shouldRetry,
   });
-  return response.data;
 };

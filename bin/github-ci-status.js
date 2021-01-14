@@ -15,6 +15,20 @@ const { getProjectName } = require('../lib/github-utils.js');
 const packageJson = require('../package.json');
 const githubCiStatus = require('..');
 
+function coerceWait(arg) {
+  if (arg === true) {
+    // Treat --wait without argument as infinite wait.
+    return Infinity;
+  }
+
+  const val = Number(arg);
+  if (Number.isNaN(val)) {
+    throw new TypeError(`Invalid number "${arg}"`);
+  }
+
+  return val;
+}
+
 /** Options for command entry points.
  *
  * @typedef {{
@@ -89,6 +103,12 @@ function githubCiStatusCmd(args, options, callback) {
       describe: 'Print more output',
       count: true,
     })
+    .option('wait', {
+      alias: 'w',
+      describe: 'Retry while status is pending (with optional max time in sec)',
+      defaultDescription: 'Infinity',
+      coerce: coerceWait,
+    })
     .version(`${packageJson.name} ${packageJson.version}`)
     .alias('version', 'V')
     .strict();
@@ -124,7 +144,10 @@ function githubCiStatusCmd(args, options, callback) {
         resolveCommit(ref),
       ]);
       const auth = process.env.GITHUB_TOKEN;
-      const combinedStatus = await githubCiStatus(owner, repo, sha, { auth });
+      const combinedStatus = await githubCiStatus(owner, repo, sha, {
+        auth,
+        wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
+      });
       options.stdout.write(`${combinedStatus.state}\n`);
     } catch (err) {
       exitCode = 1;

@@ -29,6 +29,29 @@ function coerceWait(arg) {
   return val;
 }
 
+function stateToExitCode(state) {
+  // Use same exit codes as `hub ci-status`
+  // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L115-L125
+  switch (state) {
+    case 'neutral':
+    case 'success':
+      return 0;
+
+    case 'action_required':
+    case 'cancelled':
+    case 'error':
+    case 'failure':
+    case 'timed_out':
+      return 1;
+
+    case 'pending':
+      return 2;
+
+    default:
+      return 3;
+  }
+}
+
 /** Options for command entry points.
  *
  * @typedef {{
@@ -149,6 +172,7 @@ function githubCiStatusCmd(args, options, callback) {
         wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
       });
       options.stdout.write(`${combinedStatus.state}\n`);
+      exitCode = stateToExitCode(combinedStatus.state);
     } catch (err) {
       exitCode = 1;
       options.stderr.write(`${err}\n`);

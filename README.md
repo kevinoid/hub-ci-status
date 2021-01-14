@@ -18,6 +18,7 @@ success</samp></pre>
 
 ## Features
 
+* Non-zero exit status for unsuccessful status makes scripting easier.
 * `--wait` flag allows waiting until the status is not `pending`.
 
 ## Installation

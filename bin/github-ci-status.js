@@ -15,6 +15,19 @@ const { getProjectName } = require('../lib/github-utils.js');
 const packageJson = require('../package.json');
 const githubCiStatus = require('..');
 
+// Use same "severity" as hub(1) for determining state
+// https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L60-L69
+const stateBySeverity = [
+  'neutral',
+  'success',
+  'pending',
+  'cancelled',
+  'timed_out',
+  'action_required',
+  'failure',
+  'error',
+];
+
 function coerceWait(arg) {
   if (arg === true) {
     // Treat --wait without argument as infinite wait.
@@ -27,6 +40,14 @@ function coerceWait(arg) {
   }
 
   return val;
+}
+
+function getState(combinedStatus) {
+  const bestSeverity = combinedStatus.statuses.reduce((maxSeverity, status) => {
+    const severity = stateBySeverity.indexOf(status.state);
+    return Math.max(severity, maxSeverity);
+  }, -1);
+  return stateBySeverity[bestSeverity] || '';
 }
 
 function stateToExitCode(state) {
@@ -171,8 +192,9 @@ function githubCiStatusCmd(args, options, callback) {
         auth,
         wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
       });
-      options.stdout.write(`${combinedStatus.state}\n`);
-      exitCode = stateToExitCode(combinedStatus.state);
+      const state = getState(combinedStatus);
+      options.stdout.write(`${state || 'no status'}\n`);
+      exitCode = stateToExitCode(state);
     } catch (err) {
       exitCode = 1;
       options.stderr.write(`${err}\n`);

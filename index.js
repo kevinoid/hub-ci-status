@@ -6,8 +6,14 @@
 'use strict';
 
 const { Octokit } = require('@octokit/rest');
+const timers = require('timers');
+const { promisify } = require('util');
+
 const packageJson = require('./package.json');
 const retryAsync = require('./lib/retry-async.js');
+
+// TODO [engine:node@>=15]: import { setTimeout } from 'timers/promises';
+const setTimeoutP = promisify(timers.setTimeout);
 
 function shouldRetry({ state }) {
   return state === 'pending';
@@ -29,8 +35,18 @@ function githubCiStatus(owner, repo, ref, options) {
     return response.data;
   }
 
-  return !options.wait ? getStatus() : retryAsync(getStatus, {
+  const retryOptions = {
     maxWaitMs: options.wait,
     shouldRetry,
-  });
+  };
+  if (options.debug) {
+    retryOptions.setTimeout = (delay, value, opts) => {
+      options.debug(
+        'GitHub CI status pending.  '
+        + `Waiting ${delay / 1000} seconds before retrying...`,
+      );
+      return setTimeoutP(delay, value, opts);
+    };
+  }
+  return !options.wait ? getStatus() : retryAsync(getStatus, retryOptions);
 };

@@ -261,10 +261,15 @@ function githubCiStatusCmd(args, options, callback) {
         resolveCommit(ref),
       ]);
       const auth = process.env.GITHUB_TOKEN;
-      const combinedStatus = await githubCiStatus(owner, repo, sha, {
+      const statusOptions = {
         auth,
         wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
-      });
+      };
+      if (verbosity > 1) {
+        statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);
+      }
+      const combinedStatus =
+        await githubCiStatus(owner, repo, sha, statusOptions);
 
       const state = getState(combinedStatus);
       if (verbosity >= 0) {

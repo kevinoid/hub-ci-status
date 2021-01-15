@@ -15,6 +15,9 @@ const { getProjectName } = require('../lib/github-utils.js');
 const packageJson = require('../package.json');
 const githubCiStatus = require('..');
 
+// Same --color options as hub(1)
+const colorOptions = ['always', 'never', 'auto'];
+
 // Use same "severity" as hub(1) for determining state
 // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L60-L69
 const stateBySeverity = [
@@ -27,6 +30,22 @@ const stateBySeverity = [
   'failure',
   'error',
 ];
+
+function coerceColor(arg) {
+  if (arg === true) {
+    // Treat --color without argument as 'always'.
+    return 'always';
+  }
+
+  if (colorOptions.includes(arg)) {
+    return arg;
+  }
+
+  throw new RangeError(
+    `Unrecognized --color argument '${arg}'.  Choices: ${
+      colorOptions.join(', ')}`,
+  );
+}
 
 function coerceWait(arg) {
   if (arg === true) {
@@ -42,44 +61,50 @@ function coerceWait(arg) {
   return val;
 }
 
-function getStateMarker(state) {
+function getStateMarker(state, useColor) {
+  function colorize(string, code) {
+    return useColor ? `\u001B[${code}m${string}\u001B[39m` : string;
+  }
+
   // Use same status markers as `hub ci-status`
   // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L158-L171
   switch (state) {
     case 'success':
-      return '✔︎';
+      return colorize('✔︎', 32);
 
     case 'action_required':
     case 'cancelled':
     case 'error':
     case 'failure':
     case 'timed_out':
-      return '✖︎';
+      return colorize('✖︎', 31);
 
     case 'neutral':
-      return '◦';
+      return colorize('◦', 30);
 
     case 'pending':
-      return '●';
+      return colorize('●', 33);
 
     default:
       return '';
   }
 }
 
-function formatStatus(status, contextWidth) {
-  const stateMarker = getStateMarker(status.state);
+function formatStatus(status, contextWidth, useColor) {
+  const stateMarker = getStateMarker(status.state, useColor);
   const context = status.context.padEnd(contextWidth);
   const targetUrl = status.target_url ? `\t${status.target_url}` : '';
   return `${stateMarker}\t${context}${targetUrl}`;
 }
 
-function formatStatuses(statuses) {
+function formatStatuses(statuses, useColor) {
   const maxWidth = statuses.reduce(
     (max, { context }) => Math.max(max, context.length),
     0,
   );
-  return statuses.map((status) => formatStatus(status, maxWidth)).join('\n');
+  return statuses
+    .map((status) => formatStatus(status, maxWidth, useColor))
+    .join('\n');
 }
 
 function getState(combinedStatus) {
@@ -177,6 +202,10 @@ function githubCiStatusCmd(args, options, callback) {
     .help()
     .alias('help', 'h')
     .alias('help', '?')
+    .options('color', {
+      describe: `Colorize verbose output (${colorOptions.join('|')})`,
+      coerce: coerceColor,
+    })
     .option('quiet', {
       alias: 'q',
       describe: 'Print less output',
@@ -237,8 +266,11 @@ function githubCiStatusCmd(args, options, callback) {
 
       const state = getState(combinedStatus);
       if (verbosity >= 0) {
-        const formatted =
-          verbosity === 0 ? state : formatStatuses(combinedStatus.statuses);
+        const useColor = argOpts.color === 'never' ? false
+          : argOpts.color === 'always' ? true
+            : options.stdout.isTTY;
+        const formatted = verbosity === 0 ? state
+          : formatStatuses(combinedStatus.statuses, useColor);
         options.stdout.write(`${formatted || 'no status'}\n`);
       }
 

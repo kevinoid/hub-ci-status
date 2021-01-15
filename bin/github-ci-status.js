@@ -109,8 +109,8 @@ function formatStatuses(statuses, useColor) {
     .join('\n');
 }
 
-function getState(combinedStatus) {
-  const bestSeverity = combinedStatus.statuses.reduce((maxSeverity, status) => {
+function getState(statuses) {
+  const bestSeverity = statuses.reduce((maxSeverity, status) => {
     const severity = stateBySeverity.indexOf(status.state);
     return Math.max(severity, maxSeverity);
   }, -1);
@@ -138,6 +138,26 @@ function stateToExitCode(state) {
     default:
       return 3;
   }
+}
+
+/** Converts a "check_run" object from the Checks API to a "statuses" object
+ * from the CI Status API.
+ *
+ * https://docs.github.com/rest/reference/checks#list-check-runs-for-a-git-reference
+ * https://docs.github.com/rest/reference/repos#get-the-combined-status-for-a-specific-reference
+ *
+ * @private
+ * @param {!object} checkRun "check_run" object from Checks API response.
+ * @returns {!object} "statuses" object from CI Status API response.
+ */
+function checkRunToStatus(checkRun) {
+  // Based on mapping done by hub(1)
+  // https://github.com/github/hub/blob/v2.14.2/github/client.go#L543-L551
+  return {
+    state: checkRun.status === 'completed' ? checkRun.conclusion : 'pending',
+    context: checkRun.name,
+    target_url: checkRun.html_url,  // eslint-disable-line camelcase
+  };
 }
 
 /** Options for command entry points.
@@ -268,16 +288,20 @@ function githubCiStatusCmd(args, options, callback) {
       if (verbosity > 1) {
         statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);
       }
-      const combinedStatus =
+      const [combinedStatus, checksList] =
         await githubCiStatus(owner, repo, sha, statusOptions);
 
-      const state = getState(combinedStatus);
+      const statuses = [
+        ...combinedStatus.statuses,
+        ...checksList.check_runs.map(checkRunToStatus),
+      ];
+      const state = getState(statuses);
       if (verbosity >= 0) {
         const useColor = argOpts.color === 'never' ? false
           : argOpts.color === 'always' ? true
             : options.stdout.isTTY;
         const formatted = verbosity === 0 ? state
-          : formatStatuses(combinedStatus.statuses, useColor);
+          : formatStatuses(statuses, useColor);
         options.stdout.write(`${formatted || 'no status'}\n`);
       }
 

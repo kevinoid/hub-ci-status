@@ -15,10 +15,6 @@ const retryAsync = require('./lib/retry-async.js');
 // TODO [engine:node@>=15]: import { setTimeout } from 'timers/promises';
 const setTimeoutP = promisify(timers.setTimeout);
 
-function shouldRetry({ state }) {
-  return state === 'pending';
-}
-
 module.exports =
 function githubCiStatus(owner, repo, ref, options = {}) {
   const octokit = new Octokit({
@@ -26,27 +22,86 @@ function githubCiStatus(owner, repo, ref, options = {}) {
     ...options,
   });
 
+  const apiArgs = {
+    owner,
+    repo,
+    ref,
+  };
+
   async function getStatus() {
-    const response = await octokit.repos.getCombinedStatusForRef({
-      owner,
-      repo,
-      ref,
-    });
+    const response = await octokit.repos.getCombinedStatusForRef(apiArgs);
     return response.data;
+  }
+
+  async function listForRef() {
+    const response = await octokit.checks.listForRef(apiArgs);
+    return response.data;
+  }
+
+  function getBoth() {
+    return Promise.all([
+      getStatus(),
+      listForRef(),
+    ]);
+  }
+
+  let statusCount = 0;
+  let statusWaitCount = 0;
+  let checkCount = 0;
+  let checkWaitCount = 0;
+  function shouldRetry([combinedStatus, checksList]) {
+    const { statuses } = combinedStatus;
+    const checkRuns = checksList.check_runs;
+
+    statusCount = statuses.length;
+    statusWaitCount = 0;
+    for (const status of statuses) {
+      if (status.state === 'pending') {
+        statusWaitCount += 1;
+      }
+    }
+
+    checkCount = checkRuns.length;
+    checkWaitCount = 0;
+    for (const checkRun of checkRuns) {
+      if (checkRun.status === 'queued' || checkRun.status === 'in_progress') {
+        checkWaitCount += 1;
+      }
+    }
+
+    return statusWaitCount > 0
+      || checkWaitCount > 0
+      || (statusCount === 0 && checkCount === 0);
   }
 
   const retryOptions = {
     maxWaitMs: options.wait,
     shouldRetry,
   };
+
   if (options.debug) {
     retryOptions.setTimeout = (delay, value, opts) => {
+      let waitingFor;
+      if (statusCount === 0 && checkCount === 0) {
+        waitingFor = 'any CI status or check';
+      } else {
+        if (statusWaitCount > 0) {
+          waitingFor += `${statusWaitCount}/${statusCount} CI statuses`;
+        }
+        if (checkWaitCount > 0) {
+          if (waitingFor) {
+            waitingFor += ' and ';
+          }
+          waitingFor += `${checkWaitCount}/${checkCount} checks`;
+        }
+      }
+
       options.debug(
-        'GitHub CI status pending.  '
-        + `Waiting ${delay / 1000} seconds before retrying...`,
+        `Waiting for ${waitingFor}.  Retry in ${delay / 1000} seconds...`,
       );
       return setTimeoutP(delay, value, opts);
     };
   }
-  return !options.wait ? getStatus() : retryAsync(getStatus, retryOptions);
+
+  return !options.wait ? getBoth() : retryAsync(getBoth, retryOptions);
 };

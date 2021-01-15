@@ -251,10 +251,10 @@ function githubCiStatusCmd(args, options, callback) {
       return;
     }
 
+    const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
+
     let exitCode = 0;
     try {
-      const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
-
       const ref = argOpts._[0] || 'HEAD';
       const [[owner, repo], sha] = await Promise.all([
         getProjectName(),
@@ -279,7 +279,7 @@ function githubCiStatusCmd(args, options, callback) {
       exitCode = stateToExitCode(state);
     } catch (err) {
       exitCode = 1;
-      options.stderr.write(`${err}\n`);
+      options.stderr.write(`${verbosity > 1 ? err.stack : err}\n`);
     }
 
     callback(exitCode);

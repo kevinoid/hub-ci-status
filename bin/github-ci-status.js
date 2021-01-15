@@ -98,12 +98,14 @@ function formatStatus(status, contextWidth, useColor) {
 }
 
 function formatStatuses(statuses, useColor) {
-  const maxWidth = statuses.reduce(
-    (max, { context }) => Math.max(max, context.length),
-    0,
-  );
+  // If no status has a target_url, there's no need to size context
+  const contextWidth = !statuses.some((status) => status.target_url) ? 0
+    : statuses.reduce(
+      (max, { context }) => Math.max(max, context.length),
+      0,
+    );
   return statuses
-    .map((status) => formatStatus(status, maxWidth, useColor))
+    .map((status) => formatStatus(status, contextWidth, useColor))
     .join('\n');
 }
 

@@ -20,7 +20,7 @@ function shouldRetry({ state }) {
 }
 
 module.exports =
-function githubCiStatus(owner, repo, ref, options) {
+function githubCiStatus(owner, repo, ref, options = {}) {
   const octokit = new Octokit({
     userAgent: `${packageJson.name}/${packageJson.version}`,
     ...options,

@@ -49,10 +49,12 @@ function coerceWait(arg) {
 /** Options for command entry points.
  *
  * @typedef {{
+ *   env: object<string,string>|undefined,
  *   stdin: !module:stream.Readable,
  *   stdout: !module:stream.Writable,
  *   stderr: !module:stream.Writable
  * }} CommandOptions
+ * @property {object<string,string>=} env Environment variables.
  * @property {!module:stream.Readable} stdin Stream from which input is read.
  * @property {!module:stream.Writable} stdout Stream to which output is
  * written.
@@ -166,7 +168,7 @@ function githubCiStatusCmd(args, options, callback) {
     let exitCode = 0;
     try {
       exitCode = await githubCiStatus(ref, {
-        auth: process.env.GITHUB_TOKEN,
+        auth: options.env ? options.env.GITHUB_TOKEN : undefined,
         stderr: options.stderr,
         stdout: options.stdout,
         useColor,

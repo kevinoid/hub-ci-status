@@ -171,7 +171,8 @@ function githubCiStatusCmd(args, options, callback) {
 
     let exitCode = 0;
     try {
-      exitCode = await githubCiStatus(ref, {
+      const gcs = options.githubCiStatus || githubCiStatus;
+      exitCode = await gcs(ref, {
         auth: options.env ? options.env.GITHUB_TOKEN : undefined,
         maxWaitMs: argOpts.wait ? argOpts.wait * 1000 : undefined,
         stderr: options.stderr,

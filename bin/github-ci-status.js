@@ -43,6 +43,10 @@ function coerceWait(arg) {
     throw new TypeError(`Invalid number "${arg}"`);
   }
 
+  if (val < 0) {
+    throw new RangeError('--wait must not be negative');
+  }
+
   return val;
 }
 

@@ -6,6 +6,8 @@
 'use strict';
 
 const { Octokit } = require('@octokit/rest');
+const { Agent: HttpAgent } = require('http');
+const { Agent: HttpsAgent } = require('https');
 const timers = require('timers');
 const { promisify } = require('util');
 
@@ -16,11 +18,34 @@ const retryAsync = require('./lib/retry-async.js');
 const setTimeoutP = promisify(timers.setTimeout);
 
 module.exports =
-function githubCiStatus(owner, repo, ref, options = {}) {
-  const octokit = new Octokit({
+async function githubCiStatus(owner, repo, ref, options = {}) {
+  const octokitOptions = {
     userAgent: `${packageJson.name}/${packageJson.version}`,
     ...options,
-  });
+  };
+
+  // If the caller did not provide an http.Agent, create one with keepAlive
+  // so retries can reuse the same connections.
+  let agent;
+  if (options.wait
+    && (!octokitOptions.request
+      || octokitOptions.request.agent === undefined)) {
+    const protocol =
+      octokitOptions.baseUrl ? new URL(octokitOptions.baseUrl).protocol
+        : 'https';
+    const Agent = protocol === 'https' ? HttpsAgent
+      : protocol === 'http' ? HttpAgent
+        : undefined;
+    if (Agent) {
+      agent = new Agent({ keepAlive: true });
+      octokitOptions.request = {
+        ...octokitOptions.request,
+        agent,
+      };
+    }
+  }
+
+  const octokit = new Octokit(octokitOptions);
 
   const apiArgs = {
     owner,
@@ -103,5 +128,12 @@ function githubCiStatus(owner, repo, ref, options = {}) {
     };
   }
 
-  return !options.wait ? getBoth() : retryAsync(getBoth, retryOptions);
+  try {
+    return await !options.wait ? getBoth()
+      : retryAsync(getBoth, retryOptions);
+  } finally {
+    if (agent) {
+      agent.destroy();
+    }
+  }
 };

@@ -173,11 +173,11 @@ function githubCiStatusCmd(args, options, callback) {
     try {
       exitCode = await githubCiStatus(ref, {
         auth: options.env ? options.env.GITHUB_TOKEN : undefined,
+        maxWaitMs: argOpts.wait ? argOpts.wait * 1000 : undefined,
         stderr: options.stderr,
         stdout: options.stdout,
         useColor,
         verbosity,
-        wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
       });
     } catch (err) {
       exitCode = 1;

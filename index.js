@@ -129,7 +129,7 @@ async function githubCiStatus(ref, options = {}) {
   ]);
   const statusOptions = {
     auth: options.auth,
-    wait: options.wait,
+    maxWaitMs: options.maxWaitMs,
   };
   if (options.verbosity > 1) {
     statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);

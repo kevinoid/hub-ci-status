@@ -10,26 +10,11 @@
 
 const Yargs = require('yargs/yargs');
 
-const { resolveCommit } = require('../lib/git-utils.js');
-const { getProjectName } = require('../lib/github-utils.js');
 const packageJson = require('../package.json');
 const githubCiStatus = require('..');
 
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];
-
-// Use same "severity" as hub(1) for determining state
-// https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L60-L69
-const stateBySeverity = [
-  'neutral',
-  'success',
-  'pending',
-  'cancelled',
-  'timed_out',
-  'action_required',
-  'failure',
-  'error',
-];
 
 function coerceColor(arg) {
   if (arg === true) {
@@ -59,105 +44,6 @@ function coerceWait(arg) {
   }
 
   return val;
-}
-
-function getStateMarker(state, useColor) {
-  function colorize(string, code) {
-    return useColor ? `\u001B[${code}m${string}\u001B[39m` : string;
-  }
-
-  // Use same status markers as `hub ci-status`
-  // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L158-L171
-  switch (state) {
-    case 'success':
-      return colorize('✔︎', 32);
-
-    case 'action_required':
-    case 'cancelled':
-    case 'error':
-    case 'failure':
-    case 'timed_out':
-      return colorize('✖︎', 31);
-
-    case 'neutral':
-      return colorize('◦', 30);
-
-    case 'pending':
-      return colorize('●', 33);
-
-    default:
-      return '';
-  }
-}
-
-function formatStatus(status, contextWidth, useColor) {
-  const stateMarker = getStateMarker(status.state, useColor);
-  const context = status.context.padEnd(contextWidth);
-  const targetUrl = status.target_url ? `\t${status.target_url}` : '';
-  return `${stateMarker}\t${context}${targetUrl}`;
-}
-
-function formatStatuses(statuses, useColor) {
-  // If no status has a target_url, there's no need to size context
-  const contextWidth = !statuses.some((status) => status.target_url) ? 0
-    : statuses.reduce(
-      (max, { context }) => Math.max(max, context.length),
-      0,
-    );
-  return statuses
-    .map((status) => formatStatus(status, contextWidth, useColor))
-    .join('\n');
-}
-
-function getState(statuses) {
-  const bestSeverity = statuses.reduce((maxSeverity, status) => {
-    const severity = stateBySeverity.indexOf(status.state);
-    return Math.max(severity, maxSeverity);
-  }, -1);
-  return stateBySeverity[bestSeverity] || '';
-}
-
-function stateToExitCode(state) {
-  // Use same exit codes as `hub ci-status`
-  // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L115-L125
-  switch (state) {
-    case 'neutral':
-    case 'success':
-      return 0;
-
-    case 'action_required':
-    case 'cancelled':
-    case 'error':
-    case 'failure':
-    case 'timed_out':
-      return 1;
-
-    case 'pending':
-      return 2;
-
-    default:
-      return 3;
-  }
-}
-
-/** Converts a "check_run" object from the Checks API to a "statuses" object
- * from the CI Status API.
- *
- * https://docs.github.com/rest/reference/checks#list-check-runs-for-a-git-reference
- * https://docs.github.com/rest/reference/repos#get-the-combined-status-for-a-specific-reference
- *
- * @private
- * @param {!object} checkRun "check_run" object from Checks API response.
- * @returns {!object} "statuses" object from CI Status API response.
- */
-function checkRunToStatus(checkRun) {
-  // Based on mapping done by hub(1)
-  // https://github.com/github/hub/blob/v2.14.2/github/client.go#L543-L551
-  return {
-    state: checkRun.status === 'completed' ? checkRun.conclusion : 'pending',
-    context: checkRun.name,
-    target_url: checkRun.html_url,  // eslint-disable-line camelcase
-  };
 }
 
 /** Options for command entry points.
@@ -271,41 +157,22 @@ function githubCiStatusCmd(args, options, callback) {
       return;
     }
 
+    const useColor = argOpts.color === 'never' ? false
+      : argOpts.color === 'always' ? true
+        : undefined;
+    const ref = argOpts._[0] || 'HEAD';
     const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
 
     let exitCode = 0;
     try {
-      const ref = argOpts._[0] || 'HEAD';
-      const [[owner, repo], sha] = await Promise.all([
-        getProjectName(),
-        resolveCommit(ref),
-      ]);
-      const auth = process.env.GITHUB_TOKEN;
-      const statusOptions = {
-        auth,
+      exitCode = await githubCiStatus(ref, {
+        auth: process.env.GITHUB_TOKEN,
+        stderr: options.stderr,
+        stdout: options.stdout,
+        useColor,
+        verbosity,
         wait: argOpts.wait ? argOpts.wait * 1000 : undefined,
-      };
-      if (verbosity > 1) {
-        statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);
-      }
-      const [combinedStatus, checksList] =
-        await githubCiStatus(owner, repo, sha, statusOptions);
-
-      const statuses = [
-        ...combinedStatus.statuses,
-        ...checksList.check_runs.map(checkRunToStatus),
-      ];
-      const state = getState(statuses);
-      if (verbosity >= 0) {
-        const useColor = argOpts.color === 'never' ? false
-          : argOpts.color === 'always' ? true
-            : options.stdout.isTTY;
-        const formatted = verbosity === 0 ? state
-          : formatStatuses(statuses, useColor);
-        options.stdout.write(`${formatted || 'no status'}\n`);
-      }
-
-      exitCode = stateToExitCode(state);
+      });
     } catch (err) {
       exitCode = 1;
       options.stderr.write(`${verbosity > 1 ? err.stack : err}\n`);
@@ -315,7 +182,6 @@ function githubCiStatusCmd(args, options, callback) {
   });
 }
 
-githubCiStatusCmd.default = githubCiStatusCmd;
 module.exports = githubCiStatusCmd;
 
 if (require.main === module) {

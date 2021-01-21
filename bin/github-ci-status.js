@@ -38,8 +38,9 @@ function coerceWait(arg) {
     return Infinity;
   }
 
+  // Note: Don't treat '' as 0 (no wait), since it's more likely user error
   const val = Number(arg);
-  if (Number.isNaN(val)) {
+  if (arg === '' || Number.isNaN(val)) {
     throw new TypeError(`Invalid number "${arg}"`);
   }
 

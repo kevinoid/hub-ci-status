@@ -44,6 +44,7 @@ Object.assign(assertPoly, assert);
 assertPoly.strict = function strict(...args) {
   return assert.strict(...args);
 };
+// eslint-disable-next-line unicorn/consistent-destructuring
 Object.assign(assertPoly.strict, assert.strict);
 
 // By default, export the original assert module.

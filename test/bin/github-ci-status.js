@@ -99,9 +99,9 @@ describe('github-ci-status command', () => {
     );
   });
 
-  ['--help', '-h', '-?'].forEach((helpOpt) => {
+  for (const helpOpt of ['--help', '-h', '-?']) {
     it(`${helpOpt} prints help message to stdout`, async () => {
-      const args = RUNTIME_ARGS.concat(helpOpt);
+      const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
       const exitCode = await githubCiStatusCmdP(args, options);
       assert.strictEqual(exitCode, 0);
@@ -110,11 +110,11 @@ describe('github-ci-status command', () => {
       assert(output, 'produces help output');
       assert.match(output, /--wait\b/);
     });
-  });
+  }
 
-  ['--version', '-V'].forEach((versionOpt) => {
+  for (const versionOpt of ['--version', '-V']) {
     it(`${versionOpt} prints version message to stdout`, async () => {
-      const args = RUNTIME_ARGS.concat(versionOpt);
+      const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
       const exitCode = await githubCiStatusCmdP(args, options);
       assert.strictEqual(exitCode, 0);
@@ -122,7 +122,7 @@ describe('github-ci-status command', () => {
       const output = options.stdout.read();
       assert.strictEqual(output, `github-ci-status ${packageJson.version}\n`);
     });
-  });
+  }
 
   it('passes through options.stdout and stderr', async () => {
     const githubCiStatus = sinon.stub().resolves(0);
@@ -157,7 +157,7 @@ describe('github-ci-status command', () => {
     const testDesc =
       `interprets ${args.join(' ')} as ${expectRef}, ${expectOptions}`;
     it(testDesc, async () => {
-      const allArgs = RUNTIME_ARGS.concat(args);
+      const allArgs = [...RUNTIME_ARGS, ...args];
       const githubCiStatus = sinon.stub().resolves(0);
       const options = {
         ...getTestOptions(),
@@ -208,7 +208,7 @@ describe('github-ci-status command', () => {
 
   function expectArgsErr(args, expectErrMsg) {
     it(`prints error and exits for ${args.join(' ')}`, async () => {
-      const allArgs = RUNTIME_ARGS.concat(args);
+      const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
       const exitCode = await githubCiStatusCmdP(allArgs, options);
       assert.strictEqual(exitCode, 1);
@@ -243,7 +243,7 @@ describe('github-ci-status command', () => {
   });
 
   it('prints githubCiStatus rejection stack if very verbose', async () => {
-    const args = RUNTIME_ARGS.concat('-vv');
+    const args = [...RUNTIME_ARGS, '-vv'];
     const errTest = new RangeError('test');
     const githubCiStatus = sinon.stub().rejects(errTest);
     const options = {

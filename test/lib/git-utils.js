@@ -167,7 +167,7 @@ describe('gitUtils', () => {
   });
 
   describe('.gitUrlIsLocalNotSsh', () => {
-    [
+    for (const testCase of [
       { url: '.', result: true },
       { url: '/foo/bar', result: true },
       { url: 'http://example.com', result: false },
@@ -176,14 +176,14 @@ describe('gitUtils', () => {
       { url: 'file:///foo/bar', result: false },
       { url: '/foo:bar', result: true },
       { url: 'foo:bar', result: false },
-    ].forEach((testCase) => {
+    ]) {
       it(`${testCase.url} is ${testCase.result}`, () => {
         assert.strictEqual(
           gitUtils.gitUrlIsLocalNotSsh(testCase.url),
           testCase.result,
         );
       });
-    });
+    }
 
     const drivePath = 'C:/foo';
     if (isWindows) {

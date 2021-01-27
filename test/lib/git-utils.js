@@ -52,14 +52,14 @@ before('setup test repository', async function() {
   await gitInit(TEST_REPO_PATH, defaultBranch);
   await execFileOut(
     'git',
-    ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Initial Commit',
-      '--allow-empty'],
+    ['commit', '-q', '-m', 'Initial Commit', '--allow-empty'],
+    gitOptions,
   );
-  await execFileOut('git', ['-C', TEST_REPO_PATH, 'tag', TAGS[0]]);
+  await execFileOut('git', ['tag', TAGS[0]], gitOptions);
   await execFileOut(
     'git',
-    ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Second Commit',
-      '--allow-empty'],
+    ['commit', '-q', '-m', 'Second Commit', '--allow-empty'],
+    gitOptions,
   );
 
   // Create remotes
@@ -67,7 +67,8 @@ before('setup test repository', async function() {
     // eslint-disable-next-line no-await-in-loop
     await execFileOut(
       'git',
-      ['-C', TEST_REPO_PATH, 'remote', 'add', remoteName, remoteUrl],
+      ['remote', 'add', remoteName, remoteUrl],
+      gitOptions,
     );
   }
 
@@ -77,7 +78,8 @@ before('setup test repository', async function() {
       // eslint-disable-next-line no-await-in-loop
       await execFileOut(
         'git',
-        ['-C', TEST_REPO_PATH, 'branch', branchName],
+        ['branch', branchName],
+        gitOptions,
       );
     }
   }
@@ -97,12 +99,14 @@ before('setup test repository', async function() {
       // eslint-disable-next-line no-await-in-loop
       await execFileOut(
         'git',
-        ['-C', TEST_REPO_PATH, 'config', '--add', configRemote, remoteName],
+        ['config', '--add', configRemote, remoteName],
+        gitOptions,
       );
       // eslint-disable-next-line no-await-in-loop
       await execFileOut(
         'git',
-        ['-C', TEST_REPO_PATH, 'config', '--add', configMerge, remoteRef],
+        ['config', '--add', configMerge, remoteRef],
+        gitOptions,
       );
     }
   }

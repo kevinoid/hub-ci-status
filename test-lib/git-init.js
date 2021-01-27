@@ -5,17 +5,9 @@
 
 'use strict';
 
-// TODO [engine:node@>=12.10]: Use fs.rmdir({recursive: true})
-const rimraf = require('rimraf');
-const { promisify } = require('util');
-
 const execFileOut = require('../lib/exec-file-out.js');
 
-const rimrafP = promisify(rimraf);
-
 module.exports = async function gitInit(repoPath, defaultBranch) {
-  await rimrafP(repoPath);
-
   try {
     await execFileOut(
       'git',

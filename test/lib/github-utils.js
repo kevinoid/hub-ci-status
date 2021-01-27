@@ -1,4 +1,10 @@
 /**
+ * Tests for github-utils module.
+ *
+ * WARNING: Tests in this file require sequential execution and must all be
+ * executed for the git repository to be in the expected state.  Using mocha's
+ * test filtering is likely to cause tests to misbehave.
+ *
  * @copyright Copyright 2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
  */

@@ -6,19 +6,17 @@
 'use strict';
 
 const path = require('path');
-// TODO [engine:node@>=12.10]: Use fs.rmdir({recursive: true})
-const rimraf = require('rimraf');
+const { dir: makeTempDir } = require('tmp-promise');
 const { pathToFileURL } = require('url');
-const { promisify } = require('util');
 
 const assert = require('../../test-lib/assert-backports');
 const gitInit = require('../../test-lib/git-init');
 const gitUtils = require('../../lib/git-utils');
 const execFileOut = require('../../lib/exec-file-out');
+const packageJson = require('../../package.json');
 
 const defaultBranch = 'main';
 const isWindows = /^win/i.test(process.platform);
-const rimrafP = promisify(rimraf);
 
 const BRANCH_REMOTES = {
   // Note:  must be origin so ls-remote default is origin for all git versions
@@ -36,20 +34,27 @@ const REMOTES = {
   remote2: 'https://github.com/owner2/repo2.git',
 };
 const TAGS = ['tag1'];
-/** Path to repository in which tests are run. */
-const TEST_REPO_PATH = path.join(__dirname, '..', '..', 'test-repo');
-
-const gitOptions = Object.freeze({ cwd: TEST_REPO_PATH });
 
 function neverCalled() {
   throw new Error('should not be called');
 }
 
+/** Path to repository in which tests are run. */
+let testRepoPath;
+let gitOptions;
 before('setup test repository', async function() {
   // Some git versions can run quite slowly on Windows
   this.timeout(isWindows ? 8000 : 4000);
 
-  await gitInit(TEST_REPO_PATH, defaultBranch);
+  const tempDir = await makeTempDir({
+    prefix: `${packageJson.name}-test`,
+    unsafeCleanup: true,
+  });
+  testRepoPath = tempDir.path;
+  gitOptions = { cwd: testRepoPath };
+  after('remove test repository', () => tempDir.cleanup());
+
+  await gitInit(testRepoPath, defaultBranch);
   await execFileOut(
     'git',
     ['commit', '-q', '-m', 'Initial Commit', '--allow-empty'],
@@ -111,8 +116,6 @@ before('setup test repository', async function() {
     }
   }
 });
-
-after('remove test repository', () => rimrafP(TEST_REPO_PATH));
 
 function checkoutDefault() {
   return execFileOut('git', ['checkout', '-q', defaultBranch], gitOptions);

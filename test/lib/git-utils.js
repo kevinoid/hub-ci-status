@@ -45,60 +45,67 @@ function neverCalled() {
   throw new Error('should not be called');
 }
 
-before('setup test repository', function() {
+before('setup test repository', async function() {
   // Some git versions can run quite slowly on Windows
   this.timeout(isWindows ? 8000 : 4000);
 
-  return gitInit(TEST_REPO_PATH, defaultBranch)
-    .then(() => execFileOut(
+  await gitInit(TEST_REPO_PATH, defaultBranch);
+  await execFileOut(
+    'git',
+    ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Initial Commit',
+      '--allow-empty'],
+  );
+  await execFileOut('git', ['-C', TEST_REPO_PATH, 'tag', TAGS[0]]);
+  await execFileOut(
+    'git',
+    ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Second Commit',
+      '--allow-empty'],
+  );
+
+  // Create remotes
+  for (const [remoteName, remoteUrl] of Object.entries(REMOTES)) {
+    // eslint-disable-next-line no-await-in-loop
+    await execFileOut(
       'git',
-      ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Initial Commit',
-        '--allow-empty'],
-    ))
-    .then(() => execFileOut('git', ['-C', TEST_REPO_PATH, 'tag', TAGS[0]]))
-    .then(() => execFileOut(
-      'git',
-      ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Second Commit',
-        '--allow-empty'],
-    ))
-    .then(() => Object.keys(REMOTES).reduce((p, remoteName) => p.then(() => {
-      const remoteUrl = REMOTES[remoteName];
-      return execFileOut(
-        'git',
-        ['-C', TEST_REPO_PATH, 'remote', 'add', remoteName, remoteUrl],
-      );
-    }), Promise.resolve()))
-    .then(() => Object.keys(BRANCH_REMOTES)
-      .filter((branchName) => branchName !== defaultBranch)
-      .reduce((p, branchName) => p.then(() => execFileOut(
+      ['-C', TEST_REPO_PATH, 'remote', 'add', remoteName, remoteUrl],
+    );
+  }
+
+  // Create branches
+  for (const branchName of Object.keys(BRANCH_REMOTES)) {
+    if (branchName !== defaultBranch) {
+      // eslint-disable-next-line no-await-in-loop
+      await execFileOut(
         'git',
         ['-C', TEST_REPO_PATH, 'branch', branchName],
-      )), Promise.resolve()))
-    .then(() => Object.keys(BRANCH_REMOTES)
-      .reduce((p, branchName) => p.then(() => {
-        const upstream = BRANCH_REMOTES[branchName];
-        if (!upstream) {
-          return p;
-        }
-        // Note:  Can't use 'git branch -u' without fetching remote
-        const upstreamParts = upstream.split('/');
-        assert.strictEqual(upstreamParts.length, 2);
-        const remoteName = upstreamParts[0];
-        const remoteBranch = upstreamParts[1];
-        const remoteRef = `refs/heads/${remoteBranch}`;
-        const configBranch = `branch.${branchName}`;
-        const configMerge = `${configBranch}.merge`;
-        const configRemote = `${configBranch}.remote`;
-        return execFileOut(
-          'git',
-          ['-C', TEST_REPO_PATH, 'config', '--add', configRemote, remoteName],
-        )
-          .then(() => execFileOut(
-            'git',
-            ['-C', TEST_REPO_PATH,
-              'config', '--add', configMerge, remoteRef],
-          ));
-      }), Promise.resolve()));
+      );
+    }
+  }
+
+  // Configure remote for branch
+  for (const [branchName, upstream] of Object.entries(BRANCH_REMOTES)) {
+    if (upstream) {
+      // Note:  Can't use 'git branch -u' without fetching remote
+      const upstreamParts = upstream.split('/');
+      assert.strictEqual(upstreamParts.length, 2);
+      const remoteName = upstreamParts[0];
+      const remoteBranch = upstreamParts[1];
+      const remoteRef = `refs/heads/${remoteBranch}`;
+      const configBranch = `branch.${branchName}`;
+      const configMerge = `${configBranch}.merge`;
+      const configRemote = `${configBranch}.remote`;
+      // eslint-disable-next-line no-await-in-loop
+      await execFileOut(
+        'git',
+        ['-C', TEST_REPO_PATH, 'config', '--add', configRemote, remoteName],
+      );
+      // eslint-disable-next-line no-await-in-loop
+      await execFileOut(
+        'git',
+        ['-C', TEST_REPO_PATH, 'config', '--add', configMerge, remoteRef],
+      );
+    }
+  }
 });
 
 after('remove test repository', () => rimrafP(TEST_REPO_PATH));

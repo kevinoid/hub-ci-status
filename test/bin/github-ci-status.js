@@ -172,7 +172,7 @@ describe('github-ci-status command', () => {
   }
 
   // Check individual arguments are handled correctly
-  expectArgsAs([], 'HEAD', match({
+  expectArgsAs([], undefined, match({
     auth: undefined,
     maxWaitMs: undefined,
     useColor: undefined,
@@ -184,26 +184,26 @@ describe('github-ci-status command', () => {
     useColor: undefined,
     verbosity: 0,
   }));
-  expectArgsAs(['--color'], 'HEAD', match({ useColor: true }));
-  expectArgsAs(['--color=always'], 'HEAD', match({ useColor: true }));
-  expectArgsAs(['--color=never'], 'HEAD', match({ useColor: false }));
+  expectArgsAs(['--color'], undefined, match({ useColor: true }));
+  expectArgsAs(['--color=always'], undefined, match({ useColor: true }));
+  expectArgsAs(['--color=never'], undefined, match({ useColor: false }));
   expectArgsAs(['--color', 'never'], 'never', match({ useColor: true }));
-  expectArgsAs(['--quiet'], 'HEAD', match({ verbosity: -1 }));
+  expectArgsAs(['--quiet'], undefined, match({ verbosity: -1 }));
   expectArgsAs(['--quiet', 'ref'], 'ref', match({ verbosity: -1 }));
-  expectArgsAs(['-q'], 'HEAD', match({ verbosity: -1 }));
-  expectArgsAs(['-q', 'ref'], 'HEAD', match({ verbosity: -1 }));
-  expectArgsAs(['-qq'], 'HEAD', match({ verbosity: -2 }));
-  expectArgsAs(['--verbose'], 'HEAD', match({ verbosity: 1 }));
+  expectArgsAs(['-q'], undefined, match({ verbosity: -1 }));
+  expectArgsAs(['-q', 'ref'], undefined, match({ verbosity: -1 }));
+  expectArgsAs(['-qq'], undefined, match({ verbosity: -2 }));
+  expectArgsAs(['--verbose'], undefined, match({ verbosity: 1 }));
   expectArgsAs(['--verbose', 'ref'], 'ref', match({ verbosity: 1 }));
-  expectArgsAs(['-v'], 'HEAD', match({ verbosity: 1 }));
-  expectArgsAs(['-v', 'ref'], 'HEAD', match({ verbosity: 1 }));
-  expectArgsAs(['-vv'], 'HEAD', match({ verbosity: 2 }));
-  expectArgsAs(['-qv'], 'HEAD', match({ verbosity: 0 }));
-  expectArgsAs(['--wait'], 'HEAD', match({ wait: Infinity }));
-  expectArgsAs(['--wait=60'], 'HEAD', match({ wait: 60000 }));
+  expectArgsAs(['-v'], undefined, match({ verbosity: 1 }));
+  expectArgsAs(['-v', 'ref'], undefined, match({ verbosity: 1 }));
+  expectArgsAs(['-vv'], undefined, match({ verbosity: 2 }));
+  expectArgsAs(['-qv'], undefined, match({ verbosity: 0 }));
+  expectArgsAs(['--wait'], undefined, match({ wait: Infinity }));
+  expectArgsAs(['--wait=60'], undefined, match({ wait: 60000 }));
   expectArgsAs(['--wait', '60'], '60', match({ wait: Infinity }));
-  expectArgsAs(['-w'], 'HEAD', match({ wait: Infinity }));
-  expectArgsAs(['-w60'], 'HEAD', match({ wait: 60000 }));
+  expectArgsAs(['-w'], undefined, match({ wait: Infinity }));
+  expectArgsAs(['-w60'], undefined, match({ wait: 60000 }));
   expectArgsAs(['-w', '60'], '60', match({ wait: Infinity }));
 
   function expectArgsErr(args, expectErrMsg) {

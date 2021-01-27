@@ -167,7 +167,7 @@ function githubCiStatusCmd(args, options, callback) {
     const useColor = argOpts.color === 'never' ? false
       : argOpts.color === 'always' ? true
         : undefined;
-    const ref = argOpts._[0] || 'HEAD';
+    const ref = argOpts._[0];
     const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
 
     let exitCode = 0;

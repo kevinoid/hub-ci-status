@@ -145,20 +145,20 @@ function checkRunToStatus(checkRun) {
  * (default: 0)
  */
 
-/** Print the current GitHub CI status of a given ref.
+/** Print the current GitHub CI status of a given revision.
  *
- * @param {string} ref Name of git commit for which to check status.  Can
- * be any single name recognized by git-rev-parse(1).
+ * @param {string} rev Git revision for which to check status.  Can be any
+ * name recognized by git-rev-parse(1).
  * @param {!GithubCiStatusOptions=} options Options.
  * @returns {!Promise<number>} Exit code indicating whether the status was
  * printed.  0 if the status was printed, non-zero if the status could not
  * be determined.
  */
 module.exports =
-async function githubCiStatus(ref, options = {}) {
+async function githubCiStatus(rev, options = {}) {
   const [[owner, repo], sha] = await Promise.all([
     getProjectName(),
-    resolveCommit(ref),
+    resolveCommit(rev),
   ]);
   const statusOptions = {
     maxWaitMs: options.maxWaitMs,

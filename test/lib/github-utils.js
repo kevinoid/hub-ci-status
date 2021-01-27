@@ -121,6 +121,25 @@ describe('githubUtils', () => {
       });
     });
 
+    describe('with invalid remote', () => {
+      before(() => execFileOut(
+        'git',
+        ['remote', 'set-url', 'remote1', 'bad_:invalid'],
+        gitOptions,
+      ));
+
+      it('throws UnknownProjectError', () => {
+        return assert.rejects(
+          () => getProjectName(gitOptions),
+          (err) => {
+            assert(err instanceof Error);
+            assert.strictEqual(err.name, 'UnknownProjectError');
+            return true;
+          },
+        );
+      });
+    });
+
     describe('with https://github.com remote', () => {
       const testProject = ['kevinoid', 'github-ci-status'];
       before(() => execFileOut(
@@ -138,6 +157,84 @@ describe('githubUtils', () => {
         assert.deepStrictEqual(
           await getProjectName(gitOptions),
           testProject,
+        );
+      });
+    });
+
+    describe('with https://github.com remote without .git extension', () => {
+      const testProject = ['kevinoid', 'github-ci-status'];
+      before(() => execFileOut(
+        'git',
+        [
+          'remote',
+          'set-url',
+          'remote1',
+          `https://github.com/${testProject.join('/')}`,
+        ],
+        gitOptions,
+      ));
+
+      it('returns project', async () => {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      });
+    });
+
+    describe('with github.com remote with 1 path part', () => {
+      before(() => execFileOut(
+        'git',
+        ['remote', 'set-url', 'remote1', 'https://github.com/foo.git'],
+        gitOptions,
+      ));
+
+      it('throws UnknownProjectError', () => {
+        return assert.rejects(
+          () => getProjectName(gitOptions),
+          (err) => {
+            assert(err instanceof Error);
+            assert.strictEqual(err.name, 'UnknownProjectError');
+            return true;
+          },
+        );
+      });
+    });
+
+    describe('with github.com remote with 3 path parts', () => {
+      before(() => execFileOut(
+        'git',
+        ['remote', 'set-url', 'remote1', 'https://github.com/foo/bar/baz.git'],
+        gitOptions,
+      ));
+
+      it('throws UnknownProjectError', () => {
+        return assert.rejects(
+          () => getProjectName(gitOptions),
+          (err) => {
+            assert(err instanceof Error);
+            assert.strictEqual(err.name, 'UnknownProjectError');
+            return true;
+          },
+        );
+      });
+    });
+
+    describe('with github.com remote with an empty name', () => {
+      before(() => execFileOut(
+        'git',
+        ['remote', 'set-url', 'remote1', 'https://github.com/foo/.git'],
+        gitOptions,
+      ));
+
+      it('throws UnknownProjectError', () => {
+        return assert.rejects(
+          () => getProjectName(gitOptions),
+          (err) => {
+            assert(err instanceof Error);
+            assert.strictEqual(err.name, 'UnknownProjectError');
+            return true;
+          },
         );
       });
     });
@@ -177,6 +274,28 @@ describe('githubUtils', () => {
       ));
 
       it('returns project', async () => {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      });
+    });
+
+    describe('with two GitHub remotes', () => {
+      const testProject = ['zzz', 'github-ci-status'];
+      before(() => execFileOut(
+        'git',
+        [
+          'remote',
+          'add',
+          'aremote',
+          `https://github.com/${testProject.join('/')}.git`,
+        ],
+        gitOptions,
+      ));
+
+      // Note: For stability.  Lexicographic by remote name is arbitrary.
+      it('prefers lexicograpic ordering by remote name', async () => {
         assert.deepStrictEqual(
           await getProjectName(gitOptions),
           testProject,

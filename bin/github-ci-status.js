@@ -174,8 +174,10 @@ function githubCiStatusCmd(args, options, callback) {
     try {
       const gcs = options.githubCiStatus || githubCiStatus;
       exitCode = await gcs(ref, {
-        auth: options.env ? options.env.GITHUB_TOKEN : undefined,
         maxWaitMs: argOpts.wait ? argOpts.wait * 1000 : undefined,
+        octokitOptions: {
+          auth: options.env ? options.env.GITHUB_TOKEN : undefined,
+        },
         stderr: options.stderr,
         stdout: options.stdout,
         useColor,

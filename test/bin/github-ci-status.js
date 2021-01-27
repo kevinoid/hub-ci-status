@@ -137,7 +137,7 @@ describe('github-ci-status command', () => {
     assert.strictEqual(gcsOptions.stdout, options.stdout);
   });
 
-  it('passes $GITHUB_TOKEN as options.auth', async () => {
+  it('passes $GITHUB_TOKEN as options.octokitOptions.auth', async () => {
     const githubCiStatus = sinon.stub().resolves(0);
     const testToken = '123abc';
     const options = {
@@ -150,7 +150,7 @@ describe('github-ci-status command', () => {
     await githubCiStatusCmdP(RUNTIME_ARGS, options);
     assert.strictEqual(githubCiStatus.callCount, 1);
     const gcsOptions = githubCiStatus.getCall(0).args[1];
-    assert.strictEqual(gcsOptions.auth, testToken);
+    assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
   });
 
   function expectArgsAs(args, expectRef, expectOptions) {

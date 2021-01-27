@@ -128,8 +128,8 @@ async function githubCiStatus(ref, options = {}) {
     resolveCommit(ref),
   ]);
   const statusOptions = {
-    auth: options.auth,
     maxWaitMs: options.maxWaitMs,
+    octokitOptions: options.octokitOptions,
   };
   if (options.verbosity > 1) {
     statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);

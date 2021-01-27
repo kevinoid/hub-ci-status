@@ -1,6 +1,7 @@
 /**
  * @copyright Copyright 2016-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
+ * @module github-ci-status
  */
 
 'use strict';
@@ -121,6 +122,38 @@ function checkRunToStatus(checkRun) {
   };
 }
 
+/** Options for {@link githubCiStatus}.
+ *
+ * @typedef {!object} GithubCiStatusOptions
+ * @property {number=} maxWaitMs Maximum amount of time, in milliseconds,
+ * to wait for a completed (i.e. non-pending) status.
+ * @property {!module:"@octokit/core".Octokit=} octokit Octokit instance to
+ * use for requests.
+ * @property {!module:"@octokit/core".OctokitOptions=} octokitOptions Options
+ * to pass to Octokit for status requests.  Only used if octokit option is
+ * not set.
+ * @property {!module:stream.Writable} stderr Stream to which errors (and
+ * non-output status messages) are written.
+ * @property {!module:stream.Readable} stdin Stream from which input is read
+ * (not currently used, but may be in the future).
+ * @property {!module:stream.Writable} stdout Stream to which output is
+ * written.
+ * @property {boolean=} useColor Should ANSI escape codes for color be used
+ * to colorize printed output?  (default: from .isTTY)
+ * @property {number=} verbosity Amount of output to produce.  Higher numbers
+ * produce more output.  Lower (i.e. more negative) numbers produce less.
+ * (default: 0)
+ */
+
+/** Print the current GitHub CI status of a given ref.
+ *
+ * @param {string} ref Name of git commit for which to check status.  Can
+ * be any single name recognized by git-rev-parse(1).
+ * @param {!GithubCiStatusOptions=} options Options.
+ * @returns {!Promise<number>} Exit code indicating whether the status was
+ * printed.  0 if the status was printed, non-zero if the status could not
+ * be determined.
+ */
 module.exports =
 async function githubCiStatus(ref, options = {}) {
   const [[owner, repo], sha] = await Promise.all([

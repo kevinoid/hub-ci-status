@@ -12,6 +12,7 @@ const { pathToFileURL } = require('url');
 const { promisify } = require('util');
 
 const assert = require('../../test-lib/assert-backports');
+const gitInit = require('../../test-lib/git-init');
 const gitUtils = require('../../lib/git-utils');
 const execFileOut = require('../../lib/exec-file-out');
 
@@ -48,38 +49,7 @@ before('setup test repository', function() {
   // Some git versions can run quite slowly on Windows
   this.timeout(isWindows ? 8000 : 4000);
 
-  return rimrafP(TEST_REPO_PATH)
-    .then(async () => {
-      try {
-        await execFileOut(
-          'git',
-          // git-init(1) in 2.30.0 warns that default branch subject to change.
-          // It may also have non-default global- or user-configuration.
-          // Specify --initial-branch to avoid depending on default
-          ['init', '-q', `--initial-branch=${defaultBranch}`, TEST_REPO_PATH],
-        );
-      } catch {
-        // git < 2.28.0 doesn't understand --initial-branch, default is master
-        await execFileOut('git', ['init', '-q', TEST_REPO_PATH]);
-        if (defaultBranch !== 'master') {
-          await execFileOut(
-            'git',
-            ['symbolic-ref', 'HEAD', `refs/heads/${defaultBranch}`],
-            options,
-          );
-        }
-      }
-    })
-    // The user name and email must be configured for the later git commands
-    // to work.  On Travis CI (and probably others) there is no global config
-    .then(() => execFileOut(
-      'git',
-      ['-C', TEST_REPO_PATH, 'config', 'user.name', 'Test User'],
-    ))
-    .then(() => execFileOut(
-      'git',
-      ['-C', TEST_REPO_PATH, 'config', 'user.email', 'test@example.com'],
-    ))
+  return gitInit(TEST_REPO_PATH, defaultBranch)
     .then(() => execFileOut(
       'git',
       ['-C', TEST_REPO_PATH, 'commit', '-q', '-m', 'Initial Commit',

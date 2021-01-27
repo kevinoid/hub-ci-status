@@ -150,6 +150,49 @@ describe('gitUtils', () => {
         ));
   });
 
+  describe('.getConfig', () => {
+    it('rejects with RangeError for invalid scope',
+      () => assert.rejects(
+        () => gitUtils.getConfig('invalid', gitOptions),
+        RangeError,
+      ));
+
+    // Use branch remote configuration to test local config
+    const localConfigKey = `branch.${defaultBranch}.remote`;
+    const localConfigValue = BRANCH_REMOTES[defaultBranch].split('/')[0];
+
+    it('resolves to object mapping all config keys to values', async () => {
+      const config = await gitUtils.getConfig(undefined, gitOptions);
+      assert.strictEqual(typeof config, 'object');
+      assert(
+        !(config instanceof Object),
+        'does not inherit from Object to avoid proto key confusion',
+      );
+      assert.strictEqual(config[localConfigKey], localConfigValue);
+    });
+
+    it('resolves to local config', async () => {
+      const config = await gitUtils.getConfig('local', gitOptions);
+      assert.strictEqual(typeof config, 'object');
+      assert(
+        !(config instanceof Object),
+        'does not inherit from Object to avoid proto key confusion',
+      );
+      assert.strictEqual(config[localConfigKey], localConfigValue);
+    });
+
+    it('resolves to global config', async () => {
+      const config = await gitUtils.getConfig('global', gitOptions);
+      assert.strictEqual(typeof config, 'object');
+      assert(
+        !(config instanceof Object),
+        'does not inherit from Object to avoid proto key confusion',
+      );
+      // TODO: Set a global config to test?
+      assert.strictEqual(config[localConfigKey], undefined);
+    });
+  });
+
   describe('.gitUrlIsLocalNotSsh', () => {
     for (const testCase of [
       { url: '.', result: true },

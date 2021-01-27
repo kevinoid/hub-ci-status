@@ -129,6 +129,7 @@ async function githubCiStatus(ref, options = {}) {
   ]);
   const statusOptions = {
     maxWaitMs: options.maxWaitMs,
+    octokit: options.octokit,
     octokitOptions: options.octokitOptions,
   };
   if (options.verbosity > 1) {

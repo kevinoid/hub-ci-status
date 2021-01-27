@@ -131,7 +131,7 @@ describe('github-ci-status command', () => {
       githubCiStatus,
     };
     await githubCiStatusCmdP(RUNTIME_ARGS, options);
-    assert.strictEqual(githubCiStatus.callCount, 1);
+    sinon.assert.callCount(githubCiStatus, 1);
     const gcsOptions = githubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.stderr, options.stderr);
     assert.strictEqual(gcsOptions.stdout, options.stdout);
@@ -148,7 +148,7 @@ describe('github-ci-status command', () => {
       githubCiStatus,
     };
     await githubCiStatusCmdP(RUNTIME_ARGS, options);
-    assert.strictEqual(githubCiStatus.callCount, 1);
+    sinon.assert.callCount(githubCiStatus, 1);
     const gcsOptions = githubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
   });
@@ -167,7 +167,11 @@ describe('github-ci-status command', () => {
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
-      githubCiStatus.calledOnceWithExactly(expectRef, expectOptions);
+      sinon.assert.calledOnceWithExactly(
+        githubCiStatus,
+        expectRef,
+        expectOptions,
+      );
     });
   }
 

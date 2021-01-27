@@ -39,9 +39,9 @@ describe('retryAsync', () => {
       { setTimeout: neverCalled },
       ...args,
     );
-    stub.calledOnceWithExactly(...args);
+    sinon.assert.calledOnceWithExactly(stub, ...args);
     assert.strictEqual(await result, stubResult);
-    stub.calledOnceWithExactly(...args);
+    sinon.assert.calledOnceWithExactly(stub, ...args);
   });
 
   it('calls operation with given number of args', async () => {
@@ -53,9 +53,9 @@ describe('retryAsync', () => {
       { setTimeout: neverCalled },
       ...args,
     );
-    stub.calledOnceWithExactly(...args);
+    sinon.assert.calledOnceWithExactly(stub, ...args);
     assert.strictEqual(await result, stubResult);
-    stub.calledOnceWithExactly(...args);
+    sinon.assert.calledOnceWithExactly(stub, ...args);
   });
 
   it('returns immediately for !shouldRetry', async () => {
@@ -69,11 +69,11 @@ describe('retryAsync', () => {
         shouldRetry,
       },
     );
-    stub.calledOnceWithExactly();
-    shouldRetry.calledOnceWithExactly(stubResult);
+    sinon.assert.calledOnceWithExactly(stub);
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
     assert.strictEqual(await result, stubResult);
-    stub.calledOnceWithExactly();
-    shouldRetry.calledOnceWithExactly(stubResult);
+    sinon.assert.calledOnceWithExactly(stub);
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
   });
 
   it('returns immediately with rejection', async () => {
@@ -86,7 +86,7 @@ describe('retryAsync', () => {
         shouldRetry: neverCalled,
       },
     );
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
     await assert.rejects(
       () => result,
       (cause) => {
@@ -94,7 +94,7 @@ describe('retryAsync', () => {
         return true;
       },
     );
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
   });
 
   it('returns immediately with exception', async () => {
@@ -107,7 +107,7 @@ describe('retryAsync', () => {
         shouldRetry: neverCalled,
       },
     );
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
     await assert.rejects(
       () => result,
       (cause) => {
@@ -115,7 +115,7 @@ describe('retryAsync', () => {
         return true;
       },
     );
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
   });
 
   it('handles non-Promise return values', async () => {
@@ -129,11 +129,11 @@ describe('retryAsync', () => {
         shouldRetry,
       },
     );
-    stub.calledOnceWithExactly();
-    shouldRetry.calledOnceWithExactly(stubResult);
+    sinon.assert.calledOnceWithExactly(stub);
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
     assert.strictEqual(await result, stubResult);
-    stub.calledOnceWithExactly();
-    shouldRetry.calledOnceWithExactly(stubResult);
+    sinon.assert.calledOnceWithExactly(stub);
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
   });
 
   it('returns immediately for empty waitMs', async () => {
@@ -145,9 +145,9 @@ describe('retryAsync', () => {
         waitMs: [],
       },
     );
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
     await result;
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
   });
 
   // Behave like for-of and only call .return for early exit
@@ -165,9 +165,9 @@ describe('retryAsync', () => {
         },
       },
     );
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
     await result;
-    stub.calledOnceWithExactly();
+    sinon.assert.calledOnceWithExactly(stub);
   });
 
   // Behave like for-of and call .return for early exit
@@ -191,23 +191,23 @@ describe('retryAsync', () => {
         },
       },
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await setImmediateP();
     assert.strictEqual(clock.countTimers(), 1);
     clock.tick(waitMs);
 
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 2);
+    sinon.assert.callCount(stub, 2);
     assert.strictEqual(clock.countTimers(), 0);
 
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 2);
-    stub.alwaysCalledWithExactly();
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
 
     // .return() is called exactly once, on iter, with no arguments
-    iterReturn.calledOnceWithExactly();
-    iterReturn.alwaysCalledOn(iter);
+    sinon.assert.calledOnceWithExactly(iterReturn);
+    sinon.assert.alwaysCalledOn(iterReturn, iter);
   });
 
   it('returns after all waitMs', async () => {
@@ -225,25 +225,25 @@ describe('retryAsync', () => {
       },
       ...args,
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(waitMs[0] - 1);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(1);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 2);
+    sinon.assert.callCount(stub, 2);
     assert.strictEqual(clock.countTimers(), 0);
 
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 2);
-    stub.alwaysCalledWithExactly(...args);
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub, ...args);
   });
 
   it('accepts constant number waitMs', async () => {
@@ -258,24 +258,24 @@ describe('retryAsync', () => {
         waitMs,
       },
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await setImmediateP();
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(waitMs);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 2);
+    sinon.assert.callCount(stub, 2);
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(waitMs);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 3);
+    sinon.assert.callCount(stub, 3);
     assert.strictEqual(clock.countTimers(), 0);
 
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 3);
-    stub.alwaysCalledWithExactly();
+    sinon.assert.callCount(stub, 3);
+    sinon.assert.alwaysCalledWithExactly(stub);
   });
 
   it('returns after maxTotalMs', async () => {
@@ -293,20 +293,20 @@ describe('retryAsync', () => {
         waitMs,
       },
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(maxTotalMs);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 2);
+    sinon.assert.callCount(stub, 2);
     assert.strictEqual(clock.countTimers(), 0);
 
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 2);
-    stub.alwaysCalledWithExactly();
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
   });
 
   it('reduces last wait time to avoid exceeding maxTotalMs', async () => {
@@ -324,20 +324,20 @@ describe('retryAsync', () => {
         waitMs,
       },
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(maxTotalMs);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 2);
+    sinon.assert.callCount(stub, 2);
     assert.strictEqual(clock.countTimers(), 0);
 
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 2);
-    stub.alwaysCalledWithExactly();
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
   });
 
   it('does not wait less than minWaitMs', async () => {
@@ -357,20 +357,20 @@ describe('retryAsync', () => {
         waitMs,
       },
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
     assert.strictEqual(clock.countTimers(), 1);
 
     clock.tick(waitMs);
     await setImmediateP();
-    assert.strictEqual(stub.callCount, 2);
+    sinon.assert.callCount(stub, 2);
     assert.strictEqual(clock.countTimers(), 0);
 
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 2);
-    stub.alwaysCalledWithExactly();
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
   });
 
   it('does not wait at all if maxTotalMs < minWaitMs', async () => {
@@ -385,10 +385,10 @@ describe('retryAsync', () => {
         waitMs: 1000,
       },
     );
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
     assert.strictEqual(await result, stubResult);
-    assert.strictEqual(stub.callCount, 1);
-    stub.alwaysCalledWithExactly();
+    sinon.assert.callCount(stub, 1);
+    sinon.assert.alwaysCalledWithExactly(stub);
   });
 
   // Prefer consistent formatting of arrow functions passed to it()

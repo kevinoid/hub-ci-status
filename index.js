@@ -168,6 +168,7 @@ async function githubCiStatus(rev = 'HEAD', options = {}) {
     retry: !options.maxWaitMs ? undefined : {
       maxTotalMs: options.maxWaitMs,
     },
+    waitAll: options.waitAll,
   };
   if (options.verbosity > 1) {
     statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);

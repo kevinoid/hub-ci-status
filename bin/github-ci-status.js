@@ -134,9 +134,15 @@ function githubCiStatusCmd(args, options, callback) {
     })
     .option('wait', {
       alias: 'w',
-      describe: 'Retry while status is pending (with optional max time in sec)',
+      describe: 'Retry while combined status is pending'
+        + ' (with optional max time in sec)',
       defaultDescription: 'Infinity',
       coerce: coerceWait,
+    })
+    .options('wait-all', {
+      alias: 'W',
+      boolean: true,
+      describe: 'Retry while any status is pending (implies --wait)',
     })
     .version(`${packageJson.name} ${packageJson.version}`)
     .alias('version', 'V')
@@ -175,7 +181,9 @@ function githubCiStatusCmd(args, options, callback) {
     try {
       const gcs = options.githubCiStatus || githubCiStatus;
       exitCode = await gcs(ref, {
-        maxWaitMs: argOpts.wait ? argOpts.wait * 1000 : undefined,
+        maxWaitMs: argOpts.wait !== undefined ? argOpts.wait * 1000
+          : argOpts.waitAll ? Infinity
+            : undefined,
         octokitOptions: {
           auth: options.env ? options.env.GITHUB_TOKEN : undefined,
         },
@@ -183,6 +191,7 @@ function githubCiStatusCmd(args, options, callback) {
         stdout: options.stdout,
         useColor,
         verbosity,
+        waitAll: !!argOpts.waitAll,
       });
     } catch (err) {
       exitCode = 1;

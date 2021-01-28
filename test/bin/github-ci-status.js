@@ -211,14 +211,56 @@ describe('github-ci-status command', () => {
   expectArgsAs(['-v', 'ref'], 'ref', match({ verbosity: 1 }));
   expectArgsAs(['-vv'], undefined, match({ verbosity: 2 }));
   expectArgsAs(['-qv'], undefined, match({ verbosity: 0 }));
-  expectArgsAs(['--wait'], undefined, match({ maxWaitMs: Infinity }));
-  expectArgsAs(['--wait=60'], undefined, match({ maxWaitMs: 60000 }));
+  expectArgsAs(['--wait'], undefined, match({
+    maxWaitMs: Infinity,
+    waitAll: false,
+  }));
+  expectArgsAs(['--wait=60'], undefined, match({
+    maxWaitMs: 60000,
+    waitAll: false,
+  }));
   // FIXME: As above, would prefer getopt_long(3) optional_argument behavior
-  expectArgsAs(['--wait', '60'], undefined, match({ maxWaitMs: 60000 }));
-  expectArgsAs(['-w'], undefined, match({ maxWaitMs: Infinity }));
-  expectArgsAs(['-w60'], undefined, match({ maxWaitMs: 60000 }));
+  expectArgsAs(['--wait', '60'], undefined, match({
+    maxWaitMs: 60000,
+    waitAll: false,
+  }));
+  expectArgsAs(['-w'], undefined, match({
+    maxWaitMs: Infinity,
+    waitAll: false,
+  }));
+  expectArgsAs(['-w60'], undefined, match({
+    maxWaitMs: 60000,
+    waitAll: false,
+  }));
   // FIXME: As above, would prefer getopt_long(3) optional_argument behavior
-  expectArgsAs(['-w', '60'], undefined, match({ maxWaitMs: 60000 }));
+  expectArgsAs(['-w', '60'], undefined, match({
+    maxWaitMs: 60000,
+    waitAll: false,
+  }));
+  expectArgsAs(['--wait-all'], undefined, match({
+    maxWaitMs: Infinity,
+    waitAll: true,
+  }));
+  expectArgsAs(['--wait-all', '10'], '10', match({
+    maxWaitMs: Infinity,
+    waitAll: true,
+  }));
+  expectArgsAs(['--wait-all', '--wait', '10'], undefined, match({
+    maxWaitMs: 10000,
+    waitAll: true,
+  }));
+  expectArgsAs(['--wait', '10', '--wait-all'], undefined, match({
+    maxWaitMs: 10000,
+    waitAll: true,
+  }));
+  expectArgsAs(['-W'], undefined, match({
+    maxWaitMs: Infinity,
+    waitAll: true,
+  }));
+  expectArgsAs(['-w', '10', '-W'], undefined, match({
+    maxWaitMs: 10000,
+    waitAll: true,
+  }));
 
   function expectArgsErr(args, expectErrMsg) {
     it(`prints error and exits for ${args.join(' ')}`, async () => {

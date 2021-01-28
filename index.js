@@ -125,6 +125,8 @@ function checkRunToStatus(checkRun) {
 /** Options for {@link githubCiStatus}.
  *
  * @typedef {!object} GithubCiStatusOptions
+ * @property {!module:child_process.ExecFileOptions=} gitOptions Options to
+ * pass to {@link child_process.execFile} when invoking git.
  * @property {number=} maxWaitMs Maximum amount of time, in milliseconds,
  * to wait for a completed (i.e. non-pending) status.
  * @property {!module:"@octokit/core".Octokit=} octokit Octokit instance to
@@ -157,8 +159,8 @@ function checkRunToStatus(checkRun) {
 module.exports =
 async function githubCiStatus(rev = 'HEAD', options = {}) {
   const [[owner, repo], sha] = await Promise.all([
-    getProjectName(),
-    resolveCommit(rev),
+    getProjectName(options.gitOptions),
+    resolveCommit(rev, options.gitOptions),
   ]);
   const statusOptions = {
     maxWaitMs: options.maxWaitMs,

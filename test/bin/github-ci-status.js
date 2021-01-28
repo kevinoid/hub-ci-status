@@ -188,6 +188,12 @@ describe('github-ci-status command', () => {
     useColor: undefined,
     verbosity: 0,
   }));
+  expectArgsAs(['1234'], '1234', match({
+    auth: undefined,
+    maxWaitMs: undefined,
+    useColor: undefined,
+    verbosity: 0,
+  }));
   expectArgsAs(['--color'], undefined, match({ useColor: true }));
   expectArgsAs(['--color=always'], undefined, match({ useColor: true }));
   expectArgsAs(['--color=never'], undefined, match({ useColor: false }));

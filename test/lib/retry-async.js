@@ -70,6 +70,8 @@ describe('retryAsync', () => {
       },
     );
     sinon.assert.calledOnceWithExactly(stub);
+
+    await setImmediateP();
     sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
     assert.strictEqual(await result, stubResult);
     sinon.assert.calledOnceWithExactly(stub);
@@ -130,6 +132,8 @@ describe('retryAsync', () => {
       },
     );
     sinon.assert.calledOnceWithExactly(stub);
+
+    await setImmediateP();
     sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
     assert.strictEqual(await result, stubResult);
     sinon.assert.calledOnceWithExactly(stub);

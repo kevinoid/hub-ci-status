@@ -191,24 +191,28 @@ describe('github-ci-status command', () => {
   expectArgsAs(['--color'], undefined, match({ useColor: true }));
   expectArgsAs(['--color=always'], undefined, match({ useColor: true }));
   expectArgsAs(['--color=never'], undefined, match({ useColor: false }));
-  expectArgsAs(['--color', 'never'], 'never', match({ useColor: true }));
+  // FIXME: I'd prefer --color behave like getopt_long(3) optional_argument,
+  // but can't find a way to do it with yargs.  Consumes next arg for now.
+  expectArgsAs(['--color', 'never'], undefined, match({ useColor: false }));
   expectArgsAs(['--quiet'], undefined, match({ verbosity: -1 }));
   expectArgsAs(['--quiet', 'ref'], 'ref', match({ verbosity: -1 }));
   expectArgsAs(['-q'], undefined, match({ verbosity: -1 }));
-  expectArgsAs(['-q', 'ref'], undefined, match({ verbosity: -1 }));
+  expectArgsAs(['-q', 'ref'], 'ref', match({ verbosity: -1 }));
   expectArgsAs(['-qq'], undefined, match({ verbosity: -2 }));
   expectArgsAs(['--verbose'], undefined, match({ verbosity: 1 }));
   expectArgsAs(['--verbose', 'ref'], 'ref', match({ verbosity: 1 }));
   expectArgsAs(['-v'], undefined, match({ verbosity: 1 }));
-  expectArgsAs(['-v', 'ref'], undefined, match({ verbosity: 1 }));
+  expectArgsAs(['-v', 'ref'], 'ref', match({ verbosity: 1 }));
   expectArgsAs(['-vv'], undefined, match({ verbosity: 2 }));
   expectArgsAs(['-qv'], undefined, match({ verbosity: 0 }));
-  expectArgsAs(['--wait'], undefined, match({ wait: Infinity }));
-  expectArgsAs(['--wait=60'], undefined, match({ wait: 60000 }));
-  expectArgsAs(['--wait', '60'], '60', match({ wait: Infinity }));
-  expectArgsAs(['-w'], undefined, match({ wait: Infinity }));
-  expectArgsAs(['-w60'], undefined, match({ wait: 60000 }));
-  expectArgsAs(['-w', '60'], '60', match({ wait: Infinity }));
+  expectArgsAs(['--wait'], undefined, match({ maxWaitMs: Infinity }));
+  expectArgsAs(['--wait=60'], undefined, match({ maxWaitMs: 60000 }));
+  // FIXME: As above, would prefer getopt_long(3) optional_argument behavior
+  expectArgsAs(['--wait', '60'], undefined, match({ maxWaitMs: 60000 }));
+  expectArgsAs(['-w'], undefined, match({ maxWaitMs: Infinity }));
+  expectArgsAs(['-w60'], undefined, match({ maxWaitMs: 60000 }));
+  // FIXME: As above, would prefer getopt_long(3) optional_argument behavior
+  expectArgsAs(['-w', '60'], undefined, match({ maxWaitMs: 60000 }));
 
   function expectArgsErr(args, expectErrMsg) {
     it(`prints error and exits for ${args.join(' ')}`, async () => {
@@ -227,8 +231,10 @@ describe('github-ci-status command', () => {
   expectArgsErr(['--wait=nope'], /\bwait\b/);
   expectArgsErr(['--wait='], /\bwait\b/);
   expectArgsErr(['--wait=-1'], /\bwait\b/);
+  expectArgsErr(['--wait', '-1'], /\bwait\b/);
   expectArgsErr(['-wnope'], /\bwait\b/);
   expectArgsErr(['-w-1'], /\bwait\b/);
+  expectArgsErr(['-w', '-1'], /\bwait\b/);
   expectArgsErr(['--unknown123'], /\bunknown123\b/);
   // Note: Differs from hub(1), which ignores unexpected ci-status arguments.
   expectArgsErr(['ref1', 'ref2'], /\barguments?\b/i);

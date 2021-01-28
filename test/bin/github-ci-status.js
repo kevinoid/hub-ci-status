@@ -261,6 +261,15 @@ describe('github-ci-status command', () => {
     maxWaitMs: 10000,
     waitAll: true,
   }));
+  // 0 wait value allowed to simplify script use
+  expectArgsAs(['--wait', '0'], undefined, match({
+    maxWaitMs: 0,
+    waitAll: false,
+  }));
+  expectArgsAs(['--wait-all', '--wait', '0'], undefined, match({
+    maxWaitMs: 0,
+    waitAll: true,
+  }));
 
   function expectArgsErr(args, expectErrMsg) {
     it(`prints error and exits for ${args.join(' ')}`, async () => {

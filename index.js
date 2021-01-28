@@ -163,9 +163,11 @@ async function githubCiStatus(rev = 'HEAD', options = {}) {
     resolveCommit(rev, options.gitOptions),
   ]);
   const statusOptions = {
-    maxWaitMs: options.maxWaitMs,
     octokit: options.octokit,
     octokitOptions: options.octokitOptions,
+    retry: !options.maxWaitMs ? undefined : {
+      maxTotalMs: options.maxWaitMs,
+    },
   };
   if (options.verbosity > 1) {
     statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);

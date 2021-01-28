@@ -158,7 +158,7 @@ function checkRunToStatus(checkRun) {
  */
 module.exports =
 async function githubCiStatus(rev = 'HEAD', options = {}) {
-  const [[owner, repo], sha] = await Promise.all([
+  const [[owner, repo], ref] = await Promise.all([
     getProjectName(options.gitOptions),
     resolveCommit(rev, options.gitOptions),
   ]);
@@ -173,7 +173,7 @@ async function githubCiStatus(rev = 'HEAD', options = {}) {
     statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);
   }
   const [combinedStatus, checksList] =
-    await fetchCiStatus(owner, repo, sha, statusOptions);
+    await fetchCiStatus({ owner, repo, ref }, statusOptions);
 
   const statuses = [
     ...combinedStatus.statuses,

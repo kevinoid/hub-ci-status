@@ -215,6 +215,31 @@ describe('githubCiStatus', () => {
     });
   }
 
+  describe('with verbosity=-1', () => {
+    beforeEach(() => { testOptions.verbosity = -1; });
+
+    it('does not print status', async () => {
+      fetchCiStatus.resolves([
+        makeCombinedStatus('success').data,
+        makeCheckRuns('success').data,
+      ]);
+      await githubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), null);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    });
+
+    it('does not print "no status"', async () => {
+      fetchCiStatus.resolves([
+        makeCombinedStatus().data,
+        makeCheckRuns().data,
+      ]);
+      const result = await githubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), null);
+      assert.strictEqual(testOptions.stderr.read(), null);
+      assert.strictEqual(result, 3);
+    });
+  });
+
   describe('with verbosity=1', () => {
     beforeEach(() => { testOptions.verbosity = 1; });
 

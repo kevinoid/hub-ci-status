@@ -131,12 +131,12 @@ function checkRunToStatus(checkRun) {
  * use for requests.
  * @property {!module:"@octokit/core".OctokitOptions=} octokitOptions Options
  * to pass to Octokit constructor.  Only used if octokit option is not set.
- * @property {!module:stream.Writable} stderr Stream to which errors (and
- * non-output status messages) are written.
- * @property {!module:stream.Readable} stdin Stream from which input is read
- * (not currently used).
- * @property {!module:stream.Writable} stdout Stream to which output is
- * written.
+ * @property {!module:stream.Writable=} stderr Stream to which errors (and
+ * non-output status messages) are written. (default: process.stderr)
+ * @property {!module:stream.Readable=} stdin Stream from which input is read.
+ * (not currently used) (default: process.stdin)
+ * @property {!module:stream.Writable=} stdout Stream to which output is
+ * written. (default: process.stdout)
  * @property {boolean=} useColor Should ANSI escape codes for color be used
  * to colorize printed output?  (default: from .isTTY)
  * @property {number=} verbosity Amount of output to produce.  Higher numbers
@@ -166,8 +166,8 @@ async function githubCiStatus(
     gitOptions,
     octokit,
     octokitOptions,
-    stderr,
-    stdout,
+    stderr = process.stderr,
+    stdout = process.stdout,
     useColor,
     verbosity,
     wait,

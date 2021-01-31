@@ -19,7 +19,10 @@ success</samp></pre>
 ## Features
 
 * Non-zero exit status for unsuccessful status makes scripting easier.
-* `--wait` flag allows waiting until the status is not `pending`.
+* `--wait` flag allows waiting until the status is not `pending`, with a
+  configurable timeout.
+* `--wait-all` flag allows waiting until all statuses and checks are not
+  `pending` (rather than exiting after first failure).
 
 ## Installation
 

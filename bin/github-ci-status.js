@@ -171,6 +171,9 @@ function githubCiStatusCmd(args, options, callback) {
       return;
     }
 
+    const maxTotalMs = argOpts.wait !== undefined ? argOpts.wait * 1000
+      : argOpts.waitAll ? Infinity
+        : undefined;
     const useColor = argOpts.color === 'never' ? false
       : argOpts.color === 'always' ? true
         : undefined;
@@ -181,9 +184,6 @@ function githubCiStatusCmd(args, options, callback) {
     try {
       const gcs = options.githubCiStatus || githubCiStatus;
       exitCode = await gcs(ref, {
-        maxWaitMs: argOpts.wait !== undefined ? argOpts.wait * 1000
-          : argOpts.waitAll ? Infinity
-            : undefined,
         octokitOptions: {
           auth: options.env ? options.env.GITHUB_TOKEN : undefined,
         },
@@ -191,6 +191,7 @@ function githubCiStatusCmd(args, options, callback) {
         stdout: options.stdout,
         useColor,
         verbosity,
+        wait: maxTotalMs === undefined ? undefined : { maxTotalMs },
         waitAll: !!argOpts.waitAll,
       });
     } catch (err) {

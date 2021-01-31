@@ -178,21 +178,21 @@ describe('github-ci-status command', () => {
   // Check individual arguments are handled correctly
   expectArgsAs([], undefined, match({
     auth: undefined,
-    maxWaitMs: undefined,
     useColor: undefined,
     verbosity: 0,
+    wait: undefined,
   }));
   expectArgsAs(['ref'], 'ref', match({
     auth: undefined,
-    maxWaitMs: undefined,
     useColor: undefined,
     verbosity: 0,
+    wait: undefined,
   }));
   expectArgsAs(['1234'], '1234', match({
     auth: undefined,
-    maxWaitMs: undefined,
     useColor: undefined,
     verbosity: 0,
+    wait: undefined,
   }));
   expectArgsAs(['--color'], undefined, match({ useColor: true }));
   expectArgsAs(['--color=always'], undefined, match({ useColor: true }));
@@ -212,62 +212,62 @@ describe('github-ci-status command', () => {
   expectArgsAs(['-vv'], undefined, match({ verbosity: 2 }));
   expectArgsAs(['-qv'], undefined, match({ verbosity: 0 }));
   expectArgsAs(['--wait'], undefined, match({
-    maxWaitMs: Infinity,
+    wait: { maxTotalMs: Infinity },
     waitAll: false,
   }));
   expectArgsAs(['--wait=60'], undefined, match({
-    maxWaitMs: 60000,
+    wait: { maxTotalMs: 60000 },
     waitAll: false,
   }));
   // FIXME: As above, would prefer getopt_long(3) optional_argument behavior
   expectArgsAs(['--wait', '60'], undefined, match({
-    maxWaitMs: 60000,
+    wait: { maxTotalMs: 60000 },
     waitAll: false,
   }));
   expectArgsAs(['-w'], undefined, match({
-    maxWaitMs: Infinity,
+    wait: { maxTotalMs: Infinity },
     waitAll: false,
   }));
   expectArgsAs(['-w60'], undefined, match({
-    maxWaitMs: 60000,
+    wait: { maxTotalMs: 60000 },
     waitAll: false,
   }));
   // FIXME: As above, would prefer getopt_long(3) optional_argument behavior
   expectArgsAs(['-w', '60'], undefined, match({
-    maxWaitMs: 60000,
+    wait: { maxTotalMs: 60000 },
     waitAll: false,
   }));
   expectArgsAs(['--wait-all'], undefined, match({
-    maxWaitMs: Infinity,
+    wait: { maxTotalMs: Infinity },
     waitAll: true,
   }));
   expectArgsAs(['--wait-all', '10'], '10', match({
-    maxWaitMs: Infinity,
+    wait: { maxTotalMs: Infinity },
     waitAll: true,
   }));
   expectArgsAs(['--wait-all', '--wait', '10'], undefined, match({
-    maxWaitMs: 10000,
+    wait: { maxTotalMs: 10000 },
     waitAll: true,
   }));
   expectArgsAs(['--wait', '10', '--wait-all'], undefined, match({
-    maxWaitMs: 10000,
+    wait: { maxTotalMs: 10000 },
     waitAll: true,
   }));
   expectArgsAs(['-W'], undefined, match({
-    maxWaitMs: Infinity,
+    wait: { maxTotalMs: Infinity },
     waitAll: true,
   }));
   expectArgsAs(['-w', '10', '-W'], undefined, match({
-    maxWaitMs: 10000,
+    wait: { maxTotalMs: 10000 },
     waitAll: true,
   }));
   // 0 wait value allowed to simplify script use
   expectArgsAs(['--wait', '0'], undefined, match({
-    maxWaitMs: 0,
+    wait: { maxTotalMs: 0 },
     waitAll: false,
   }));
   expectArgsAs(['--wait-all', '--wait', '0'], undefined, match({
-    maxWaitMs: 0,
+    wait: { maxTotalMs: 0 },
     waitAll: true,
   }));
 

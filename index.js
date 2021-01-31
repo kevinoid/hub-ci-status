@@ -127,8 +127,6 @@ function checkRunToStatus(checkRun) {
  * @typedef {!object} GithubCiStatusOptions
  * @property {!module:child_process.ExecFileOptions=} gitOptions Options to
  * pass to {@link child_process.execFile} when invoking git.
- * @property {number=} maxWaitMs Maximum amount of time, in milliseconds,
- * to wait for a completed (i.e. non-pending) status.
  * @property {!module:"@octokit/core".Octokit=} octokit Octokit instance to
  * use for requests.
  * @property {!module:"@octokit/core".OctokitOptions=} octokitOptions Options
@@ -145,6 +143,10 @@ function checkRunToStatus(checkRun) {
  * @property {number=} verbosity Amount of output to produce.  Higher numbers
  * produce more output.  Lower (i.e. more negative) numbers produce less.
  * (default: 0)
+ * @property {!module:"lib/retry-async.js".RetryAsyncOptions=} wait Options
+ * to control retry attempts.  If truthy, will retry until the combined status
+ * is not pending.  Note: #shouldRetry is ignored and a function which tests
+ * status is used.
  * @property {boolean=} waitAll If truthy, retry as long as any status is
  * pending (instead of returning once any status fails).
  */
@@ -167,9 +169,7 @@ async function githubCiStatus(rev = 'HEAD', options = {}) {
   const statusOptions = {
     octokit: options.octokit,
     octokitOptions: options.octokitOptions,
-    retry: !options.maxWaitMs ? undefined : {
-      maxTotalMs: options.maxWaitMs,
-    },
+    retry: options.wait,
     waitAll: options.waitAll,
   };
   if (options.verbosity > 1) {

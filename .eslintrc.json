@@ -25,6 +25,18 @@
       }
     },
     {
+      // Preserve copied response json
+      "files": [
+        "test-lib/api-responses.js"
+      ],
+      "rules": {
+        "comma-dangle": ["error", "never"],
+        "max-len": "off",
+        "quotes": ["error", "double"],
+        "quote-props": ["error", "always"]
+      }
+    },
+    {
       // Match Node.js runtime rules to minimize changes to copied code.
       "files": [
         "test-lib/assert-backports.js"

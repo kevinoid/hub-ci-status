@@ -164,9 +164,10 @@ describe('githubCiStatus', () => {
       makeCombinedStatus().data,
       makeCheckRuns().data,
     ]);
-    await githubCiStatus(undefined, testOptions);
+    const result = await githubCiStatus(undefined, testOptions);
     assert.strictEqual(testOptions.stdout.read(), 'no status\n');
     assert.strictEqual(testOptions.stderr.read(), null);
+    assert.strictEqual(result, 3);
   });
 
   it('does not colorize non-verbose output', async () => {

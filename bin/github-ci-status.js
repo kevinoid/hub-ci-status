@@ -53,6 +53,7 @@ function coerceWait(arg) {
 
 /** Options for command entry points.
  *
+ * @private
  * @typedef {{
  *   env: object<string,string>|undefined,
  *   stdin: !module:stream.Readable,
@@ -70,6 +71,7 @@ function coerceWait(arg) {
 
 /** Entry point for this command.
  *
+ * @private
  * @param {Array<string>} args Command-line arguments.
  * @param {!CommandOptions} options Options.
  * @param {function(number)} callback Callback with exit code.

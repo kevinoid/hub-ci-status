@@ -130,12 +130,11 @@ function checkRunToStatus(checkRun) {
  * @property {!module:"@octokit/core".Octokit=} octokit Octokit instance to
  * use for requests.
  * @property {!module:"@octokit/core".OctokitOptions=} octokitOptions Options
- * to pass to Octokit for status requests.  Only used if octokit option is
- * not set.
+ * to pass to Octokit constructor.  Only used if octokit option is not set.
  * @property {!module:stream.Writable} stderr Stream to which errors (and
  * non-output status messages) are written.
  * @property {!module:stream.Readable} stdin Stream from which input is read
- * (not currently used, but may be in the future).
+ * (not currently used).
  * @property {!module:stream.Writable} stdout Stream to which output is
  * written.
  * @property {boolean=} useColor Should ANSI escape codes for color be used

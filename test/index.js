@@ -51,6 +51,17 @@ beforeEach(() => {
   resolveCommit.returns(testRef);
 });
 
+const statePriority = [
+  'test123',
+  'neutral',
+  'success',
+  'pending',
+  'cancelled',
+  'timed_out',
+  'action_required',
+  'failure',
+  'error',
+];
 const stateToColor = {
   success: 'green',
   action_required: 'red', // eslint-disable-line camelcase
@@ -155,6 +166,38 @@ describe('githubCiStatus', () => {
     assert.strictEqual(testOptions.stdout.read(), 'failure\n');
     assert.strictEqual(testOptions.stderr.read(), null);
   });
+
+  for (let i = 1; i < statePriority.length; i += 1) {
+    // eslint-disable-next-line no-loop-func
+    it(`prefers ${statePriority[i]} to ${statePriority[i - 1]}`, async () => {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === 'pending') {
+        fetchResult = [
+          makeCombinedStatus('pending').data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === 'pending') {
+        fetchResult = [
+          makeCombinedStatus('pending').data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn't preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await githubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), `${state2}\n`);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    });
+  }
 
   describe('with verbosity=1', () => {
     beforeEach(() => { testOptions.verbosity = 1; });

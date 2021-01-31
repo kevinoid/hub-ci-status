@@ -6,16 +6,20 @@
 'use strict';
 
 const assert = require('assert');
+const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const timers = require('timers');
 const { promisify } = require('util');
 
 const fetchCiStatus = require('../../lib/fetch-ci-status.js');
+const packageJson = require('../../package.json');
 const { makeCheckRuns, makeCombinedStatus } =
   require('../../test-lib/api-responses.js');
 
 // TODO [engine:node@>=15]: import { setImmediate } from 'timers/promises';
 const setImmediateP = promisify(timers.setImmediate);
+
+const { match } = sinon;
 
 const clock = sinon.useFakeTimers({
   target: { Date },
@@ -448,6 +452,154 @@ describe('fetchCiStatus', () => {
       );
       sinon.assert.callCount(debug, 1);
       sinon.assert.alwaysCalledOn(debug, options);
+    });
+  });
+
+  describe('with instrumentation', () => {
+    const listForRef = sinon.stub().resolves(makeCheckRuns('success'));
+    const getCombinedStatusForRef =
+      sinon.stub().resolves(makeCombinedStatus('success'));
+    const Octokit = sinon.stub().returns({
+      checks: { listForRef },
+      repos: { getCombinedStatusForRef },
+    });
+
+    const httpAgent = { destroy: sinon.stub() };
+    const http = { Agent: sinon.stub().returns(httpAgent) };
+    const httpsAgent = { destroy: sinon.stub() };
+    const https = { Agent: sinon.stub().returns(httpsAgent) };
+
+    // eslint-disable-next-line no-shadow
+    const fetchCiStatus = proxyquire(
+      '../../lib/fetch-ci-status.js',
+      {
+        '@octokit/rest': { Octokit },
+        http,
+        https,
+      },
+    );
+    beforeEach(() => {
+      Octokit.resetHistory();
+      listForRef.resetHistory();
+      getCombinedStatusForRef.resetHistory();
+
+      httpAgent.destroy.resetHistory();
+      http.Agent.resetHistory();
+      httpsAgent.destroy.resetHistory();
+      https.Agent.resetHistory();
+    });
+
+    it('does not construct Octokit with options.options', async () => {
+      const options = {
+        octokit: {
+          checks: { listForRef },
+          repos: { getCombinedStatusForRef },
+        },
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(Octokit, 0);
+    });
+
+    it('constructs Octokit with userAgent by default', async () => {
+      await fetchCiStatus(apiArgs);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        request: undefined,
+        userAgent: `${packageJson.name}/${packageJson.version}`,
+      }));
+      sinon.assert.calledWithNew(Octokit);
+    });
+
+    it('passes octokitOptions to Octokit constructor', async () => {
+      const octokitOptions = {
+        foo: 'bar',
+        userAgent: 'testagent',
+      };
+      await fetchCiStatus(apiArgs, { octokitOptions });
+      sinon.assert.calledOnceWithExactly(Octokit, match(octokitOptions));
+      sinon.assert.calledWithNew(Octokit);
+    });
+
+    it('does not create Agent by default', async () => {
+      await fetchCiStatus(apiArgs);
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.callCount(https.Agent, 0);
+    });
+
+    it('uses https.Agent with keep-alive for retries', async () => {
+      const options = {
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.calledOnceWithExactly(
+        https.Agent,
+        match({ keepAlive: true }),
+      );
+      sinon.assert.calledWithNew(https.Agent);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        request: match({
+          agent: httpsAgent,
+        }),
+      }));
+      sinon.assert.calledWithNew(Octokit);
+      sinon.assert.calledOnceWithExactly(httpsAgent.destroy);
+    });
+
+    it('uses http.Agent with keep-alive for http baseUrl', async () => {
+      const options = {
+        octokitOptions: {
+          baseUrl: 'http://example.com',
+          request: {},
+        },
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(https.Agent, 0);
+      sinon.assert.calledOnceWithExactly(
+        http.Agent,
+        match({ keepAlive: true }),
+      );
+      sinon.assert.calledWithNew(http.Agent);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        request: match({
+          agent: httpAgent,
+        }),
+      }));
+      sinon.assert.calledWithNew(Octokit);
+      sinon.assert.calledOnceWithExactly(httpAgent.destroy);
+    });
+
+    it('does not create Agent for unrecognized baseUrl', async () => {
+      const options = {
+        octokitOptions: {
+          baseUrl: 'foo://bar',
+        },
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.callCount(https.Agent, 0);
+    });
+
+    it('does not create Agent if null passed', async () => {
+      const options = {
+        octokitOptions: {
+          baseUrl: 'foo://bar',
+          request: {
+            agent: null,
+          },
+        },
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        ...options.octokitOptions,
+        request: match({
+          ...options.octokitOptions.request,
+        }),
+      }));
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.callCount(https.Agent, 0);
     });
   });
 });

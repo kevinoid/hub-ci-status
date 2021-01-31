@@ -175,6 +175,8 @@ async function githubCiStatus(
     waitAll,
   } = {},
 ) {
+  verbosity = Number(verbosity) || 0;
+
   const [[owner, repo], ref] = await Promise.all([
     getProjectName(gitOptions),
     resolveCommit(rev, gitOptions),

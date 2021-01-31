@@ -145,6 +145,8 @@ function checkRunToStatus(checkRun) {
  * @property {number=} verbosity Amount of output to produce.  Higher numbers
  * produce more output.  Lower (i.e. more negative) numbers produce less.
  * (default: 0)
+ * @property {boolean=} waitAll If truthy, retry as long as any status is
+ * pending (instead of returning once any status fails).
  */
 
 /** Print the current GitHub CI status of a given revision.

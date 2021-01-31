@@ -1,10 +1,12 @@
 {
   "name": "github-ci-status",
   "version": "0.0.1",
-  "description": "A Node.js/npm project template with codecov, coveralls, ESLint, conventional-changelog, nyc, JSDoc, and mocha.",
+  "description": "A Node.js-based executable for checking the combined CI status of a commit, like the ci-status subcommand of hub(1).",
   "keywords": [
-    "github-ci-status",
-    "template"
+    "ci",
+    "cli",
+    "continuous integration",
+    "github"
   ],
   "license": "MIT",
   "homepage": "https://github.com/kevinoid/github-ci-status",

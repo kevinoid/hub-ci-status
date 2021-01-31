@@ -161,19 +161,32 @@ function checkRunToStatus(checkRun) {
  * be determined.
  */
 module.exports =
-async function githubCiStatus(rev = 'HEAD', options = {}) {
+async function githubCiStatus(
+  rev = 'HEAD',
+  {
+    gitOptions,
+    octokit,
+    octokitOptions,
+    stderr,
+    stdout,
+    useColor,
+    verbosity,
+    wait,
+    waitAll,
+  } = {},
+) {
   const [[owner, repo], ref] = await Promise.all([
-    getProjectName(options.gitOptions),
-    resolveCommit(rev, options.gitOptions),
+    getProjectName(gitOptions),
+    resolveCommit(rev, gitOptions),
   ]);
   const statusOptions = {
-    octokit: options.octokit,
-    octokitOptions: options.octokitOptions,
-    retry: options.wait,
-    waitAll: options.waitAll,
+    octokit,
+    octokitOptions,
+    retry: wait,
+    waitAll,
   };
-  if (options.verbosity > 1) {
-    statusOptions.debug = (msg) => options.stderr.write(`DEBUG: ${msg}\n`);
+  if (verbosity > 1) {
+    statusOptions.debug = (msg) => stderr.write(`DEBUG: ${msg}\n`);
   }
   const [combinedStatus, checksList] =
     await fetchCiStatus({ owner, repo, ref }, statusOptions);
@@ -183,13 +196,13 @@ async function githubCiStatus(rev = 'HEAD', options = {}) {
     ...checksList.check_runs.map(checkRunToStatus),
   ];
   const state = getState(statuses);
-  if (options.verbosity >= 0) {
-    const useColor = options.useColor === false ? false
-      : options.useColor === true ? true
-        : options.stdout.isTTY;
-    const formatted = options.verbosity === 0 ? state
-      : formatStatuses(statuses, useColor);
-    options.stdout.write(`${formatted || 'no status'}\n`);
+  if (verbosity >= 0) {
+    const useColorOrIsTTY = useColor === false ? false
+      : useColor === true ? true
+        : stdout.isTTY;
+    const formatted = verbosity === 0 ? state
+      : formatStatuses(statuses, useColorOrIsTTY);
+    stdout.write(`${formatted || 'no status'}\n`);
   }
 
   return stateToExitCode(state);

@@ -116,6 +116,21 @@ describe('githubCiStatus', () => {
     );
   });
 
+  it('calls resolveCommit with rev argument', async () => {
+    const testRev = 'mybranch';
+    fetchCiStatus.resolves([
+      makeCombinedStatus('success').data,
+      makeCheckRuns('success').data,
+    ]);
+    await githubCiStatus(testRev, testOptions);
+    sinon.assert.calledOnceWithExactly(resolveCommit, testRev, undefined);
+    sinon.assert.calledOnceWithExactly(
+      fetchCiStatus,
+      matchOwnerRepoRef,
+      match({}),
+    );
+  });
+
   it('propagates getProjectName error', async () => {
     const errTest = new Error('test');
     getProjectName.rejects(errTest);

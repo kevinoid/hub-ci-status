@@ -1,0 +1,3564 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Specifications in Mocha</title>
+  <meta name="generator" content="Mocha &lt;https://mochajs.org/&gt;" />
+  <meta name="license" content="MIT" />
+  <meta name="copyright" content="&#169; 2016 Kevin Locke &lt;kevin@kevinlocke.name&gt;" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/github.min.css" />
+  <style type="text/css">
+section section {
+  margin-left: 1em;
+}
+section section section section {
+  margin-left: 0;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="suite">
+      <h1>hub-ci-status command</h1>
+      <dl>
+        <dt>throws TypeError with no arguments</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>assert.throws(
+  hubCiStatusCmd,
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-array-like args</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; hubCiStatusCmd({}, getTestOptions(), neverCalled),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-function callback</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, getTestOptions(), true); },
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-object options</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, true, neverCalled); },
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-Readable stdin</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>const options = {
+  ...getTestOptions(),
+  stdin: {},
+};
+assert.throws(
+  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-Writable stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>const options = {
+  ...getTestOptions(),
+  stdout: new stream.Readable(),
+};
+assert.throws(
+  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-Writable stderr</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>const options = {
+  ...getTestOptions(),
+  stderr: new stream.Readable(),
+};
+assert.throws(
+  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+  TypeError,
+);</code></pre></dd>
+        <dt>--help prints help message to stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const args = [...RUNTIME_ARGS, helpOpt];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(args, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      const output = options.stdout.read();
+      assert(output, &#x27;produces help output&#x27;);
+      assert.match(output, /--wait\b/);
+    }</code></pre></dd>
+        <dt>-h prints help message to stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const args = [...RUNTIME_ARGS, helpOpt];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(args, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      const output = options.stdout.read();
+      assert(output, &#x27;produces help output&#x27;);
+      assert.match(output, /--wait\b/);
+    }</code></pre></dd>
+        <dt>-? prints help message to stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const args = [...RUNTIME_ARGS, helpOpt];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(args, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      const output = options.stdout.read();
+      assert(output, &#x27;produces help output&#x27;);
+      assert.match(output, /--wait\b/);
+    }</code></pre></dd>
+        <dt>--version prints version message to stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const args = [...RUNTIME_ARGS, versionOpt];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(args, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      const output = options.stdout.read();
+      assert.strictEqual(output, &#x60;hub-ci-status ${packageJson.version}\n&#x60;);
+    }</code></pre></dd>
+        <dt>-V prints version message to stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const args = [...RUNTIME_ARGS, versionOpt];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(args, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      const output = options.stdout.read();
+      assert.strictEqual(output, &#x60;hub-ci-status ${packageJson.version}\n&#x60;);
+    }</code></pre></dd>
+        <dt>passes through options.stdout and stderr</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const hubCiStatus = sinon.stub().resolves(0);
+    const options = {
+      ...getTestOptions(),
+      hubCiStatus,
+    };
+    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    sinon.assert.callCount(hubCiStatus, 1);
+    const gcsOptions = hubCiStatus.getCall(0).args[1];
+    assert.strictEqual(gcsOptions.stderr, options.stderr);
+    assert.strictEqual(gcsOptions.stdout, options.stdout);
+  }</code></pre></dd>
+        <dt>passes $GITHUB_TOKEN as options.octokitOptions.auth</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const hubCiStatus = sinon.stub().resolves(0);
+    const testToken = &#x27;123abc&#x27;;
+    const options = {
+      ...getTestOptions(),
+      env: {
+        GITHUB_TOKEN: testToken,
+      },
+      hubCiStatus,
+    };
+    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    sinon.assert.callCount(hubCiStatus, 1);
+    const gcsOptions = hubCiStatus.getCall(0).args[1];
+    assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
+  }</code></pre></dd>
+        <dt>interprets  as undefined, match(auth: undefined, useColor: undefined, verbosity: 0, wait: undefined)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets ref as ref, match(auth: undefined, useColor: undefined, verbosity: 0, wait: undefined)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets 1234 as 1234, match(auth: undefined, useColor: undefined, verbosity: 0, wait: undefined)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --color as undefined, match(useColor: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --color=always as undefined, match(useColor: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --color=never as undefined, match(useColor: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --color never as undefined, match(useColor: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --quiet as undefined, match(verbosity: -1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --quiet ref as ref, match(verbosity: -1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -q as undefined, match(verbosity: -1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -q ref as ref, match(verbosity: -1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -qq as undefined, match(verbosity: -2)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --verbose as undefined, match(verbosity: 1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --verbose ref as ref, match(verbosity: 1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -v as undefined, match(verbosity: 1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -v ref as ref, match(verbosity: 1)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -vv as undefined, match(verbosity: 2)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -qv as undefined, match(verbosity: 0)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait=60 as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait 60 as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -w as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -w60 as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -w 60 as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait-all as undefined, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait-all 10 as 10, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait-all --wait 10 as undefined, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait 10 --wait-all as undefined, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -W as undefined, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets -w 10 -W as undefined, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait 0 as undefined, match(wait: [object Object], waitAll: false)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>interprets --wait-all --wait 0 as undefined, match(wait: [object Object], waitAll: true)</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const hubCiStatus = sinon.stub().resolves(0);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 0);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      sinon.assert.calledOnceWithExactly(
+        hubCiStatus,
+        expectRef,
+        expectOptions,
+      );
+    }</code></pre></dd>
+        <dt>prints error and exits for --color=maybe</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for --color=</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for --wait=nope</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for --wait=</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for --wait=-1</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for --wait -1</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for -wnope</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for -w-1</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for -w -1</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for --unknown123</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints error and exits for ref1 ref2</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      assert.strictEqual(exitCode, 1);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+    }</code></pre></dd>
+        <dt>prints hubCiStatus rejection to stderr</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const errTest = new RangeError(&#x27;test&#x27;);
+    const hubCiStatus = sinon.stub().rejects(errTest);
+    const options = {
+      ...getTestOptions(),
+      hubCiStatus,
+    };
+    const exitCode = await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    assert.strictEqual(exitCode, 1);
+    assert.strictEqual(options.stdout.read(), null);
+    assert.strictEqual(options.stderr.read(), &#x60;${errTest}\n&#x60;);
+  }</code></pre></dd>
+        <dt>prints hubCiStatus rejection stack if very verbose</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const args = [...RUNTIME_ARGS, &#x27;-vv&#x27;];
+    const errTest = new RangeError(&#x27;test&#x27;);
+    const hubCiStatus = sinon.stub().rejects(errTest);
+    const options = {
+      ...getTestOptions(),
+      hubCiStatus,
+    };
+    const exitCode = await hubCiStatusCmdP(args, options);
+    assert.strictEqual(exitCode, 1);
+    assert.strictEqual(options.stdout.read(), null);
+    assert.strictEqual(options.stderr.read(), &#x60;${errTest.stack}\n&#x60;);
+  }</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>hubCiStatus</h1>
+      <dl>
+        <dt>checks HEAD by default</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    fetchCiStatus.resolves([
+      makeCombinedStatus(&#x27;success&#x27;).data,
+      makeCheckRuns(&#x27;success&#x27;).data,
+    ]);
+    const result = await hubCiStatus(undefined, testOptions);
+    assert.strictEqual(testOptions.stdout.read(), &#x27;success\n&#x27;);
+    assert.strictEqual(testOptions.stderr.read(), null);
+    assert.strictEqual(result, 0);
+    sinon.assert.calledOnceWithExactly(getProjectName, undefined);
+    sinon.assert.calledOnceWithExactly(resolveCommit, &#x27;HEAD&#x27;, undefined);
+    sinon.assert.calledOnceWithExactly(
+      fetchCiStatus,
+      matchOwnerRepoRef,
+      match({}),
+    );
+  }</code></pre></dd>
+        <dt>calls resolveCommit with rev argument</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const testRev = &#x27;mybranch&#x27;;
+    fetchCiStatus.resolves([
+      makeCombinedStatus(&#x27;success&#x27;).data,
+      makeCheckRuns(&#x27;success&#x27;).data,
+    ]);
+    await hubCiStatus(testRev, testOptions);
+    sinon.assert.calledOnceWithExactly(resolveCommit, testRev, undefined);
+    sinon.assert.calledOnceWithExactly(
+      fetchCiStatus,
+      matchOwnerRepoRef,
+      match({}),
+    );
+  }</code></pre></dd>
+        <dt>propagates getProjectName error</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const errTest = new Error(&#x27;test&#x27;);
+    getProjectName.rejects(errTest);
+    await assert.rejects(
+      () =&#x3E; hubCiStatus(undefined, testOptions),
+      errTest,
+    );
+    assert.strictEqual(testOptions.stdout.read(), null);
+    assert.strictEqual(testOptions.stderr.read(), null);
+    sinon.assert.calledOnceWithExactly(getProjectName, undefined);
+    sinon.assert.callCount(fetchCiStatus, 0);
+  }</code></pre></dd>
+        <dt>propagates getProjectName error</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const errTest = new Error(&#x27;test&#x27;);
+    resolveCommit.rejects(errTest);
+    await assert.rejects(
+      () =&#x3E; hubCiStatus(undefined, testOptions),
+      errTest,
+    );
+    assert.strictEqual(testOptions.stdout.read(), null);
+    assert.strictEqual(testOptions.stderr.read(), null);
+    sinon.assert.calledOnceWithExactly(resolveCommit, &#x27;HEAD&#x27;, undefined);
+    sinon.assert.callCount(fetchCiStatus, 0);
+  }</code></pre></dd>
+        <dt>prints &#x22;no status&#x22; if no checks or statuses</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    fetchCiStatus.resolves([
+      makeCombinedStatus().data,
+      makeCheckRuns().data,
+    ]);
+    const result = await hubCiStatus(undefined, testOptions);
+    assert.strictEqual(testOptions.stdout.read(), &#x27;no status\n&#x27;);
+    assert.strictEqual(testOptions.stderr.read(), null);
+    assert.strictEqual(result, 3);
+  }</code></pre></dd>
+        <dt>does not colorize non-verbose output</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    fetchCiStatus.resolves([
+      makeCombinedStatus(&#x27;success&#x27;).data,
+      makeCheckRuns(&#x27;failure&#x27;).data,
+    ]);
+    await hubCiStatus(undefined, {
+      ...testOptions,
+      useColor: true,
+    });
+    assert.strictEqual(testOptions.stdout.read(), &#x27;failure\n&#x27;);
+    assert.strictEqual(testOptions.stderr.read(), null);
+  }</code></pre></dd>
+        <dt>prefers neutral to test123</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers success to neutral</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers pending to success</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers cancelled to pending</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers timed_out to cancelled</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers action_required to timed_out</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers failure to action_required</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <dt>prefers error to failure</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const state1 = statePriority[i - 1];
+      const state2 = statePriority[i];
+      let fetchResult;
+      if (state1 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state2).data,
+        ];
+      } else if (state2 === &#x27;pending&#x27;) {
+        fetchResult = [
+          makeCombinedStatus(&#x27;pending&#x27;).data,
+          makeCheckRuns(state1).data,
+        ];
+      } else {
+        fetchResult = [makeCombinedStatus().data];
+        // Swap order to ensure first/last isn&#x27;t preferred
+        if (i % 2) {
+          fetchResult[1] = makeCheckRuns(state1, state2).data;
+        } else {
+          fetchResult[1] = makeCheckRuns(state2, state1).data;
+        }
+      }
+      fetchCiStatus.resolves(fetchResult);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x60;${state2}\n&#x60;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+        <section class="suite">
+          <h1>with verbosity=-1</h1>
+          <dl>
+            <dt>does not print status</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      fetchCiStatus.resolves([
+        makeCombinedStatus(&#x27;success&#x27;).data,
+        makeCheckRuns(&#x27;success&#x27;).data,
+      ]);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), null);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+            <dt>does not print &#x22;no status&#x22;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      fetchCiStatus.resolves([
+        makeCombinedStatus().data,
+        makeCheckRuns().data,
+      ]);
+      const result = await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), null);
+      assert.strictEqual(testOptions.stderr.read(), null);
+      assert.strictEqual(result, 3);
+    }</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with verbosity=1</h1>
+          <dl>
+            <dt>prints &#x22;no status&#x22; if no checks or statuses</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      fetchCiStatus.resolves([
+        makeCombinedStatus().data,
+        makeCheckRuns().data,
+      ]);
+      await hubCiStatus(undefined, testOptions);
+      assert.strictEqual(testOptions.stdout.read(), &#x27;no status\n&#x27;);
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+            <dt>prints status success with marker &#x2714;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus(state).data,
+            makeCheckRuns().data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tcontinuous-integration/jenkins\t&#x60;
+            + &#x27;https://ci.example.com/1000/output\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check success with marker &#x2714;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check action_required with marker &#x2716;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check cancelled with marker &#x2716;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check error with marker &#x2716;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints status failure with marker &#x2716;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus(state).data,
+            makeCheckRuns().data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tcontinuous-integration/jenkins\t&#x60;
+            + &#x27;https://ci.example.com/1000/output\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check failure with marker &#x2716;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check timed_out with marker &#x2716;&#xFE0E;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check neutral with marker &#x25E6;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints status pending with marker &#x25CF;</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus(state).data,
+            makeCheckRuns().data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tcontinuous-integration/jenkins\t&#x60;
+            + &#x27;https://ci.example.com/1000/output\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints status test123 with marker </dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus(state).data,
+            makeCheckRuns().data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tcontinuous-integration/jenkins\t&#x60;
+            + &#x27;https://ci.example.com/1000/output\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>prints check test123 with marker </dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+          fetchCiStatus.resolves([
+            makeCombinedStatus().data,
+            makeCheckRuns(state).data,
+          ]);
+          const result = await hubCiStatus(undefined, testOptions);
+          assert.strictEqual(
+            testOptions.stdout.read(),
+            &#x60;${marker}\tmighty_readme\t&#x60;
+            + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+          );
+          assert.strictEqual(testOptions.stderr.read(), null);
+          assert.strictEqual(result, stateToExit[state]);
+        }</code></pre></dd>
+            <dt>pads second column with spaces to align URLs</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      fetchCiStatus.resolves([
+        makeCombinedStatus(&#x27;success&#x27;).data,
+        makeCheckRuns(&#x27;success&#x27;).data,
+      ]);
+      await hubCiStatus(undefined, testOptions);
+      const marker = stateToMarker.success;
+      assert.strictEqual(
+        testOptions.stdout.read(),
+        &#x60;${marker}\tcontinuous-integration/jenkins\t&#x60;
+        + &#x27;https://ci.example.com/1000/output\n&#x27;
+        + &#x60;${marker}\tmighty_readme                 \t&#x60;
+        + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+      );
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+            <dt>omits padding without any URLs</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const combinedStatus = makeCombinedStatus(&#x27;success&#x27;).data;
+      const checkRuns = makeCheckRuns(&#x27;success&#x27;).data;
+      /* eslint-disable camelcase */
+      fetchCiStatus.resolves([
+        {
+          ...combinedStatus,
+          statuses: combinedStatus.statuses.map((status) =&#x3E; ({
+            ...status,
+            target_url: &#x27;&#x27;,
+          })),
+        },
+        {
+          ...checkRuns,
+          check_runs: checkRuns.check_runs.map((checkRun) =&#x3E; ({
+            ...checkRun,
+            html_url: &#x27;&#x27;,
+          })),
+        },
+      ]);
+      /* eslint-enable camelcase */
+      await hubCiStatus(undefined, testOptions);
+      const marker = stateToMarker.success;
+      assert.strictEqual(
+        testOptions.stdout.read(),
+        &#x60;${marker}\tcontinuous-integration/jenkins\n&#x60;
+        + &#x60;${marker}\tmighty_readme\n&#x60;,
+      );
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+            <dt>colorizes if stdout.isTTY</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      fetchCiStatus.resolves([
+        makeCombinedStatus(&#x27;success&#x27;).data,
+        makeCheckRuns().data,
+      ]);
+      testOptions.stdout.isTTY = true;
+      await hubCiStatus(undefined, testOptions);
+      const { open, close } = ansiStyles[stateToColor.success];
+      const marker = stateToMarker.success;
+      assert.strictEqual(
+        testOptions.stdout.read(),
+        &#x60;${open}${marker}${close}\tcontinuous-integration/jenkins\t&#x60;
+        + &#x27;https://ci.example.com/1000/output\n&#x27;,
+      );
+      assert.strictEqual(testOptions.stderr.read(), null);
+    }</code></pre></dd>
+            <section class="suite">
+              <h1>with useColor</h1>
+              <dl>
+                <dt>prints status success in color green</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus(state).data,
+              makeCheckRuns().data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tcontinuous-integration/jenkins\t&#x60;
+              + &#x27;https://ci.example.com/1000/output\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check success in color green</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check action_required in color red</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check cancelled in color red</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check error in color red</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints status failure in color red</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus(state).data,
+              makeCheckRuns().data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tcontinuous-integration/jenkins\t&#x60;
+              + &#x27;https://ci.example.com/1000/output\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check failure in color red</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check timed_out in color red</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check neutral in color black</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints status pending in color yellow</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus(state).data,
+              makeCheckRuns().data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tcontinuous-integration/jenkins\t&#x60;
+              + &#x27;https://ci.example.com/1000/output\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints status test123 in color undefined</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus(state).data,
+              makeCheckRuns().data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tcontinuous-integration/jenkins\t&#x60;
+              + &#x27;https://ci.example.com/1000/output\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+                <dt>prints check test123 in color undefined</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+            fetchCiStatus.resolves([
+              makeCombinedStatus().data,
+              makeCheckRuns(state).data,
+            ]);
+            await hubCiStatus(undefined, testOptions);
+            const { open, close } =
+              colorName ? ansiStyles[colorName] : { open: &#x27;&#x27;, close: &#x27;&#x27; };
+            const marker = stateToMarker[state];
+            assert.strictEqual(
+              testOptions.stdout.read(),
+              &#x60;${open}${marker}${close}\tmighty_readme\t&#x60;
+              + &#x27;https://github.com/github/hello-world/runs/4\n&#x27;,
+            );
+            assert.strictEqual(testOptions.stderr.read(), null);
+          }</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with verbosity=2</h1>
+          <dl>
+            <dt>prints fetchCiStatus options.debug to stderr</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/index.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const testMsg = &#x27;test message 123&#x27;;
+      fetchCiStatus.callsFake(async (params, opts) =&#x3E; {
+        opts.debug(testMsg);
+        return [
+          makeCombinedStatus(&#x27;success&#x27;).data,
+          makeCheckRuns().data,
+        ];
+      });
+      await hubCiStatus(undefined, testOptions);
+      const marker = stateToMarker.success;
+      assert.strictEqual(
+        testOptions.stdout.read(),
+        &#x60;${marker}\tcontinuous-integration/jenkins\t&#x60;
+        + &#x27;https://ci.example.com/1000/output\n&#x27;,
+      );
+      assert.strictEqual(testOptions.stderr.read(), &#x60;DEBUG: ${testMsg}\n&#x60;);
+    }</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>execFileOut</h1>
+      <dl>
+        <dt>returns a Promise with stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>const testOut = &#x27;stdout content&#x27;;
+const testArgs = [&#x27;-e&#x27;, makeScript(testOut)];
+return execFileOut(process.execPath, testArgs)
+  .then((stdout) =&#x3E; {
+    assert.strictEqual(stdout, testOut);
+  });</code></pre></dd>
+        <dt>returns a Promise with stdout as Buffer</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>const testOut = &#x27;stdout content&#x27;;
+const testArgs = [&#x27;-e&#x27;, makeScript(testOut)];
+const options = { encoding: &#x27;buffer&#x27; };
+return execFileOut(process.execPath, testArgs, options)
+  .then((stdout) =&#x3E; {
+    assert.deepStrictEqual(stdout, Buffer.from(testOut));
+  });</code></pre></dd>
+        <dt>rejects Promise with Error for non-0 exit code</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>const testOut = &#x27;stdout content&#x27;;
+const testCode = 2;
+const testArgs = [&#x27;-e&#x27;, makeScript(testOut, null, testCode)];
+return execFileOut(process.execPath, testArgs).then(
+  neverCalled,
+  (err) =&#x3E; {
+    assert.strictEqual(
+      err.cmd,
+      [process.execPath, ...testArgs].join(&#x27; &#x27;),
+    );
+    assert.strictEqual(err.code, testCode);
+    assert.strictEqual(err.stderr, &#x27;&#x27;);
+    assert.strictEqual(err.stdout, testOut);
+  },
+);</code></pre></dd>
+        <dt>rejects Promise with Error for non-empty stderr</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>const testOut = &#x27;stdout content&#x27;;
+const testErr = &#x27;stderr content&#x27;;
+const testArgs = [&#x27;-e&#x27;, makeScript(testOut, testErr)];
+return execFileOut(process.execPath, testArgs).then(
+  neverCalled,
+  (err) =&#x3E; {
+    assert(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
+    assert.strictEqual(
+      err.cmd,
+      [process.execPath, ...testArgs].join(&#x27; &#x27;),
+    );
+    assert.strictEqual(err.code, 0);
+    assert.strictEqual(err.stderr, testErr);
+    assert.strictEqual(err.stdout, testOut);
+  },
+);</code></pre></dd>
+        <dt>rejects Promise with Error for non-empty stderr Buffer</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>const testOut = &#x27;stdout content&#x27;;
+const testErr = &#x27;stderr content&#x27;;
+const testArgs = [&#x27;-e&#x27;, makeScript(testOut, testErr)];
+const options = { encoding: &#x27;buffer&#x27; };
+return execFileOut(process.execPath, testArgs, options).then(
+  neverCalled,
+  (err) =&#x3E; {
+    assert(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
+    assert.strictEqual(
+      err.cmd,
+      [process.execPath, ...testArgs].join(&#x27; &#x27;),
+    );
+    assert.strictEqual(err.code, 0);
+    assert.deepStrictEqual(err.stderr, Buffer.from(testErr));
+    assert.deepStrictEqual(err.stdout, Buffer.from(testOut));
+  },
+);</code></pre></dd>
+        <dt>rejects stderr with only whitespace</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>const testOut = &#x27;stdout content&#x27;;
+const testErr = &#x27;\n\t\t  \n&#x27;;
+const testArgs = [&#x27;-e&#x27;, makeScript(testOut, testErr)];
+return execFileOut(process.execPath, testArgs).then(
+  neverCalled,
+  (err) =&#x3E; {
+    assert(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
+    assert.strictEqual(
+      err.cmd,
+      [process.execPath, ...testArgs].join(&#x27; &#x27;),
+    );
+    assert.strictEqual(err.code, 0);
+    assert.deepStrictEqual(err.stderr, testErr);
+    assert.deepStrictEqual(err.stdout, testOut);
+  },
+);</code></pre></dd>
+        <dt>closes stdin to prevent hanging</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/exec-file-out.js</dt>
+        <dd><pre><code>execFileOut(process.execPath)</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>fetchCiStatus</h1>
+      <dl>
+        <dt>returns status and ref without retry</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;pending&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;neutral&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+    };
+    const result = await fetchCiStatus(apiArgs, options);
+    sinon.assert.calledOnceWithExactly(getCombinedStatusForRef, apiArgs);
+    sinon.assert.calledOnceWithExactly(listForRef, apiArgs);
+    assert.deepStrictEqual(result, [status.data, checks.data]);
+  }</code></pre></dd>
+        <dt>does not retry on both success</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;success&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;success&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        setTimeout: neverCalled,
+      },
+    };
+    const result = await fetchCiStatus(apiArgs, options);
+    sinon.assert.calledOnceWithExactly(getCombinedStatusForRef, apiArgs);
+    sinon.assert.calledOnceWithExactly(listForRef, apiArgs);
+    assert.deepStrictEqual(result, [status.data, checks.data]);
+  }</code></pre></dd>
+        <dt>does not retry on both failure</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;failure&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;failure&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        setTimeout: neverCalled,
+      },
+    };
+    const result = await fetchCiStatus(apiArgs, options);
+    sinon.assert.calledOnceWithExactly(getCombinedStatusForRef, apiArgs);
+    sinon.assert.calledOnceWithExactly(listForRef, apiArgs);
+    assert.deepStrictEqual(result, [status.data, checks.data]);
+  }</code></pre></dd>
+        <dt>does not retry on both unknown</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;test123&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;test123&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        setTimeout: neverCalled,
+      },
+    };
+    const result = await fetchCiStatus(apiArgs, options);
+    sinon.assert.calledOnceWithExactly(getCombinedStatusForRef, apiArgs);
+    sinon.assert.calledOnceWithExactly(listForRef, apiArgs);
+    assert.deepStrictEqual(result, [status.data, checks.data]);
+  }</code></pre></dd>
+        <dt>retries on pending/queued up to maxTotalMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;pending&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;queued&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const waitMs = 4000;
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        ...timeOptions,
+        maxTotalMs: waitMs,
+      },
+    };
+    const result = fetchCiStatus(apiArgs, options);
+    await setImmediateP();
+    clock.tick(waitMs);
+    assert.deepStrictEqual(await result, [status.data, checks.data]);
+    sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+    sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+    sinon.assert.calledTwice(getCombinedStatusForRef);
+    sinon.assert.calledTwice(listForRef);
+  }</code></pre></dd>
+        <dt>retries on pending/in_progress up to maxTotalMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;pending&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;in_progress&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const waitMs = 4000;
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        ...timeOptions,
+        maxTotalMs: waitMs,
+      },
+    };
+    const result = fetchCiStatus(apiArgs, options);
+    await setImmediateP();
+    clock.tick(waitMs);
+    assert.deepStrictEqual(await result, [status.data, checks.data]);
+    sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+    sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+    sinon.assert.calledTwice(getCombinedStatusForRef);
+    sinon.assert.calledTwice(listForRef);
+  }</code></pre></dd>
+        <dt>retries on pending/success up to maxTotalMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;pending&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;success&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const waitMs = 4000;
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        ...timeOptions,
+        maxTotalMs: waitMs,
+      },
+    };
+    const result = fetchCiStatus(apiArgs, options);
+    await setImmediateP();
+    clock.tick(waitMs);
+    assert.deepStrictEqual(await result, [status.data, checks.data]);
+    sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+    sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+    sinon.assert.calledTwice(getCombinedStatusForRef);
+    sinon.assert.calledTwice(listForRef);
+  }</code></pre></dd>
+        <dt>retries on success/queued up to maxTotalMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;success&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;queued&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const waitMs = 4000;
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        ...timeOptions,
+        maxTotalMs: waitMs,
+      },
+    };
+    const result = fetchCiStatus(apiArgs, options);
+    await setImmediateP();
+    clock.tick(waitMs);
+    assert.deepStrictEqual(await result, [status.data, checks.data]);
+    sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+    sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+    sinon.assert.calledTwice(getCombinedStatusForRef);
+    sinon.assert.calledTwice(listForRef);
+  }</code></pre></dd>
+        <dt>does not retry on pending/failure, by default</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;pending&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;failure&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        setTimeout: neverCalled,
+      },
+    };
+    const result = await fetchCiStatus(apiArgs, options);
+    sinon.assert.calledOnceWithExactly(getCombinedStatusForRef, apiArgs);
+    sinon.assert.calledOnceWithExactly(listForRef, apiArgs);
+    assert.deepStrictEqual(result, [status.data, checks.data]);
+  }</code></pre></dd>
+        <dt>retries on pending/failure if waitAll</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;pending&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;failure&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const waitMs = 4000;
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        ...timeOptions,
+        maxTotalMs: waitMs,
+      },
+      waitAll: true,
+    };
+    const result = fetchCiStatus(apiArgs, options);
+    await setImmediateP();
+    clock.tick(waitMs);
+    assert.deepStrictEqual(await result, [status.data, checks.data]);
+    sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+    sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+    sinon.assert.calledTwice(getCombinedStatusForRef);
+    sinon.assert.calledTwice(listForRef);
+  }</code></pre></dd>
+        <dt>retries on failure/in_progress if waitAll</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const status = makeCombinedStatus(&#x27;failure&#x27;);
+    const getCombinedStatusForRef = sinon.stub().resolves(status);
+    const checks = makeCheckRuns(&#x27;in_progress&#x27;);
+    const listForRef = sinon.stub().resolves(checks);
+    const waitMs = 4000;
+    const options = {
+      octokit: {
+        checks: { listForRef },
+        repos: { getCombinedStatusForRef },
+      },
+      retry: {
+        ...timeOptions,
+        maxTotalMs: waitMs,
+      },
+      waitAll: true,
+    };
+    const result = fetchCiStatus(apiArgs, options);
+    await setImmediateP();
+    clock.tick(waitMs);
+    assert.deepStrictEqual(await result, [status.data, checks.data]);
+    sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+    sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+    sinon.assert.calledTwice(getCombinedStatusForRef);
+    sinon.assert.calledTwice(listForRef);
+  }</code></pre></dd>
+        <section class="suite">
+          <h1>with options.debug</h1>
+          <dl>
+            <dt>retries with no statuses or checks</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const status = makeCombinedStatus(&#x27;success&#x27;);
+      const getCombinedStatusForRef = sinon.stub().resolves(status)
+        .onCall(0).resolves(makeCombinedStatus());
+      const checks = makeCheckRuns(&#x27;success&#x27;);
+      const listForRef = sinon.stub().resolves(checks)
+        .onCall(0).resolves(makeCheckRuns());
+      const debug = sinon.stub();
+      const options = {
+        debug,
+        octokit: {
+          checks: { listForRef },
+          repos: { getCombinedStatusForRef },
+        },
+        retry: timeOptions,
+      };
+      const result = fetchCiStatus(apiArgs, options);
+      await setImmediateP();
+      sinon.assert.callCount(getCombinedStatusForRef, 1);
+      clock.tick(4000);
+      await setImmediateP();
+      sinon.assert.callCount(getCombinedStatusForRef, 2);
+      assert.deepStrictEqual(await result, [status.data, checks.data]);
+      sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+      sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+      sinon.assert.callCount(getCombinedStatusForRef, 2);
+      sinon.assert.callCount(listForRef, 2);
+      sinon.assert.calledWithExactly(
+        debug.getCall(0),
+        &#x27;Waiting for any CI status or check.  Retry in 4 seconds...&#x27;,
+      );
+      sinon.assert.callCount(debug, 1);
+      sinon.assert.alwaysCalledOn(debug, options);
+    }</code></pre></dd>
+            <dt>retries on pending status</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const status = makeCombinedStatus(&#x27;success&#x27;);
+      const getCombinedStatusForRef = sinon.stub().resolves(status)
+        .onCall(0).resolves(makeCombinedStatus(&#x27;pending&#x27;, &#x27;success&#x27;));
+      const checks = makeCheckRuns(&#x27;success&#x27;);
+      const listForRef = sinon.stub().resolves(checks);
+      const debug = sinon.stub();
+      const options = {
+        debug,
+        octokit: {
+          checks: { listForRef },
+          repos: { getCombinedStatusForRef },
+        },
+        retry: timeOptions,
+      };
+      const result = fetchCiStatus(apiArgs, options);
+      await setImmediateP();
+      sinon.assert.callCount(getCombinedStatusForRef, 1);
+      clock.tick(4000);
+      await setImmediateP();
+      sinon.assert.callCount(getCombinedStatusForRef, 2);
+      assert.deepStrictEqual(await result, [status.data, checks.data]);
+      sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+      sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+      sinon.assert.callCount(getCombinedStatusForRef, 2);
+      sinon.assert.callCount(listForRef, 2);
+      sinon.assert.calledWithExactly(
+        debug.getCall(0),
+        &#x27;Waiting for 1/2 CI statuses.  Retry in 4 seconds...&#x27;,
+      );
+      sinon.assert.callCount(debug, 1);
+      sinon.assert.alwaysCalledOn(debug, options);
+    }</code></pre></dd>
+            <dt>retries on pending checks</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const status = makeCombinedStatus(&#x27;success&#x27;);
+      const getCombinedStatusForRef = sinon.stub().resolves(status);
+      const checks = makeCheckRuns(&#x27;success&#x27;);
+      const listForRef = sinon.stub().resolves(checks)
+        .onCall(0).resolves(makeCheckRuns(&#x27;success&#x27;, &#x27;in_progress&#x27;));
+      const debug = sinon.stub();
+      const options = {
+        debug,
+        octokit: {
+          checks: { listForRef },
+          repos: { getCombinedStatusForRef },
+        },
+        retry: timeOptions,
+      };
+      const result = fetchCiStatus(apiArgs, options);
+      await setImmediateP();
+      sinon.assert.callCount(listForRef, 1);
+      clock.tick(4000);
+      await setImmediateP();
+      sinon.assert.callCount(listForRef, 2);
+      assert.deepStrictEqual(await result, [status.data, checks.data]);
+      sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+      sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+      sinon.assert.callCount(getCombinedStatusForRef, 2);
+      sinon.assert.callCount(listForRef, 2);
+      sinon.assert.calledWithExactly(
+        debug.getCall(0),
+        &#x27;Waiting for 1/2 checks.  Retry in 4 seconds...&#x27;,
+      );
+      sinon.assert.callCount(debug, 1);
+      sinon.assert.alwaysCalledOn(debug, options);
+    }</code></pre></dd>
+            <dt>retries on pending/queued up to maxTotalMs</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const status = makeCombinedStatus(&#x27;pending&#x27;);
+      const getCombinedStatusForRef = sinon.stub().resolves(status);
+      const checks = makeCheckRuns(&#x27;queued&#x27;);
+      const listForRef = sinon.stub().resolves(checks);
+      const waitMs = 4000;
+      const debug = sinon.stub();
+      const options = {
+        debug,
+        octokit: {
+          checks: { listForRef },
+          repos: { getCombinedStatusForRef },
+        },
+        retry: {
+          ...timeOptions,
+          maxTotalMs: waitMs,
+        },
+      };
+      const result = fetchCiStatus(apiArgs, options);
+      await setImmediateP();
+      clock.tick(waitMs);
+      assert.deepStrictEqual(await result, [status.data, checks.data]);
+      sinon.assert.alwaysCalledWith(getCombinedStatusForRef, apiArgs);
+      sinon.assert.alwaysCalledWith(listForRef, apiArgs);
+      sinon.assert.calledTwice(getCombinedStatusForRef);
+      sinon.assert.calledTwice(listForRef);
+      sinon.assert.calledWithExactly(
+        debug.getCall(0),
+        &#x27;Waiting for 1/1 CI statuses and 1/1 checks.  Retry in 4 seconds...&#x27;,
+      );
+      sinon.assert.callCount(debug, 1);
+      sinon.assert.alwaysCalledOn(debug, options);
+    }</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with instrumentation</h1>
+          <dl>
+            <dt>does not construct Octokit with options.options</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const options = {
+        octokit: {
+          checks: { listForRef },
+          repos: { getCombinedStatusForRef },
+        },
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(Octokit, 0);
+    }</code></pre></dd>
+            <dt>constructs Octokit with userAgent by default</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      await fetchCiStatus(apiArgs);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        request: undefined,
+        userAgent: &#x60;${packageJson.name}/${packageJson.version}&#x60;,
+      }));
+      sinon.assert.calledWithNew(Octokit);
+    }</code></pre></dd>
+            <dt>passes octokitOptions to Octokit constructor</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const octokitOptions = {
+        foo: &#x27;bar&#x27;,
+        userAgent: &#x27;testagent&#x27;,
+      };
+      await fetchCiStatus(apiArgs, { octokitOptions });
+      sinon.assert.calledOnceWithExactly(Octokit, match(octokitOptions));
+      sinon.assert.calledWithNew(Octokit);
+    }</code></pre></dd>
+            <dt>does not create Agent by default</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      await fetchCiStatus(apiArgs);
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.callCount(https.Agent, 0);
+    }</code></pre></dd>
+            <dt>uses https.Agent with keep-alive for retries</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const options = {
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.calledOnceWithExactly(
+        https.Agent,
+        match({ keepAlive: true }),
+      );
+      sinon.assert.calledWithNew(https.Agent);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        request: match({
+          agent: httpsAgent,
+        }),
+      }));
+      sinon.assert.calledWithNew(Octokit);
+      sinon.assert.calledOnceWithExactly(httpsAgent.destroy);
+    }</code></pre></dd>
+            <dt>uses http.Agent with keep-alive for http baseUrl</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const options = {
+        octokitOptions: {
+          baseUrl: &#x27;http://example.com&#x27;,
+          request: {},
+        },
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(https.Agent, 0);
+      sinon.assert.calledOnceWithExactly(
+        http.Agent,
+        match({ keepAlive: true }),
+      );
+      sinon.assert.calledWithNew(http.Agent);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        request: match({
+          agent: httpAgent,
+        }),
+      }));
+      sinon.assert.calledWithNew(Octokit);
+      sinon.assert.calledOnceWithExactly(httpAgent.destroy);
+    }</code></pre></dd>
+            <dt>does not create Agent for unrecognized baseUrl</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const options = {
+        octokitOptions: {
+          baseUrl: &#x27;foo://bar&#x27;,
+        },
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.callCount(https.Agent, 0);
+    }</code></pre></dd>
+            <dt>does not create Agent if null passed</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const options = {
+        octokitOptions: {
+          baseUrl: &#x27;foo://bar&#x27;,
+          request: {
+            agent: null,
+          },
+        },
+        retry: timeOptions,
+      };
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.calledOnceWithExactly(Octokit, match({
+        ...options.octokitOptions,
+        request: match({
+          ...options.octokitOptions.request,
+        }),
+      }));
+      sinon.assert.callCount(http.Agent, 0);
+      sinon.assert.callCount(https.Agent, 0);
+    }</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>gitUtils</h1>
+      <dl>
+        <section class="suite">
+          <h1>.getBranch</h1>
+          <dl>
+            <dt>resolves main on main</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>gitUtils.getBranch(gitOptions)
+        .then((branch) =&#x3E; {
+          assert.strictEqual(branch, defaultBranch);
+        })</code></pre></dd>
+            <dt>resolves branch1 on branch1</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>execFileOut(&#x27;git&#x27;, [&#x27;checkout&#x27;, &#x27;-q&#x27;, &#x27;branch1&#x27;], gitOptions)
+        .then(() =&#x3E; gitUtils.getBranch(gitOptions))
+        .then((branch) =&#x3E; {
+          assert.strictEqual(branch, &#x27;branch1&#x27;);
+        })</code></pre></dd>
+            <dt>rejects with Error not on branch</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>execFileOut(&#x27;git&#x27;, [&#x27;checkout&#x27;, &#x27;-q&#x27;, &#x27;HEAD^&#x27;], gitOptions)
+        .then(() =&#x3E; gitUtils.getBranch(gitOptions))
+        .then(
+          neverCalled,
+          (err) =&#x3E; {
+            assert(err instanceof Error);
+            assert.match(err.message, /branch/i);
+          },
+        )</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.getConfig</h1>
+          <dl>
+            <dt>rejects with RangeError for invalid scope</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.rejects(
+        () =&#x3E; gitUtils.getConfig(&#x27;invalid&#x27;, gitOptions),
+        RangeError,
+      )</code></pre></dd>
+            <dt>resolves to object mapping all config keys to values</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const config = await gitUtils.getConfig(undefined, gitOptions);
+      assert.strictEqual(typeof config, &#x27;object&#x27;);
+      assert(
+        !(config instanceof Object),
+        &#x27;does not inherit from Object to avoid proto key confusion&#x27;,
+      );
+      assert.strictEqual(config[localConfigKey], localConfigValue);
+    }</code></pre></dd>
+            <dt>resolves to local config</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>async () =&#x3E; {
+      const config = await gitUtils.getConfig(&#x27;local&#x27;, gitOptions);
+      assert.strictEqual(typeof config, &#x27;object&#x27;);
+      assert(
+        !(config instanceof Object),
+        &#x27;does not inherit from Object to avoid proto key confusion&#x27;,
+      );
+      assert.strictEqual(config[localConfigKey], localConfigValue);
+    }</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.gitUrlIsLocalNotSsh</h1>
+          <dl>
+            <dt>. is true</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>/foo/bar is true</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>http://example.com is false</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>git://example.com is false</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>git@example.com:foo is false</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>file:///foo/bar is false</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>/foo:bar is true</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>foo:bar is false</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(testCase.url),
+  testCase.result,
+);</code></pre></dd>
+            <dt>C:/foo is false on non-Windows</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>assert.strictEqual(
+  gitUtils.gitUrlIsLocalNotSsh(drivePath),
+  false,
+);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.parseGitUrl</h1>
+          <dl>
+            <dt>parses http: like url module</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testUrl = &#x27;http://user@example.com/foo/bar&#x27;;
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testUrl),
+  Object.assign(new URL(testUrl), { helper: undefined }),
+);</code></pre></dd>
+            <dt>parses git: like url module</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testUrl = &#x27;git://user@example.com/foo/bar&#x27;;
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testUrl),
+  Object.assign(new URL(testUrl), { helper: undefined }),
+);</code></pre></dd>
+            <dt>parses SCP-like URL like ssh: URL</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testUrl = &#x27;user@example.com:foo/bar.git&#x27;;
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testUrl),
+  Object.assign(
+    new URL(&#x27;ssh://user@example.com/foo/bar.git&#x27;),
+    { helper: undefined },
+  ),
+);</code></pre></dd>
+            <dt>parses absolute path like file:// URL</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testPath = path.resolve(path.join(&#x27;foo&#x27;, &#x27;bar&#x27;));
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testPath),
+  Object.assign(pathToFileURL(testPath), { helper: undefined }),
+);</code></pre></dd>
+            <dt>parses relative path like file:// URL</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testPath = path.join(&#x27;foo&#x27;, &#x27;bar&#x27;);
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testPath),
+  Object.assign(pathToFileURL(testPath), { helper: undefined }),
+);</code></pre></dd>
+            <dt>parses Windows path like URL on non-Windows</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testPath = &#x27;C:\\foo\\bar&#x27;;
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testPath),
+  Object.assign(new URL(testPath), { helper: undefined }),
+);</code></pre></dd>
+            <dt>adds helper property for transport helper</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const testUrl = &#x27;myhelper::user@example.com:foo/bar.git&#x27;;
+assert.deepStrictEqual(
+  gitUtils.parseGitUrl(testUrl),
+  Object.assign(
+    new URL(&#x27;ssh://user@example.com/foo/bar.git&#x27;),
+    { helper: &#x27;myhelper&#x27; },
+  ),
+);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.resolveCommit</h1>
+          <dl>
+            <dt>can resolve the hash of HEAD</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>gitUtils.resolveCommit(&#x27;HEAD&#x27;, gitOptions).then((hash) =&#x3E; {
+        assert.match(hash, /^[a-fA-F0-9]{40}$/);
+        headHash = hash;
+      })</code></pre></dd>
+            <dt>can resolve a hash to itself</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>gitUtils.resolveCommit(headHash, gitOptions).then((hash) =&#x3E; {
+        assert.strictEqual(hash, headHash);
+      })</code></pre></dd>
+            <dt>can resolve branch name to commit hash</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>const branchName = Object.keys(BRANCH_REMOTES)[0];
+return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
+  assert.match(hash, /^[a-fA-F0-9]{40}$/);
+});</code></pre></dd>
+            <dt>can resolve tag name to commit hash</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>gitUtils.resolveCommit(TAGS[0], gitOptions).then((hash) =&#x3E; {
+        assert.match(hash, /^[a-fA-F0-9]{40}$/);
+      })</code></pre></dd>
+            <dt>rejects with Error for unresolvable name</dt>
+            <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
+            <dd><pre><code>gitUtils.resolveCommit(&#x27;notabranch&#x27;, gitOptions).then(
+        neverCalled,
+        (err) =&#x3E; {
+          assert(err instanceof Error);
+        },
+      )</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>githubUtils</h1>
+      <dl>
+        <section class="suite">
+          <h1>.getProjectName</h1>
+          <dl>
+            <section class="suite">
+              <h1>with init repo</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>on branch w/o remote</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>not on branch</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with non-GitHub remote</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with invalid remote</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with https://github.com remote</h1>
+              <dl>
+                <dt>returns project</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with https://github.com remote without .git extension</h1>
+              <dl>
+                <dt>returns project</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with github.com remote with 1 path part</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with github.com remote with 3 path parts</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with github.com remote with an empty name</h1>
+              <dl>
+                <dt>throws UnknownProjectError</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>return assert.rejects(
+  () =&#x3E; getProjectName(gitOptions),
+  (err) =&#x3E; {
+    assert(err instanceof Error);
+    assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
+    return true;
+  },
+);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with git@github.com remote</h1>
+              <dl>
+                <dt>returns project</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with github.com sub-domain</h1>
+              <dl>
+                <dt>returns project</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with two GitHub remotes</h1>
+              <dl>
+                <dt>prefers lexicograpic ordering by remote name</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with origin remote</h1>
+              <dl>
+                <dt>prefers origin to others</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with github remote</h1>
+              <dl>
+                <dt>prefers github to origin</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with upstream remote</h1>
+              <dl>
+                <dt>prefers upstream to github</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with remote for current branch</h1>
+              <dl>
+                <dt>prefers remote for current branch to github</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>with different pushurl</h1>
+              <dl>
+                <dt>prefers project for pushurl</dt>
+                <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/github-utils.js</dt>
+                <dd><pre><code>async () =&#x3E; {
+        assert.deepStrictEqual(
+          await getProjectName(gitOptions),
+          testProject,
+        );
+      }</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>retryAsync.constant</h1>
+      <dl>
+        <dt>returns an iterable of number first argument</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>const expect = 1;
+let count = 0;
+for (const val of constant(expect)) {
+  assert.strictEqual(val, expect);
+  count += 1;
+  if (count &#x3E; 10) {
+    break;
+  }
+}
+assert.strictEqual(count, 11);</code></pre></dd>
+        <dt>returns an iterable of object first argument</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>const expect = {};
+let count = 0;
+for (const val of constant(expect)) {
+  assert.strictEqual(val, expect);
+  count += 1;
+  if (count &#x3E; 10) {
+    break;
+  }
+}
+assert.strictEqual(count, 11);</code></pre></dd>
+        <dt>yields undefined if called without arguments</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>let count = 0;
+for (const val of constant()) {
+  assert.strictEqual(val, undefined);
+  count += 1;
+  if (count &#x3E; 10) {
+    break;
+  }
+}
+assert.strictEqual(count, 11);</code></pre></dd>
+        <dt>yields count times for positive count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>const expectValue = 1;
+const expectCount = 5;
+let count = 0;
+for (const val of constant(expectValue, expectCount)) {
+  assert.strictEqual(val, expectValue);
+  count += 1;
+}
+assert.strictEqual(count, expectCount);</code></pre></dd>
+        <dt>yields 0 times for 0 count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>// eslint-disable-next-line no-unused-vars
+for (const val of constant(1, 0)) {
+  assert.fail(&#x27;Unexpected value&#x27;);
+}</code></pre></dd>
+        <dt>throws RangeError for negative count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; constant(1, -1),
+  RangeError,
+);</code></pre></dd>
+        <dt>throws RangeError for NaN count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; constant(1, NaN),
+  RangeError,
+);</code></pre></dd>
+        <dt>throws RangeError for non-integer count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; constant(1, 1.5),
+  RangeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-coerces-to-NaN count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; constant(1, {}),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for coerces-to-number count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/constant.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; constant(1, &#x27;1&#x27;),
+  TypeError,
+);</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>retryAsync.exponential</h1>
+      <dl>
+        <dt>returns an iterable of count exponentially increasing values</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, 1, Infinity, 4)],
+  [1, 2, 4, 8],
+);</code></pre></dd>
+        <dt>supports non-integer values</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(1.5, 1.5, Infinity, 3)],
+  [1.5, 1.5 * 1.5, 1.5 * 1.5 * 1.5],
+);</code></pre></dd>
+        <dt>limits to maximum value</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, 1, 3, 4)],
+  [1, 2, 3, 3],
+);</code></pre></dd>
+        <dt>limits below initial value</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, 2, 1, 2)],
+  [1, 1],
+);</code></pre></dd>
+        <dt>allows negative factor</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(-2, 1, Infinity, 4)],
+  [1, -2, 4, -8],
+);</code></pre></dd>
+        <dt>allows negative initial</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, -1, Infinity, 4)],
+  [-1, -2, -4, -8],
+);</code></pre></dd>
+        <dt>handles Infinity factor</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(Infinity, 1, Infinity, 3)],
+  [1, Infinity, Infinity],
+);</code></pre></dd>
+        <dt>handles Infinity initial</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, Infinity, Infinity, 2)],
+  [Infinity, Infinity],
+);</code></pre></dd>
+        <dt>handles NaN factor</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(NaN, 1, Infinity, 3)],
+  [1, NaN, NaN],
+);</code></pre></dd>
+        <dt>handles NaN initial</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, NaN, Infinity, 3)],
+  [NaN, NaN, NaN],
+);</code></pre></dd>
+        <dt>yields 0 times for 0 count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.deepStrictEqual(
+  [...exponential(2, 1, Infinity, 0)],
+  [],
+);</code></pre></dd>
+        <dt>throws TypeError for no args</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-number factor</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential({}),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-number initial</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, {}),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-number maxValue</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, 1, {}),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws RangeError for NaN maxValue</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, 1, NaN, 4),
+  RangeError,
+);</code></pre></dd>
+        <dt>throws TypeError for non-number count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, 1, 1, {}),
+  TypeError,
+);</code></pre></dd>
+        <dt>throws RangeError for negative count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, 1, 1, -1),
+  RangeError,
+);</code></pre></dd>
+        <dt>throws RangeError for NaN count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, 1, 1, NaN),
+  RangeError,
+);</code></pre></dd>
+        <dt>throws RangeError for non-integer count</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async/exponential.js</dt>
+        <dd><pre><code>assert.throws(
+  () =&#x3E; exponential(2, 1, 1, 1.5),
+  RangeError,
+);</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>retryAsync</h1>
+      <dl>
+        <dt>calls operation immediately with given args once if truthy</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = {};
+    const stub = sinon.stub().resolves(stubResult);
+    const args = [1, {}, false];
+    const result = retryAsync(
+      stub,
+      { setTimeout: neverCalled },
+      ...args,
+    );
+    sinon.assert.calledOnceWithExactly(stub, ...args);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.calledOnceWithExactly(stub, ...args);
+  }</code></pre></dd>
+        <dt>calls operation with given number of args</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = {};
+    const stub = sinon.stub().resolves(stubResult);
+    const args = [undefined, undefined];
+    const result = retryAsync(
+      stub,
+      { setTimeout: neverCalled },
+      ...args,
+    );
+    sinon.assert.calledOnceWithExactly(stub, ...args);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.calledOnceWithExactly(stub, ...args);
+  }</code></pre></dd>
+        <dt>returns immediately for !shouldRetry</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = null;
+    const stub = sinon.stub().resolves(stubResult);
+    const shouldRetry = sinon.stub().returns(false);
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        shouldRetry,
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+    await setImmediateP();
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.calledOnceWithExactly(stub);
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
+  }</code></pre></dd>
+        <dt>returns immediately with rejection</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubCause = new Error(&#x27;test&#x27;);
+    const stub = sinon.stub().rejects(stubCause);
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        shouldRetry: neverCalled,
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+    await assert.rejects(
+      () =&#x3E; result,
+      (cause) =&#x3E; {
+        assert.strictEqual(cause, stubCause);
+        return true;
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+  }</code></pre></dd>
+        <dt>returns immediately with exception</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubCause = new Error(&#x27;test&#x27;);
+    const stub = sinon.stub().throws(stubCause);
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        shouldRetry: neverCalled,
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+    await assert.rejects(
+      () =&#x3E; result,
+      (cause) =&#x3E; {
+        assert.strictEqual(cause, stubCause);
+        return true;
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+  }</code></pre></dd>
+        <dt>handles non-Promise return values</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = undefined;
+    const stub = sinon.stub().returns(stubResult);
+    const shouldRetry = sinon.stub().returns(false);
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        shouldRetry,
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+    await setImmediateP();
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.calledOnceWithExactly(stub);
+    sinon.assert.calledOnceWithExactly(shouldRetry, stubResult);
+  }</code></pre></dd>
+        <dt>returns immediately for empty waitMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stub = sinon.stub();
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        waitMs: [],
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+    await result;
+    sinon.assert.calledOnceWithExactly(stub);
+  }</code></pre></dd>
+        <dt>does not call return on exhausted waitMs iterator</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stub = sinon.stub();
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        waitMs: {
+          [Symbol.iterator]: () =&#x3E; ({
+            next: () =&#x3E; ({ done: true }),
+            return: neverCalled,
+          }),
+        },
+      },
+    );
+    sinon.assert.calledOnceWithExactly(stub);
+    await result;
+    sinon.assert.calledOnceWithExactly(stub);
+  }</code></pre></dd>
+        <dt>calls .return on non-exhausted waitMs iterator</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = 1;
+    const stub = sinon.stub();
+    stub.onFirstCall().returns(undefined);
+    stub.onSecondCall().returns(stubResult);
+    const waitMs = 1000;
+    const iterReturn = sinon.stub();
+    const iter = {
+      next: () =&#x3E; ({ value: waitMs }),
+      return: iterReturn,
+    };
+    const result = retryAsync(
+      stub,
+      {
+        ...timeOptions,
+        waitMs: {
+          [Symbol.iterator]: () =&#x3E; iter,
+        },
+      },
+    );
+    sinon.assert.callCount(stub, 1);
+    await setImmediateP();
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(waitMs);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 2);
+    assert.strictEqual(clock.countTimers(), 0);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
+    // .return() is called exactly once, on iter, with no arguments
+    sinon.assert.calledOnceWithExactly(iterReturn);
+    sinon.assert.alwaysCalledOn(iterReturn, iter);
+  }</code></pre></dd>
+        <dt>returns after all waitMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = false;
+    const stub = sinon.stub();
+    stub.onFirstCall().returns(undefined);
+    stub.onSecondCall().returns(stubResult);
+    const args = [false, undefined];
+    const waitMs = [1000];
+    const result = retryAsync(
+      stub,
+      {
+        ...timeOptions,
+        waitMs,
+      },
+      ...args,
+    );
+    sinon.assert.callCount(stub, 1);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 1);
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(waitMs[0] - 1);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 1);
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(1);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 2);
+    assert.strictEqual(clock.countTimers(), 0);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub, ...args);
+  }</code></pre></dd>
+        <dt>accepts constant number waitMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = 1;
+    const stub = sinon.stub();
+    stub.onThirdCall().returns(stubResult);
+    const waitMs = 1000;
+    const result = retryAsync(
+      stub,
+      {
+        ...timeOptions,
+        waitMs,
+      },
+    );
+    sinon.assert.callCount(stub, 1);
+    await setImmediateP();
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(waitMs);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 2);
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(waitMs);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 3);
+    assert.strictEqual(clock.countTimers(), 0);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 3);
+    sinon.assert.alwaysCalledWithExactly(stub);
+  }</code></pre></dd>
+        <dt>returns after maxTotalMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = false;
+    const stub = sinon.stub();
+    stub.onFirstCall().returns(undefined);
+    stub.onSecondCall().returns(stubResult);
+    const maxTotalMs = 10000;
+    const waitMs = maxTotalMs;
+    const result = retryAsync(
+      stub,
+      {
+        ...timeOptions,
+        maxTotalMs,
+        waitMs,
+      },
+    );
+    sinon.assert.callCount(stub, 1);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 1);
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(maxTotalMs);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 2);
+    assert.strictEqual(clock.countTimers(), 0);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
+  }</code></pre></dd>
+        <dt>reduces last wait time to avoid exceeding maxTotalMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = false;
+    const stub = sinon.stub();
+    stub.onFirstCall().returns(undefined);
+    stub.onSecondCall().returns(stubResult);
+    const maxTotalMs = 5000;
+    const waitMs = 10000;
+    const result = retryAsync(
+      stub,
+      {
+        ...timeOptions,
+        maxTotalMs,
+        waitMs,
+      },
+    );
+    sinon.assert.callCount(stub, 1);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 1);
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(maxTotalMs);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 2);
+    assert.strictEqual(clock.countTimers(), 0);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
+  }</code></pre></dd>
+        <dt>does not wait less than minWaitMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = false;
+    const stub = sinon.stub();
+    stub.onFirstCall().returns(undefined);
+    stub.onSecondCall().returns(stubResult);
+    const minWaitMs = 500;
+    const maxTotalMs = 1100;
+    const waitMs = 1000;
+    const result = retryAsync(
+      stub,
+      {
+        ...timeOptions,
+        maxTotalMs,
+        minWaitMs,
+        waitMs,
+      },
+    );
+    sinon.assert.callCount(stub, 1);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 1);
+    assert.strictEqual(clock.countTimers(), 1);
+    clock.tick(waitMs);
+    await setImmediateP();
+    sinon.assert.callCount(stub, 2);
+    assert.strictEqual(clock.countTimers(), 0);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 2);
+    sinon.assert.alwaysCalledWithExactly(stub);
+  }</code></pre></dd>
+        <dt>does not wait at all if maxTotalMs &#x3C; minWaitMs</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+    const stubResult = false;
+    const stub = sinon.stub().returns(stubResult);
+    const result = retryAsync(
+      stub,
+      {
+        setTimeout: neverCalled,
+        maxTotalMs: 500,
+        minWaitMs: 1000,
+        waitMs: 1000,
+      },
+    );
+    sinon.assert.callCount(stub, 1);
+    assert.strictEqual(await result, stubResult);
+    sinon.assert.callCount(stub, 1);
+    sinon.assert.alwaysCalledWithExactly(stub);
+  }</code></pre></dd>
+        <dt>rejects with TypeError without arguments</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>return assert.rejects(
+  () =&#x3E; retryAsync(),
+  TypeError,
+);</code></pre></dd>
+        <dt>rejects with TypeError for non-function operation</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>return assert.rejects(
+  () =&#x3E; retryAsync(1),
+  TypeError,
+);</code></pre></dd>
+        <dt>rejects with TypeError for null options</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>return assert.rejects(
+  () =&#x3E; retryAsync(neverCalled, null),
+  TypeError,
+);</code></pre></dd>
+        <dt>rejects with TypeError if options.waitMs is not iterable</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/retry-async.js</dt>
+        <dd><pre><code>return assert.rejects(
+  () =&#x3E; retryAsync(neverCalled, { waitMs: {} }),
+  TypeError,
+);</code></pre></dd>
+      </dl>
+    </section>
+  </div><!-- .container -->
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/highlight.js/9.1.0/highlight.min.js"></script>
+  <script type="text/javascript">//<![CDATA[
+'use strict';
+// Adjust the nested heading level to match depth
+$('section section h1').each(function() {
+  var $this = $(this);
+  var depth = Math.min($this.parents('section').length, 6);
+  // http://stackoverflow.com/a/30059450/503410
+  $this.wrapInner(document.createElement('h' + depth)).children().unwrap();
+});
+
+// Make the tests collapsible
+var testNum = 0;
+$('dt + dd')
+  .addClass('collapse')
+  .attr('role', 'tabpanel')
+  .attr('aria-expanded', 'false')
+  .each(function() {
+    var $this = $(this);
+    var $dt = $this.prev();
+
+    ++testNum;
+    var id = 'test' + testNum;
+    var idDt = id + '-title';
+    var idDd = id + '-desc';
+
+    $dt.attr('id', idDt);
+    $this.attr('id', idDd);
+
+    $dt.wrapInner('<a role="button" data-toggle="collapse" href="#' + idDd +
+        '" aria-expanded="false" aria-controls="' + idDd + '"></a>')
+      .children()
+      .collapse();
+  });
+
+// Enable syntax highlighting for the code (which is all JavaScript)
+hljs.configure({languages: ['javascript']});
+hljs.initHighlighting();
+//]]></script>
+</body>
+</html>

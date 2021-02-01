@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>Hub CI Status</h1>
+<p><a href="https://github.com/kevinoid/hub-ci-status/actions?query=branch%3Amain"><img src="https://img.shields.io/github/workflow/status/kevinoid/hub-ci-status/Node.js%20CI/main.svg?style=flat&amp;label=build" alt="Build Status"></a>
+<a href="https://codecov.io/github/kevinoid/hub-ci-status?branch=main"><img src="https://img.shields.io/codecov/c/github/kevinoid/hub-ci-status.svg?style=flat" alt="Coverage"></a>
+<a href="https://david-dm.org/kevinoid/hub-ci-status"><img src="https://img.shields.io/david/kevinoid/hub-ci-status.svg?style=flat" alt="Dependency Status"></a>
+<a href="https://www.npmjs.com/package/hub-ci-status"><img src="https://img.shields.io/node/v/hub-ci-status.svg?style=flat" alt="Supported Node Version"></a>
+<a href="https://www.npmjs.com/package/hub-ci-status"><img src="https://img.shields.io/npm/v/hub-ci-status.svg?style=flat" alt="Version on NPM"></a></p>
+<p>A reimplementation of the <a href="https://hub.github.com/hub-ci-status.1.html">ci-status
+subcommand</a> of
+<a href="https://hub.github.com/">hub</a> in JavaScript for querying the GitHub <a href="https://docs.github.com/rest/reference/repos#get-the-combined-status-for-a-specific-reference">CI
+status</a>
+and <a href="https://docs.github.com/rest/reference/checks#list-check-runs-for-a-git-reference">checks
+status</a>
+of a commit using Node.</p>
+<h2>Introductory Examples</h2>
+<p>To get the combined CI and checks status of the checked out commit, invoke
+<code>hub-ci-status</code> in a git repository with a GitHub remote:</p>
+<pre><samp>$ hub-ci-status
+pending
+$ echo $?
+2</samp></pre>
+<h3>Status of Branch/Tag/Commit</h3>
+<p>To get the status of a particular commit, pass the name (any name suitable for
+<a href="https://git-scm.com/docs/git-rev-parse"><code>git rev-parse</code></a>) as an argument:</p>
+<pre><samp>$ hub-ci-status mybranch
+failure
+$ echo $?
+1</samp></pre>
+<h3>Wait for Pending</h3>
+<p>If the CI status or checks may not have completed, the <code>-w</code>/<code>--wait</code> option
+can be passed (with an optional timeout in seconds) to wait until the status
+is not pending:</p>
+<pre><samp>$ hub-ci-status --wait 60
+success
+$ echo $?
+0</samp></pre>
+<p>By default, the process will exit as soon as any CI status or check fails.  To
+wait until all statuses/checks have finished, add <code>-W</code>/<code>--wait-all</code>.</p>
+<h3>Verbose Output</h3>
+<p>For more verbose output, including the status context and target URL, pass the
+<code>-v</code>/<code>--verbose</code> option:</p>
+<pre><samp>$ hub-ci-status -v
+●	Test on Node.js * x64 on windows-latest        	https://github.com/kevinoid/hub-ci-status/runs/1808395138
+●	Test on Node.js 10 x64 on windows-latest       	https://github.com/kevinoid/hub-ci-status/runs/1808395109
+●	Test on Node.js 10 x64 on ubuntu-latest        	https://github.com/kevinoid/hub-ci-status/runs/1808395075
+✔︎	Lint and Test on Node.js * x64 on ubuntu-latest	https://github.com/kevinoid/hub-ci-status/runs/1808388960
+success</samp></pre>
+<p>Note: This option can be passed twice to print progress messages for <code>--wait</code>
+to <code>stderr</code>.</p>
+<h2>Additional Features</h2>
+<p>This module supports a few features which are not supported by <a href="https://hub.github.com/hub-ci-status.1.html"><code>hub ci-status</code></a>:</p>
+<ul>
+<li><code>--wait</code> flag allows waiting until the status is not <code>pending</code>, with a
+configurable timeout.
+(<a href="https://github.com/github/hub/issues/1809">github/hub#1809</a>)</li>
+<li><code>--wait-all</code> flag allows waiting until all statuses and checks are not
+<code>pending</code> (rather than exiting after first failure).</li>
+</ul>
+<h2>Installation</h2>
+<p><a href="https://www.npmjs.com/package/hub-ci-status">This package</a> can be
+installed using <a href="https://www.npmjs.com/">npm</a>, either globally or locally, by
+running:</p>
+<pre class="prettyprint source lang-sh"><code>npm install hub-ci-status
+</code></pre>
+<h2>Contributing</h2>
+<p>Contributions are appreciated.  Contributors agree to abide by the <a href="https://www.contributor-covenant.org/version/1/4/code-of-conduct.html">Contributor
+Covenant Code of
+Conduct</a>.
+If this is your first time contributing to a Free and Open Source Software
+project, consider reading <a href="https://opensource.guide/how-to-contribute/">How to Contribute to Open
+Source</a>
+in the Open Source Guides.</p>
+<p>If the desired change is large, complex, backwards-incompatible, can have
+significantly differing implementations, or may not be in scope for this
+project, opening an issue before writing the code can avoid frustration and
+save a lot of time and effort.</p>
+<h2>License</h2>
+<p>This project is available under the terms of the <a href="LICENSE.txt">MIT License</a>.
+See the <a href="https://tldrlegal.com/license/mit-license">summary at TLDRLegal</a>.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-hub-ci-status.html">hub-ci-status</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Mon Feb 01 2021 10:22:05 GMT-0700 (Mountain Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

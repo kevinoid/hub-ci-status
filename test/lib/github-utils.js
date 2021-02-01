@@ -103,7 +103,7 @@ describe('githubUtils', () => {
     });
 
     describe('with non-GitHub remote', () => {
-      const testProject = ['kevinoid', 'github-ci-status'];
+      const testProject = ['kevinoid', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -147,7 +147,7 @@ describe('githubUtils', () => {
     });
 
     describe('with https://github.com remote', () => {
-      const testProject = ['kevinoid', 'github-ci-status'];
+      const testProject = ['kevinoid', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -168,7 +168,7 @@ describe('githubUtils', () => {
     });
 
     describe('with https://github.com remote without .git extension', () => {
-      const testProject = ['kevinoid', 'github-ci-status'];
+      const testProject = ['kevinoid', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -246,7 +246,7 @@ describe('githubUtils', () => {
     });
 
     describe('with git@github.com remote', () => {
-      const testProject = ['kevinoid', 'github-ci-status'];
+      const testProject = ['kevinoid', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -267,7 +267,7 @@ describe('githubUtils', () => {
     });
 
     describe('with github.com sub-domain', () => {
-      const testProject = ['kevinoid', 'github-ci-status'];
+      const testProject = ['kevinoid', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -288,7 +288,7 @@ describe('githubUtils', () => {
     });
 
     describe('with two GitHub remotes', () => {
-      const testProject = ['zzz', 'github-ci-status'];
+      const testProject = ['zzz', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -310,7 +310,7 @@ describe('githubUtils', () => {
     });
 
     describe('with origin remote', () => {
-      const testProject = ['origin', 'github-ci-status'];
+      const testProject = ['origin', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -331,7 +331,7 @@ describe('githubUtils', () => {
     });
 
     describe('with github remote', () => {
-      const testProject = ['github', 'github-ci-status'];
+      const testProject = ['github', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -352,7 +352,7 @@ describe('githubUtils', () => {
     });
 
     describe('with upstream remote', () => {
-      const testProject = ['upstream', 'github-ci-status'];
+      const testProject = ['upstream', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [
@@ -373,7 +373,7 @@ describe('githubUtils', () => {
     });
 
     describe('with remote for current branch', () => {
-      const testProject = ['branch', 'github-ci-status'];
+      const testProject = ['branch', 'hub-ci-status'];
       before(async () => {
         await execFileOut(
           'git',
@@ -411,7 +411,7 @@ describe('githubUtils', () => {
     });
 
     describe('with different pushurl', () => {
-      const testProject = ['branchpush', 'github-ci-status'];
+      const testProject = ['branchpush', 'hub-ci-status'];
       before(() => execFileOut(
         'git',
         [

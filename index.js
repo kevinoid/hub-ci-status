@@ -1,7 +1,7 @@
 /**
  * @copyright Copyright 2016-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
- * @module github-ci-status
+ * @module hub-ci-status
  */
 
 'use strict';
@@ -122,7 +122,7 @@ function checkRunToStatus(checkRun) {
   };
 }
 
-/** Options for {@link githubCiStatus}.
+/** Options for {@link hubCiStatus}.
  *
  * @typedef {!object} GithubCiStatusOptions
  * @property {!module:child_process.ExecFileOptions=} gitOptions Options to
@@ -160,7 +160,7 @@ function checkRunToStatus(checkRun) {
  * be determined.
  */
 module.exports =
-async function githubCiStatus(
+async function hubCiStatus(
   rev = 'HEAD',
   {
     gitOptions,

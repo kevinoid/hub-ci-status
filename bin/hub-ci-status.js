@@ -11,7 +11,7 @@
 const Yargs = require('yargs/yargs');
 
 const packageJson = require('../package.json');
-const githubCiStatus = require('..');
+const hubCiStatus = require('..');
 
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];
@@ -76,7 +76,7 @@ function coerceWait(arg) {
  * @param {!CommandOptions} options Options.
  * @param {function(number)} callback Callback with exit code.
  */
-function githubCiStatusCmd(args, options, callback) {
+function hubCiStatusCmd(args, options, callback) {
   if (typeof callback !== 'function') {
     throw new TypeError('callback must be a function');
   }
@@ -184,7 +184,7 @@ function githubCiStatusCmd(args, options, callback) {
 
     let exitCode = 0;
     try {
-      const gcs = options.githubCiStatus || githubCiStatus;
+      const gcs = options.hubCiStatus || hubCiStatus;
       exitCode = await gcs(ref, {
         octokitOptions: {
           auth: options.env ? options.env.GITHUB_TOKEN : undefined,
@@ -205,12 +205,12 @@ function githubCiStatusCmd(args, options, callback) {
   });
 }
 
-module.exports = githubCiStatusCmd;
+module.exports = hubCiStatusCmd;
 
 if (require.main === module) {
   // This file was invoked directly.
   // Note:  Could pass process.exit as callback to force immediate exit.
-  githubCiStatusCmd(process.argv, process, (exitCode) => {
+  hubCiStatusCmd(process.argv, process, (exitCode) => {
     process.exitCode = exitCode;
   });
 }

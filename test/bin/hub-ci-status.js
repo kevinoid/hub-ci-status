@@ -9,17 +9,17 @@ const sinon = require('sinon');
 const stream = require('stream');
 
 const assert = require('../../test-lib/assert-backports.js');
-const githubCiStatusCmd = require('../../bin/github-ci-status.js');
+const hubCiStatusCmd = require('../../bin/hub-ci-status.js');
 const packageJson = require('../../package.json');
 
 const { match } = sinon;
 
 // Simulate arguments passed by the node runtime
-const RUNTIME_ARGS = ['node', 'github-ci-status'];
+const RUNTIME_ARGS = ['node', 'hub-ci-status'];
 
-function githubCiStatusCmdP(...args) {
+function hubCiStatusCmdP(...args) {
   return new Promise((resolve) => {
-    githubCiStatusCmd(...args, resolve);
+    hubCiStatusCmd(...args, resolve);
   });
 }
 
@@ -30,38 +30,38 @@ function neverCalled() {
 function getTestOptions() {
   return {
     env: Object.create(null),
-    githubCiStatus: neverCalled,
+    hubCiStatus: neverCalled,
     stdin: new stream.PassThrough(),
     stdout: new stream.PassThrough({ encoding: 'utf8' }),
     stderr: new stream.PassThrough({ encoding: 'utf8' }),
   };
 }
 
-describe('github-ci-status command', () => {
+describe('hub-ci-status command', () => {
   it('throws TypeError with no arguments', () => {
     assert.throws(
-      githubCiStatusCmd,
+      hubCiStatusCmd,
       TypeError,
     );
   });
 
   it('throws TypeError for non-array-like args', () => {
     assert.throws(
-      () => githubCiStatusCmd({}, getTestOptions(), neverCalled),
+      () => hubCiStatusCmd({}, getTestOptions(), neverCalled),
       TypeError,
     );
   });
 
   it('throws TypeError for non-function callback', () => {
     assert.throws(
-      () => { githubCiStatusCmd(RUNTIME_ARGS, getTestOptions(), true); },
+      () => { hubCiStatusCmd(RUNTIME_ARGS, getTestOptions(), true); },
       TypeError,
     );
   });
 
   it('throws TypeError for non-object options', () => {
     assert.throws(
-      () => { githubCiStatusCmd(RUNTIME_ARGS, true, neverCalled); },
+      () => { hubCiStatusCmd(RUNTIME_ARGS, true, neverCalled); },
       TypeError,
     );
   });
@@ -72,7 +72,7 @@ describe('github-ci-status command', () => {
       stdin: {},
     };
     assert.throws(
-      () => { githubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+      () => { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
       TypeError,
     );
   });
@@ -83,7 +83,7 @@ describe('github-ci-status command', () => {
       stdout: new stream.Readable(),
     };
     assert.throws(
-      () => { githubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+      () => { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
       TypeError,
     );
   });
@@ -94,7 +94,7 @@ describe('github-ci-status command', () => {
       stderr: new stream.Readable(),
     };
     assert.throws(
-      () => { githubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+      () => { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
       TypeError,
     );
   });
@@ -103,7 +103,7 @@ describe('github-ci-status command', () => {
     it(`${helpOpt} prints help message to stdout`, async () => {
       const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
-      const exitCode = await githubCiStatusCmdP(args, options);
+      const exitCode = await hubCiStatusCmdP(args, options);
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
@@ -116,40 +116,40 @@ describe('github-ci-status command', () => {
     it(`${versionOpt} prints version message to stdout`, async () => {
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
-      const exitCode = await githubCiStatusCmdP(args, options);
+      const exitCode = await hubCiStatusCmdP(args, options);
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert.strictEqual(output, `github-ci-status ${packageJson.version}\n`);
+      assert.strictEqual(output, `hub-ci-status ${packageJson.version}\n`);
     });
   }
 
   it('passes through options.stdout and stderr', async () => {
-    const githubCiStatus = sinon.stub().resolves(0);
+    const hubCiStatus = sinon.stub().resolves(0);
     const options = {
       ...getTestOptions(),
-      githubCiStatus,
+      hubCiStatus,
     };
-    await githubCiStatusCmdP(RUNTIME_ARGS, options);
-    sinon.assert.callCount(githubCiStatus, 1);
-    const gcsOptions = githubCiStatus.getCall(0).args[1];
+    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    sinon.assert.callCount(hubCiStatus, 1);
+    const gcsOptions = hubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.stderr, options.stderr);
     assert.strictEqual(gcsOptions.stdout, options.stdout);
   });
 
   it('passes $GITHUB_TOKEN as options.octokitOptions.auth', async () => {
-    const githubCiStatus = sinon.stub().resolves(0);
+    const hubCiStatus = sinon.stub().resolves(0);
     const testToken = '123abc';
     const options = {
       ...getTestOptions(),
       env: {
         GITHUB_TOKEN: testToken,
       },
-      githubCiStatus,
+      hubCiStatus,
     };
-    await githubCiStatusCmdP(RUNTIME_ARGS, options);
-    sinon.assert.callCount(githubCiStatus, 1);
-    const gcsOptions = githubCiStatus.getCall(0).args[1];
+    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    sinon.assert.callCount(hubCiStatus, 1);
+    const gcsOptions = hubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
   });
 
@@ -158,17 +158,17 @@ describe('github-ci-status command', () => {
       `interprets ${args.join(' ')} as ${expectRef}, ${expectOptions}`;
     it(testDesc, async () => {
       const allArgs = [...RUNTIME_ARGS, ...args];
-      const githubCiStatus = sinon.stub().resolves(0);
+      const hubCiStatus = sinon.stub().resolves(0);
       const options = {
         ...getTestOptions(),
-        githubCiStatus,
+        hubCiStatus,
       };
-      const exitCode = await githubCiStatusCmdP(allArgs, options);
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
       sinon.assert.calledOnceWithExactly(
-        githubCiStatus,
+        hubCiStatus,
         expectRef,
         expectOptions,
       );
@@ -275,7 +275,7 @@ describe('github-ci-status command', () => {
     it(`prints error and exits for ${args.join(' ')}`, async () => {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await githubCiStatusCmdP(allArgs, options);
+      const exitCode = await hubCiStatusCmdP(allArgs, options);
       assert.strictEqual(exitCode, 1);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
@@ -296,28 +296,28 @@ describe('github-ci-status command', () => {
   // Note: Differs from hub(1), which ignores unexpected ci-status arguments.
   expectArgsErr(['ref1', 'ref2'], /\barguments?\b/i);
 
-  it('prints githubCiStatus rejection to stderr', async () => {
+  it('prints hubCiStatus rejection to stderr', async () => {
     const errTest = new RangeError('test');
-    const githubCiStatus = sinon.stub().rejects(errTest);
+    const hubCiStatus = sinon.stub().rejects(errTest);
     const options = {
       ...getTestOptions(),
-      githubCiStatus,
+      hubCiStatus,
     };
-    const exitCode = await githubCiStatusCmdP(RUNTIME_ARGS, options);
+    const exitCode = await hubCiStatusCmdP(RUNTIME_ARGS, options);
     assert.strictEqual(exitCode, 1);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), `${errTest}\n`);
   });
 
-  it('prints githubCiStatus rejection stack if very verbose', async () => {
+  it('prints hubCiStatus rejection stack if very verbose', async () => {
     const args = [...RUNTIME_ARGS, '-vv'];
     const errTest = new RangeError('test');
-    const githubCiStatus = sinon.stub().rejects(errTest);
+    const hubCiStatus = sinon.stub().rejects(errTest);
     const options = {
       ...getTestOptions(),
-      githubCiStatus,
+      hubCiStatus,
     };
-    const exitCode = await githubCiStatusCmdP(args, options);
+    const exitCode = await hubCiStatusCmdP(args, options);
     assert.strictEqual(exitCode, 1);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), `${errTest.stack}\n`);

@@ -1,19 +1,23 @@
-GitHub CI Status
-================
+Hub CI Status
+=============
 
-[![Build Status](https://img.shields.io/github/workflow/status/kevinoid/github-ci-status/Node.js%20CI/main.svg?style=flat&label=build)](https://github.com/kevinoid/github-ci-status/actions?query=branch%3Amain)
-[![Coverage](https://img.shields.io/codecov/c/github/kevinoid/github-ci-status.svg?style=flat)](https://codecov.io/github/kevinoid/github-ci-status?branch=main)
-[![Dependency Status](https://img.shields.io/david/kevinoid/github-ci-status.svg?style=flat)](https://david-dm.org/kevinoid/github-ci-status)
-[![Supported Node Version](https://img.shields.io/node/v/github-ci-status.svg?style=flat)](https://www.npmjs.com/package/github-ci-status)
-[![Version on NPM](https://img.shields.io/npm/v/github-ci-status.svg?style=flat)](https://www.npmjs.com/package/github-ci-status)
+[![Build Status](https://img.shields.io/github/workflow/status/kevinoid/hub-ci-status/Node.js%20CI/main.svg?style=flat&label=build)](https://github.com/kevinoid/hub-ci-status/actions?query=branch%3Amain)
+[![Coverage](https://img.shields.io/codecov/c/github/kevinoid/hub-ci-status.svg?style=flat)](https://codecov.io/github/kevinoid/hub-ci-status?branch=main)
+[![Dependency Status](https://img.shields.io/david/kevinoid/hub-ci-status.svg?style=flat)](https://david-dm.org/kevinoid/hub-ci-status)
+[![Supported Node Version](https://img.shields.io/node/v/hub-ci-status.svg?style=flat)](https://www.npmjs.com/package/hub-ci-status)
+[![Version on NPM](https://img.shields.io/npm/v/hub-ci-status.svg?style=flat)](https://www.npmjs.com/package/hub-ci-status)
 
-A Node.js-based executable for checking the [combined CI status of a
-commit](https://docs.github.com/rest/reference/repos#get-the-combined-status-for-a-specific-reference)
-like [`hub ci-status`](https://hub.github.com/hub-ci-status.1.html).
+A reimplementation of the [ci-status
+subcommand](https://hub.github.com/hub-ci-status.1.html) of
+[hub](https://hub.github.com/) in JavaScript for querying the GitHub [CI
+status](https://docs.github.com/rest/reference/repos#get-the-combined-status-for-a-specific-reference)
+and [checks
+status](https://docs.github.com/rest/reference/checks#list-check-runs-for-a-git-reference)
+of a commit using Node.
 
 ## Introductory Example
 
-<pre><samp>$ <kbd>github-ci-status</kbd>
+<pre><samp>$ <kbd>hub-ci-status</kbd>
 success</samp></pre>
 
 ## Features
@@ -26,12 +30,12 @@ success</samp></pre>
 
 ## Installation
 
-[This package](https://www.npmjs.com/package/github-ci-status) can be
+[This package](https://www.npmjs.com/package/hub-ci-status) can be
 installed using [npm](https://www.npmjs.com/), either globally or locally, by
 running:
 
 ```sh
-npm install github-ci-status
+npm install hub-ci-status
 ```
 
 ## Contributing

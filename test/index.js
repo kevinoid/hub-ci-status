@@ -19,7 +19,7 @@ const { match } = sinon;
 const fetchCiStatus = sinon.stub();
 const getProjectName = sinon.stub();
 const resolveCommit = sinon.stub();
-const githubCiStatus = proxyquire(
+const hubCiStatus = proxyquire(
   '..',
   {
     './lib/fetch-ci-status.js': fetchCiStatus,
@@ -96,13 +96,13 @@ const stateToMarker = {
   test123: '',
 };
 
-describe('githubCiStatus', () => {
+describe('hubCiStatus', () => {
   it('checks HEAD by default', async () => {
     fetchCiStatus.resolves([
       makeCombinedStatus('success').data,
       makeCheckRuns('success').data,
     ]);
-    const result = await githubCiStatus(undefined, testOptions);
+    const result = await hubCiStatus(undefined, testOptions);
     assert.strictEqual(testOptions.stdout.read(), 'success\n');
     assert.strictEqual(testOptions.stderr.read(), null);
     assert.strictEqual(result, 0);
@@ -122,7 +122,7 @@ describe('githubCiStatus', () => {
       makeCombinedStatus('success').data,
       makeCheckRuns('success').data,
     ]);
-    await githubCiStatus(testRev, testOptions);
+    await hubCiStatus(testRev, testOptions);
     sinon.assert.calledOnceWithExactly(resolveCommit, testRev, undefined);
     sinon.assert.calledOnceWithExactly(
       fetchCiStatus,
@@ -135,7 +135,7 @@ describe('githubCiStatus', () => {
     const errTest = new Error('test');
     getProjectName.rejects(errTest);
     await assert.rejects(
-      () => githubCiStatus(undefined, testOptions),
+      () => hubCiStatus(undefined, testOptions),
       errTest,
     );
     assert.strictEqual(testOptions.stdout.read(), null);
@@ -149,7 +149,7 @@ describe('githubCiStatus', () => {
     const errTest = new Error('test');
     resolveCommit.rejects(errTest);
     await assert.rejects(
-      () => githubCiStatus(undefined, testOptions),
+      () => hubCiStatus(undefined, testOptions),
       errTest,
     );
     assert.strictEqual(testOptions.stdout.read(), null);
@@ -164,7 +164,7 @@ describe('githubCiStatus', () => {
       makeCombinedStatus().data,
       makeCheckRuns().data,
     ]);
-    const result = await githubCiStatus(undefined, testOptions);
+    const result = await hubCiStatus(undefined, testOptions);
     assert.strictEqual(testOptions.stdout.read(), 'no status\n');
     assert.strictEqual(testOptions.stderr.read(), null);
     assert.strictEqual(result, 3);
@@ -175,7 +175,7 @@ describe('githubCiStatus', () => {
       makeCombinedStatus('success').data,
       makeCheckRuns('failure').data,
     ]);
-    await githubCiStatus(undefined, {
+    await hubCiStatus(undefined, {
       ...testOptions,
       useColor: true,
     });
@@ -209,7 +209,7 @@ describe('githubCiStatus', () => {
         }
       }
       fetchCiStatus.resolves(fetchResult);
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       assert.strictEqual(testOptions.stdout.read(), `${state2}\n`);
       assert.strictEqual(testOptions.stderr.read(), null);
     });
@@ -223,7 +223,7 @@ describe('githubCiStatus', () => {
         makeCombinedStatus('success').data,
         makeCheckRuns('success').data,
       ]);
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       assert.strictEqual(testOptions.stdout.read(), null);
       assert.strictEqual(testOptions.stderr.read(), null);
     });
@@ -233,7 +233,7 @@ describe('githubCiStatus', () => {
         makeCombinedStatus().data,
         makeCheckRuns().data,
       ]);
-      const result = await githubCiStatus(undefined, testOptions);
+      const result = await hubCiStatus(undefined, testOptions);
       assert.strictEqual(testOptions.stdout.read(), null);
       assert.strictEqual(testOptions.stderr.read(), null);
       assert.strictEqual(result, 3);
@@ -248,7 +248,7 @@ describe('githubCiStatus', () => {
         makeCombinedStatus().data,
         makeCheckRuns().data,
       ]);
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       assert.strictEqual(testOptions.stdout.read(), 'no status\n');
       assert.strictEqual(testOptions.stderr.read(), null);
     });
@@ -261,7 +261,7 @@ describe('githubCiStatus', () => {
             makeCombinedStatus(state).data,
             makeCheckRuns().data,
           ]);
-          const result = await githubCiStatus(undefined, testOptions);
+          const result = await hubCiStatus(undefined, testOptions);
           assert.strictEqual(
             testOptions.stdout.read(),
             `${marker}\tcontinuous-integration/jenkins\t`
@@ -279,7 +279,7 @@ describe('githubCiStatus', () => {
             makeCombinedStatus().data,
             makeCheckRuns(state).data,
           ]);
-          const result = await githubCiStatus(undefined, testOptions);
+          const result = await hubCiStatus(undefined, testOptions);
           assert.strictEqual(
             testOptions.stdout.read(),
             `${marker}\tmighty_readme\t`
@@ -296,7 +296,7 @@ describe('githubCiStatus', () => {
         makeCombinedStatus('success').data,
         makeCheckRuns('success').data,
       ]);
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       const marker = stateToMarker.success;
       assert.strictEqual(
         testOptions.stdout.read(),
@@ -329,7 +329,7 @@ describe('githubCiStatus', () => {
         },
       ]);
       /* eslint-enable camelcase */
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       const marker = stateToMarker.success;
       assert.strictEqual(
         testOptions.stdout.read(),
@@ -345,7 +345,7 @@ describe('githubCiStatus', () => {
         makeCheckRuns().data,
       ]);
       testOptions.stdout.isTTY = true;
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       const { open, close } = ansiStyles[stateToColor.success];
       const marker = stateToMarker.success;
       assert.strictEqual(
@@ -367,7 +367,7 @@ describe('githubCiStatus', () => {
               makeCombinedStatus(state).data,
               makeCheckRuns().data,
             ]);
-            await githubCiStatus(undefined, testOptions);
+            await hubCiStatus(undefined, testOptions);
             const { open, close } =
               colorName ? ansiStyles[colorName] : { open: '', close: '' };
             const marker = stateToMarker[state];
@@ -387,7 +387,7 @@ describe('githubCiStatus', () => {
               makeCombinedStatus().data,
               makeCheckRuns(state).data,
             ]);
-            await githubCiStatus(undefined, testOptions);
+            await hubCiStatus(undefined, testOptions);
             const { open, close } =
               colorName ? ansiStyles[colorName] : { open: '', close: '' };
             const marker = stateToMarker[state];
@@ -415,7 +415,7 @@ describe('githubCiStatus', () => {
           makeCheckRuns().data,
         ];
       });
-      await githubCiStatus(undefined, testOptions);
+      await hubCiStatus(undefined, testOptions);
       const marker = stateToMarker.success;
       assert.strictEqual(
         testOptions.stdout.read(),

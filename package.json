@@ -1,6 +1,6 @@
 {
   "name": "hub-ci-status",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A reimplementation of the ci-status subcommand of hub(1) in JavaScript for checking the GitHub CI and checks status of a commit with Node.",
   "keywords": [
     "ci",

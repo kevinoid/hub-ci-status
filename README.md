@@ -15,18 +15,70 @@ and [checks
 status](https://docs.github.com/rest/reference/checks#list-check-runs-for-a-git-reference)
 of a commit using Node.
 
-## Introductory Example
+## Introductory Examples
 
-<pre><samp>$ <kbd>hub-ci-status</kbd>
+To get the combined CI and checks status of the checked out commit, invoke
+`hub-ci-status` in a git repository with a GitHub remote:
+
+<pre><samp>$ hub-ci-status
+pending
+$ echo $?
+2</samp></pre>
+
+
+### Status of Branch/Tag/Commit
+
+To get the status of a particular commit, pass the name (any name suitable for
+[`git rev-parse`](https://git-scm.com/docs/git-rev-parse)) as an argument:
+
+<pre><samp>$ hub-ci-status mybranch
+failure
+$ echo $?
+1</samp></pre>
+
+
+### Wait for Pending
+
+If the CI status or checks may not have completed, the `-w`/`--wait` option
+can be passed (with an optional timeout in seconds) to wait until the status
+is not pending:
+
+<pre><samp>$ hub-ci-status --wait 60
+success
+$ echo $?
+0</samp></pre>
+
+By default, the process will exit as soon as any CI status or check fails.  To
+wait until all statuses/checks have finished, add `-W`/`--wait-all`.
+
+
+### Verbose Output
+
+For more verbose output, including the status context and target URL, pass the
+`-v`/`--verbose` option:
+
+<pre><samp>$ hub-ci-status -v
+●	Test on Node.js * x64 on windows-latest        	https://github.com/kevinoid/hub-ci-status/runs/1808395138
+●	Test on Node.js 10 x64 on windows-latest       	https://github.com/kevinoid/hub-ci-status/runs/1808395109
+●	Test on Node.js 10 x64 on ubuntu-latest        	https://github.com/kevinoid/hub-ci-status/runs/1808395075
+✔︎	Lint and Test on Node.js * x64 on ubuntu-latest	https://github.com/kevinoid/hub-ci-status/runs/1808388960
 success</samp></pre>
 
-## Features
+Note: This option can be passed twice to print progress messages for `--wait`
+to `stderr`.
 
-* Non-zero exit status for unsuccessful status makes scripting easier.
+
+## Additional Features
+
+This module supports a few features which are not supported by [`hub
+ci-status`](https://hub.github.com/hub-ci-status.1.html):
+
 * `--wait` flag allows waiting until the status is not `pending`, with a
   configurable timeout.
+  ([github/hub#1809](https://github.com/github/hub/issues/1809))
 * `--wait-all` flag allows waiting until all statuses and checks are not
   `pending` (rather than exiting after first failure).
+
 
 ## Installation
 
@@ -37,6 +89,7 @@ running:
 ```sh
 npm install hub-ci-status
 ```
+
 
 ## Contributing
 
@@ -52,6 +105,7 @@ If the desired change is large, complex, backwards-incompatible, can have
 significantly differing implementations, or may not be in scope for this
 project, opening an issue before writing the code can avoid frustration and
 save a lot of time and effort.
+
 
 ## License
 

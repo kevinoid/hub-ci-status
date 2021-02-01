@@ -181,7 +181,9 @@ describe('gitUtils', () => {
       assert.strictEqual(config[localConfigKey], localConfigValue);
     });
 
-    it('resolves to global config', async () => {
+    // May fail with `fatal: unable to read config file '$HOME/.gitconfig': No
+    // such file or directory`
+    xit('resolves to global config', async () => {
       const config = await gitUtils.getConfig('global', gitOptions);
       assert.strictEqual(typeof config, 'object');
       assert(
@@ -189,6 +191,19 @@ describe('gitUtils', () => {
         'does not inherit from Object to avoid proto key confusion',
       );
       // TODO: Set a global config to test?
+      assert.strictEqual(config[localConfigKey], undefined);
+    });
+
+    // May fail with `fatal: unable to read config file '/etc/gitconfig': No
+    // such file or directory`
+    xit('resolves to system config', async () => {
+      const config = await gitUtils.getConfig('system', gitOptions);
+      assert.strictEqual(typeof config, 'object');
+      assert(
+        !(config instanceof Object),
+        'does not inherit from Object to avoid proto key confusion',
+      );
+      // TODO: How to know what's in /etc/gitconfig?
       assert.strictEqual(config[localConfigKey], undefined);
     });
   });

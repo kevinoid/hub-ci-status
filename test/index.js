@@ -184,7 +184,6 @@ describe('hubCiStatus', () => {
   });
 
   for (let i = 1; i < statePriority.length; i += 1) {
-    // eslint-disable-next-line no-loop-func
     it(`prefers ${statePriority[i]} to ${statePriority[i - 1]}`, async () => {
       const state1 = statePriority[i - 1];
       const state2 = statePriority[i];
@@ -255,7 +254,6 @@ describe('hubCiStatus', () => {
 
     for (const [state, marker] of Object.entries(stateToMarker)) {
       if (['success', 'pending', 'failure', 'test123'].includes(state)) {
-        // eslint-disable-next-line no-loop-func
         it(`prints status ${state} with marker ${marker}`, async () => {
           fetchCiStatus.resolves([
             makeCombinedStatus(state).data,
@@ -273,7 +271,6 @@ describe('hubCiStatus', () => {
       }
 
       if (state !== 'pending') {
-        // eslint-disable-next-line no-loop-func
         it(`prints check ${state} with marker ${marker}`, async () => {
           fetchCiStatus.resolves([
             makeCombinedStatus().data,
@@ -361,7 +358,6 @@ describe('hubCiStatus', () => {
 
       for (const [state, colorName] of Object.entries(stateToColor)) {
         if (['success', 'pending', 'failure', 'test123'].includes(state)) {
-          // eslint-disable-next-line no-loop-func
           it(`prints status ${state} in color ${colorName}`, async () => {
             fetchCiStatus.resolves([
               makeCombinedStatus(state).data,
@@ -381,7 +377,6 @@ describe('hubCiStatus', () => {
         }
 
         if (state !== 'pending') {
-          // eslint-disable-next-line no-loop-func
           it(`prints check ${state} in color ${colorName}`, async () => {
             fetchCiStatus.resolves([
               makeCombinedStatus().data,

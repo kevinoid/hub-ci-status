@@ -203,7 +203,7 @@ function makeCombinedStatus(...statusStates) {
 
   const combinedState = statusStates.length === 0 ? "pending"
     : statusStates.some((s) => s !== "success" && s !== "pending") ? "failure"
-      : statusStates.some((s) => s === "pending") ? "pending"
+      : statusStates.includes("pending") ? "pending"
         : "success";
 
   return {

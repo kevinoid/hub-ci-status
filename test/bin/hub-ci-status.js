@@ -5,10 +5,10 @@
 
 'use strict';
 
+const assert = require('@kevinoid/assert-shim');
 const sinon = require('sinon');
 const stream = require('stream');
 
-const assert = require('../../test-lib/assert-backports.js');
 const hubCiStatusCmd = require('../../bin/hub-ci-status.js');
 const packageJson = require('../../package.json');
 

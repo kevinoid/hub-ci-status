@@ -11,9 +11,9 @@
 
 'use strict';
 
+const assert = require('@kevinoid/assert-shim');
 const { dir: makeTempDir } = require('tmp-promise');
 
-const assert = require('../../test-lib/assert-backports');
 const execFileOut = require('../../lib/exec-file-out.js');
 const gitInit = require('../../test-lib/git-init.js');
 const { getProjectName } = require('../../lib/github-utils.js');

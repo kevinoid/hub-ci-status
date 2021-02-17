@@ -5,11 +5,11 @@
 
 'use strict';
 
+const assert = require('@kevinoid/assert-shim');
 const path = require('path');
 const { dir: makeTempDir } = require('tmp-promise');
 const { pathToFileURL } = require('url');
 
-const assert = require('../../test-lib/assert-backports');
 const gitInit = require('../../test-lib/git-init');
 const gitUtils = require('../../lib/git-utils');
 const execFileOut = require('../../lib/exec-file-out');

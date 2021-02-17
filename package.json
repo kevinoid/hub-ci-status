@@ -58,6 +58,7 @@
     "yargs": "^16.0.3"
   },
   "devDependencies": {
+    "@kevinoid/assert-shim": "^0.1.0",
     "@kevinoid/eslint-config": "^15.0.0",
     "ansi-styles": "^5.1.0",
     "codecov": "^3.0.0",

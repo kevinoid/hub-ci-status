@@ -5,6 +5,7 @@
 
 'use strict';
 
+const FakeTimers = require('@sinonjs/fake-timers');
 const assert = require('assert');
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
@@ -21,9 +22,7 @@ const setImmediateP = promisify(timers.setImmediate);
 
 const { match } = sinon;
 
-const clock = sinon.useFakeTimers({
-  target: { Date },
-});
+const clock = FakeTimers.createClock();
 const timeOptions = {
   now: clock.Date.now,
   setTimeout: promisify(clock.setTimeout),

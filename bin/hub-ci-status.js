@@ -4,6 +4,7 @@
  *
  * @copyright Copyright 2017-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
+ * @module modulename/bin/cmd
  */
 
 'use strict';
@@ -112,9 +113,12 @@ function hubCiStatusCmd(args, options, callback) {
     .parserConfiguration({
       'parse-numbers': false,
       'parse-positional-numbers': false,
+      'dot-notation': false,
       'duplicate-arguments-array': false,
       'flatten-duplicate-arrays': false,
       'greedy-arrays': false,
+      'strip-aliased': true,
+      'strip-dashed': true,
     })
     .usage('Usage: $0 [options] [ref]')
     .help()

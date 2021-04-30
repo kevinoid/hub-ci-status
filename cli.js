@@ -6,7 +6,11 @@
 
 'use strict';
 
-const yargs = require('yargs/yargs');
+const {
+  Command,
+  InvalidOptionArgumentError,
+  Option,
+} = require('commander');
 
 const packageJson = require('./package.json');
 const hubCiStatus = require('.');
@@ -14,31 +18,7 @@ const hubCiStatus = require('.');
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];
 
-function coerceColor(arg) {
-  if (arg === undefined) {
-    return arg;
-  }
-
-  if (arg === true) {
-    // Treat --color without argument as 'always'.
-    return 'always';
-  }
-
-  if (colorOptions.includes(arg)) {
-    return arg;
-  }
-
-  throw new RangeError(
-    `Unrecognized --color argument '${arg}'.  Choices: ${
-      colorOptions.join(', ')}`,
-  );
-}
-
 function coerceWait(arg) {
-  if (arg === undefined) {
-    return arg;
-  }
-
   if (arg === true) {
     // Treat --wait without argument as infinite wait.
     return Infinity;
@@ -47,14 +27,25 @@ function coerceWait(arg) {
   // Note: Don't treat '' as 0 (no wait), since it's more likely user error
   const val = Number(arg);
   if (arg === '' || Number.isNaN(val)) {
-    throw new TypeError(`Invalid number "${arg}"`);
+    throw new InvalidOptionArgumentError(`Invalid number "${arg}"`);
   }
 
   if (val < 0) {
-    throw new RangeError('--wait must not be negative');
+    throw new InvalidOptionArgumentError('--wait must not be negative');
   }
 
   return val;
+}
+
+/** Option parser to count the number of occurrences of the option.
+ *
+ * @private
+ * @param {boolean|string} optarg Argument passed to option (ignored).
+ * @param {number=} previous Previous value of option (counter).
+ * @returns {number} previous + 1.
+ */
+function countOption(optarg, previous) {
+  return (previous || 0) + 1;
 }
 
 /** Options for command entry points.
@@ -112,104 +103,80 @@ function hubCiStatusMain(args, options, callback) {
     args = [];
   }
 
-  const yargsObj = yargs(args)
-    .parserConfiguration({
-      'parse-numbers': false,
-      'parse-positional-numbers': false,
-      'dot-notation': false,
-      'duplicate-arguments-array': false,
-      'flatten-duplicate-arrays': false,
-      'greedy-arrays': false,
-      'strip-aliased': true,
-      'strip-dashed': true,
+  const command = new Command()
+    .exitOverride()
+    .configureOutput({
+      writeOut: (str) => options.stdout.write(str),
+      writeErr: (str) => options.stderr.write(str),
+      getOutHelpWidth: () => options.stdout.columns,
+      getErrHelpWidth: () => options.stderr.columns,
     })
-    .usage('Usage: $0 [options] [ref]')
-    .help()
-    .alias('help', 'h')
-    .alias('help', '?')
-    .options('color', {
-      describe: `Colorize verbose output (${colorOptions.join('|')})`,
-      coerce: coerceColor,
-    })
-    .option('quiet', {
-      alias: 'q',
-      describe: 'Print less output',
-      count: true,
-    })
-    .option('verbose', {
-      alias: 'v',
-      describe: 'Print more output',
-      count: true,
-    })
-    .option('wait', {
-      alias: 'w',
-      describe: 'Retry while combined status is pending'
-        + ' (with optional max time in sec)',
-      defaultDescription: 'Infinity',
-      coerce: coerceWait,
-    })
-    .options('wait-all', {
-      alias: 'W',
-      boolean: true,
-      describe: 'Retry while any status is pending (implies --wait)',
-    })
-    .version(`${packageJson.name} ${packageJson.version}`)
-    .alias('version', 'V')
-    .strict();
-  yargsObj.parse(args, async (errYargs, argOpts, output) => {
-    if (errYargs) {
-      options.stderr.write(`${output || errYargs}\n`);
-      callback(1);
-      return;
-    }
+    .arguments('[ref]')
+    .allowExcessArguments(false)
+    // Check for required/excess arguments.
+    // Workaround https://github.com/tj/commander.js/issues/1493
+    .action(() => {})
+    .description('Command description.')
+    .addOption(
+      new Option('--color [when]', 'Colorize verbose output')
+        .choices(colorOptions),
+    )
+    .option('-q, --quiet', 'Print less output', countOption)
+    .option('-v, --verbose', 'Print more output', countOption)
+    .option(
+      '-w, --wait [seconds]',
+      'Retry while combined status is pending (with optional max time in sec)',
+      coerceWait,
+    )
+    .option(
+      '-W, --wait-all',
+      'Retry while any status is pending (implies --wait)',
+    )
+    .version(packageJson.version);
 
-    if (output) {
-      options.stdout.write(`${output}\n`);
-    }
+  try {
+    command.parse(args);
+  } catch (errParse) {
+    const exitCode =
+      errParse.exitCode !== undefined ? errParse.exitCode : 1;
+    process.nextTick(callback, exitCode);
+    return;
+  }
 
-    if (argOpts.help || argOpts.version) {
-      callback(0);
-      return;
-    }
-
-    if (argOpts._.length > 1) {
-      options.stderr.write(
-        `Error: Expected at most 1 argument, got ${argOpts._.length}.\n`,
-      );
-      callback(1);
-      return;
-    }
-
-    const maxTotalMs = argOpts.wait !== undefined ? argOpts.wait * 1000
-      : argOpts.waitAll ? Infinity
+  const argOpts = command.opts();
+  const maxTotalMs =
+    typeof argOpts.wait === 'number' ? argOpts.wait * 1000
+      : argOpts.wait || argOpts.waitAll ? Infinity
         : undefined;
-    const useColor = argOpts.color === 'never' ? false
-      : argOpts.color === 'always' ? true
+  const useColor =
+    argOpts.color === 'never' ? false
+      : argOpts.color === 'always' || argOpts.color === true ? true
         : undefined;
-    const ref = argOpts._[0];
-    const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
+  const ref = command.args[0];
+  const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
 
-    let exitCode = 0;
-    try {
-      const gcs = options.hubCiStatus || hubCiStatus;
-      exitCode = await gcs(ref, {
-        octokitOptions: {
-          auth: options.env ? options.env.GITHUB_TOKEN : undefined,
-        },
-        stderr: options.stderr,
-        stdout: options.stdout,
-        useColor,
-        verbosity,
-        wait: maxTotalMs === undefined ? undefined : { maxTotalMs },
-        waitAll: !!argOpts.waitAll,
-      });
-    } catch (err) {
-      exitCode = 1;
-      options.stderr.write(`${verbosity > 1 ? err.stack : err}\n`);
-    }
-
-    callback(exitCode);
-  });
+  const gcs = options.hubCiStatus || hubCiStatus;
+  // eslint-disable-next-line promise/catch-or-return
+  gcs(ref, {
+    octokitOptions: {
+      auth: options.env ? options.env.GITHUB_TOKEN : undefined,
+    },
+    stderr: options.stderr,
+    stdout: options.stdout,
+    useColor,
+    verbosity,
+    wait: maxTotalMs === undefined ? undefined : { maxTotalMs },
+    waitAll: !!argOpts.waitAll,
+  })
+    .then(
+      () => 0,
+      (err) => {
+        options.stderr.write(`${verbosity > 1 ? err.stack : err}\n`);
+        return 1;
+      },
+    )
+    // Note: nextTick for unhandledException (like util.callbackify)
+    .then((exitCode) => process.nextTick(callback, exitCode));
 }
 
 module.exports = hubCiStatusMain;

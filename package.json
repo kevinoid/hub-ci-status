@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^18.0.12",
-    "yargs": "^17.0.1"
+    "commander": "^7.0.0"
   },
   "devDependencies": {
     "@kevinoid/assert-shim": "^0.1.0",

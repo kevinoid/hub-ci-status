@@ -100,7 +100,7 @@ describe('hub-ci-status command', () => {
     );
   });
 
-  for (const helpOpt of ['--help', '-h', '-?']) {
+  for (const helpOpt of ['--help', '-h']) {
     it(`${helpOpt} prints help message to stdout`, async () => {
       const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
@@ -121,7 +121,7 @@ describe('hub-ci-status command', () => {
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert.strictEqual(output, `hub-ci-status ${packageJson.version}\n`);
+      assert.strictEqual(output, `${packageJson.version}\n`);
     });
   }
 
@@ -289,10 +289,13 @@ describe('hub-ci-status command', () => {
   expectArgsErr(['--wait=nope'], /\bwait\b/);
   expectArgsErr(['--wait='], /\bwait\b/);
   expectArgsErr(['--wait=-1'], /\bwait\b/);
-  expectArgsErr(['--wait', '-1'], /\bwait\b/);
   expectArgsErr(['-wnope'], /\bwait\b/);
   expectArgsErr(['-w-1'], /\bwait\b/);
-  expectArgsErr(['-w', '-1'], /\bwait\b/);
+  // Note: commander treats negative values for optional arguments as unknown
+  // https://github.com/tj/commander.js/issues/61
+  // https://github.com/tj/commander.js/pull/583#issuecomment-486819992
+  expectArgsErr(['--wait', '-1'], /\bunknown option\b/);
+  expectArgsErr(['-w', '-1'], /\bunknown option\b/);
   expectArgsErr(['--unknown123'], /\bunknown123\b/);
   // Note: Differs from hub(1), which ignores unexpected ci-status arguments.
   expectArgsErr(['ref1', 'ref2'], /\barguments?\b/i);

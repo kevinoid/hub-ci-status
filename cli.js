@@ -80,7 +80,7 @@ function coerceWait(arg) {
  * @param {!CommandOptions} options Options.
  * @param {function(number)} callback Callback with exit code.
  */
-function hubCiStatusCmd(args, options, callback) {
+function hubCiStatusMain(args, options, callback) {
   if (typeof callback !== 'function') {
     throw new TypeError('callback must be a function');
   }
@@ -212,4 +212,4 @@ function hubCiStatusCmd(args, options, callback) {
   });
 }
 
-module.exports = hubCiStatusCmd;
+module.exports = hubCiStatusMain;

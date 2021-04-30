@@ -18,12 +18,6 @@ const { match } = sinon;
 // Simulate arguments passed by the node runtime
 const RUNTIME_ARGS = ['node', 'hub-ci-status'];
 
-function hubCiStatusCmdP(...args) {
-  return new Promise((resolve) => {
-    hubCiStatusCmd(...args, resolve);
-  });
-}
-
 function neverCalled() {
   assert.fail('Should never be called');
 }
@@ -38,64 +32,59 @@ function getTestOptions() {
   };
 }
 
+/* eslint-disable arrow-body-style */
+
 describe('hub-ci-status command', () => {
-  it('throws TypeError with no arguments', () => {
-    assert.throws(
+  it('rejects TypeError with no arguments', () => {
+    return assert.rejects(
       hubCiStatusCmd,
       TypeError,
     );
   });
 
-  it('throws TypeError for non-array-like args', () => {
-    assert.throws(
-      () => hubCiStatusCmd({}, getTestOptions(), neverCalled),
+  it('rejects TypeError for non-array-like args', () => {
+    return assert.rejects(
+      () => hubCiStatusCmd({}, getTestOptions()),
       TypeError,
     );
   });
 
-  it('throws TypeError for non-function callback', () => {
-    assert.throws(
-      () => { hubCiStatusCmd(RUNTIME_ARGS, getTestOptions(), true); },
+  it('rejects TypeError for non-object options', () => {
+    return assert.rejects(
+      () => hubCiStatusCmd(RUNTIME_ARGS, true),
       TypeError,
     );
   });
 
-  it('throws TypeError for non-object options', () => {
-    assert.throws(
-      () => { hubCiStatusCmd(RUNTIME_ARGS, true, neverCalled); },
-      TypeError,
-    );
-  });
-
-  it('throws TypeError for non-Readable stdin', () => {
+  it('rejects TypeError for non-Readable stdin', () => {
     const options = {
       ...getTestOptions(),
       stdin: {},
     };
-    assert.throws(
-      () => { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+    return assert.rejects(
+      () => hubCiStatusCmd(RUNTIME_ARGS, options),
       TypeError,
     );
   });
 
-  it('throws TypeError for non-Writable stdout', () => {
+  it('rejects TypeError for non-Writable stdout', () => {
     const options = {
       ...getTestOptions(),
       stdout: new stream.Readable(),
     };
-    assert.throws(
-      () => { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+    return assert.rejects(
+      () => hubCiStatusCmd(RUNTIME_ARGS, options),
       TypeError,
     );
   });
 
-  it('throws TypeError for non-Writable stderr', () => {
+  it('rejects TypeError for non-Writable stderr', () => {
     const options = {
       ...getTestOptions(),
       stderr: new stream.Readable(),
     };
-    assert.throws(
-      () => { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+    return assert.rejects(
+      () => hubCiStatusCmd(RUNTIME_ARGS, options),
       TypeError,
     );
   });
@@ -104,7 +93,7 @@ describe('hub-ci-status command', () => {
     it(`${helpOpt} prints help message to stdout`, async () => {
       const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
+      const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
@@ -117,7 +106,7 @@ describe('hub-ci-status command', () => {
     it(`${versionOpt} prints version message to stdout`, async () => {
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
+      const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
@@ -131,7 +120,7 @@ describe('hub-ci-status command', () => {
       ...getTestOptions(),
       hubCiStatus,
     };
-    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    await hubCiStatusCmd(RUNTIME_ARGS, options);
     sinon.assert.callCount(hubCiStatus, 1);
     const gcsOptions = hubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.stderr, options.stderr);
@@ -148,7 +137,7 @@ describe('hub-ci-status command', () => {
       },
       hubCiStatus,
     };
-    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    await hubCiStatusCmd(RUNTIME_ARGS, options);
     sinon.assert.callCount(hubCiStatus, 1);
     const gcsOptions = hubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
@@ -164,7 +153,7 @@ describe('hub-ci-status command', () => {
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
       assert.strictEqual(exitCode, 0);
@@ -276,7 +265,7 @@ describe('hub-ci-status command', () => {
     it(`prints error and exits for ${args.join(' ')}`, async () => {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(exitCode, 1);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
@@ -307,7 +296,7 @@ describe('hub-ci-status command', () => {
       ...getTestOptions(),
       hubCiStatus,
     };
-    const exitCode = await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    const exitCode = await hubCiStatusCmd(RUNTIME_ARGS, options);
     assert.strictEqual(exitCode, 1);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), `${errTest}\n`);
@@ -321,7 +310,7 @@ describe('hub-ci-status command', () => {
       ...getTestOptions(),
       hubCiStatus,
     };
-    const exitCode = await hubCiStatusCmdP(args, options);
+    const exitCode = await hubCiStatusCmd(args, options);
     assert.strictEqual(exitCode, 1);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), `${errTest.stack}\n`);

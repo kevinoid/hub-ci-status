@@ -32,8 +32,6 @@ function getTestOptions() {
   };
 }
 
-/* eslint-disable arrow-body-style */
-
 describe('hub-ci-status command', () => {
   it('rejects TypeError with no arguments', () => {
     return assert.rejects(

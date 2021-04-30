@@ -394,9 +394,6 @@ describe('retryAsync', () => {
     sinon.assert.alwaysCalledWithExactly(stub);
   });
 
-  // Prefer consistent formatting of arrow functions passed to it()
-  /* eslint-disable arrow-body-style */
-
   it('rejects with TypeError without arguments', () => {
     return assert.rejects(
       () => retryAsync(),

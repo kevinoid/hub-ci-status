@@ -44,9 +44,6 @@ before('setup test repository', async function() {
   await gitInit(testRepoPath, defaultBranch);
 });
 
-// Prefer consistent formatting of arrow functions passed to it()
-/* eslint-disable arrow-body-style */
-
 describe('githubUtils', function() {
   this.timeout(timeoutMs);
 

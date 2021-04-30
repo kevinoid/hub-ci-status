@@ -10,8 +10,8 @@ const assert = require('@kevinoid/assert-shim');
 const sinon = require('sinon');
 const stream = require('stream');
 
-const hubCiStatusCmd = require('../../bin/hub-ci-status.js');
-const packageJson = require('../../package.json');
+const hubCiStatusCmd = require('../cli.js');
+const packageJson = require('../package.json');
 
 const { match } = sinon;
 

@@ -3,23 +3,23 @@
  * @license MIT
  */
 
-'use strict';
+import FakeTimers from '@sinonjs/fake-timers';
+import assert from 'assert';
+import sinon from 'sinon';
+import timers from 'timers';
+import { promisify } from 'util';
 
-const FakeTimers = require('@sinonjs/fake-timers');
-const assert = require('assert');
-const sinon = require('sinon');
-const timers = require('timers');
-const { promisify } = require('util');
-
-const fetchCiStatus = require('../../lib/fetch-ci-status.js');
-const getPackageJson = require('../../lib/get-package-json.js');
-const { makeCheckRuns, makeCombinedStatus } =
-  require('../../test-lib/api-responses.js');
-const {
+import fetchCiStatus from '../../lib/fetch-ci-status.js';
+import getPackageJson from '../../lib/get-package-json.js';
+import {
+  makeCheckRuns,
+  makeCombinedStatus,
+} from '../../test-lib/api-responses.js';
+import {
   HttpAgentMockSymbol,
   HttpsAgentMockSymbol,
   OctokitMockSymbol,
-} = require('../../lib/symbols.js');
+} from '../../lib/symbols.js';
 
 // TODO [engine:node@>=15]: import { setImmediate } from 'timers/promises';
 const setImmediateP = promisify(timers.setImmediate);

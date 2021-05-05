@@ -3,11 +3,9 @@
  * @license MIT
  */
 
-'use strict';
+import execFileOut from '../lib/exec-file-out.js';
 
-const execFileOut = require('../lib/exec-file-out.js');
-
-module.exports = async function gitInit(repoPath, defaultBranch) {
+export default async function gitInit(repoPath, defaultBranch) {
   try {
     await execFileOut(
       'git',
@@ -39,4 +37,4 @@ module.exports = async function gitInit(repoPath, defaultBranch) {
     'git',
     ['-C', repoPath, 'config', 'user.email', 'test@example.com'],
   );
-};
+}

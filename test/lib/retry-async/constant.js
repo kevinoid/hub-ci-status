@@ -3,11 +3,9 @@
  * @license MIT
  */
 
-'use strict';
+import assert from 'assert';
 
-const assert = require('assert');
-
-const constant = require('../../../lib/retry-async/constant.js');
+import constant from '../../../lib/retry-async/constant.js';
 
 describe('retryAsync.constant', () => {
   it('returns an iterable of number first argument', () => {

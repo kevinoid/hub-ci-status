@@ -3,15 +3,13 @@
  * @license MIT
  */
 
-'use strict';
+import FakeTimers from '@sinonjs/fake-timers';
+import assert from 'assert';
+import sinon from 'sinon';
+import timers from 'timers';
+import { promisify } from 'util';
 
-const FakeTimers = require('@sinonjs/fake-timers');
-const assert = require('assert');
-const sinon = require('sinon');
-const timers = require('timers');
-const { promisify } = require('util');
-
-const retryAsync = require('../../lib/retry-async.js');
+import retryAsync from '../../lib/retry-async.js';
 
 // TODO [engine:node@>=15]: import { setImmediate } from 'timers/promises';
 const setImmediateP = promisify(timers.setImmediate);

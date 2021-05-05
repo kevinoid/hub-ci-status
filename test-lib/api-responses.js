@@ -5,8 +5,6 @@
  * @license MIT
  */
 
-"use strict";
-
 const octokitResult = {
   "status": 200,
   "url": "https://api.github.com/repos/github/hello-world/commits/master",
@@ -47,8 +45,7 @@ const octokitResult = {
  * check_runs.conclusion "neutral".
  * @returns {!object} Mock API response with given conclusion values.
  */
-exports.makeCheckRuns =
-function makeCheckRuns(...runConclusions) {
+export function makeCheckRuns(...runConclusions) {
   // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
   const checkRun = {
     "id": 4,
@@ -156,7 +153,7 @@ function makeCheckRuns(...runConclusions) {
       })
     }
   };
-};
+}
 
 /** Creates an Octokit result object for "Get the combined status for a
  * specific reference".
@@ -165,8 +162,7 @@ function makeCheckRuns(...runConclusions) {
  * ("success", "pending", "failure")
  * @returns {!object} Mock API response with given state values.
  */
-exports.makeCombinedStatus =
-function makeCombinedStatus(...statusStates) {
+export function makeCombinedStatus(...statusStates) {
   // https://docs.github.com/rest/reference/repos#get-the-combined-status-for-a-specific-reference
   const statuses = [
     {
@@ -287,4 +283,4 @@ function makeCombinedStatus(...statusStates) {
       "url": "https://api.github.com/repos/octocat/Hello-World/6dcb09b5b57875f334f61aebed695e2e4193db5e/status"
     }
   };
-};
+}

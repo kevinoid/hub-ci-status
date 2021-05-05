@@ -17,14 +17,13 @@
     "type": "git",
     "url": "https://github.com/kevinoid/hub-ci-status.git"
   },
-  "type": "commonjs",
+  "type": "module",
   "files": [
     "*.js",
     "bin/",
     "lib/",
     "!**/.*"
   ],
-  "main": "index.js",
   "exports": {
     ".": "./index.js",
     "./package.json": "./package.json"

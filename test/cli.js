@@ -3,14 +3,12 @@
  * @license MIT
  */
 
-'use strict';
+import assert from 'assert';
+import sinon from 'sinon';
+import stream from 'stream';
 
-const assert = require('assert');
-const sinon = require('sinon');
-const stream = require('stream');
-
-const getPackageJson = require('../lib/get-package-json.js');
-const hubCiStatusCmd = require('../cli.js');
+import getPackageJson from '../lib/get-package-json.js';
+import hubCiStatusCmd from '../cli.js';
 
 const { match } = sinon;
 

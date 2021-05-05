@@ -4,16 +4,14 @@
  * @module hub-ci-status
  */
 
-'use strict';
-
-const fetchCiStatus = require('./lib/fetch-ci-status.js');
-const { resolveCommit } = require('./lib/git-utils.js');
-const { getProjectName } = require('./lib/github-utils.js');
-const {
+import fetchCiStatus from './lib/fetch-ci-status.js';
+import { resolveCommit } from './lib/git-utils.js';
+import { getProjectName } from './lib/github-utils.js';
+import {
   fetchCiStatusMockSymbol,
   getProjectNameMockSymbol,
   resolveCommitMockSymbol,
-} = require('./lib/symbols.js');
+} from './lib/symbols.js';
 
 // Use same "severity" as hub(1) for determining state
 // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L60-L69
@@ -164,8 +162,7 @@ function checkRunToStatus(checkRun) {
  * printed.  0 if the status was printed, non-zero if the status could not
  * be determined.
  */
-module.exports =
-async function hubCiStatus(
+export default async function hubCiStatus(
   rev = 'HEAD',
   {
     [fetchCiStatusMockSymbol]: fetchCiStatusMock,
@@ -218,4 +215,4 @@ async function hubCiStatus(
   }
 
   return stateToExitCode(state);
-};
+}

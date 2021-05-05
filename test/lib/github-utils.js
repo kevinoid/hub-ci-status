@@ -9,16 +9,14 @@
  * @license MIT
  */
 
-'use strict';
+import assert from 'assert';
+import { dir as makeTempDir } from 'tmp-promise';
 
-const assert = require('assert');
-const { dir: makeTempDir } = require('tmp-promise');
-
-const execFileOut = require('../../lib/exec-file-out.js');
-const getPackageJson = require('../../lib/get-package-json.js');
-const gitInit = require('../../test-lib/git-init.js');
-const { getProjectName } = require('../../lib/github-utils.js');
-const { resolveCommit } = require('../../lib/git-utils.js');
+import execFileOut from '../../lib/exec-file-out.js';
+import getPackageJson from '../../lib/get-package-json.js';
+import gitInit from '../../test-lib/git-init.js';
+import { getProjectName } from '../../lib/github-utils.js';
+import { resolveCommit } from '../../lib/git-utils.js';
 
 const defaultBranch = 'main';
 const isWindows = /^win/i.test(process.platform);

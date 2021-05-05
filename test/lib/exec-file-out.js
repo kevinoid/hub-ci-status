@@ -3,11 +3,9 @@
  * @license MIT
  */
 
-'use strict';
+import assert from 'assert';
 
-const assert = require('assert');
-
-const execFileOut = require('../../lib/exec-file-out.js');
+import execFileOut from '../../lib/exec-file-out.js';
 
 function neverCalled() {
   throw new Error('Should not be called');

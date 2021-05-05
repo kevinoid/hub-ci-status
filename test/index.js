@@ -3,21 +3,21 @@
  * @license MIT
  */
 
-'use strict';
+import ansiStyles from 'ansi-styles';
+import assert from 'assert';
+import sinon from 'sinon';
+import { PassThrough } from 'stream';
 
-const ansiStyles = require('ansi-styles');
-const assert = require('assert');
-const sinon = require('sinon');
-const { PassThrough } = require('stream');
-
-const hubCiStatus = require('..');
-const { makeCheckRuns, makeCombinedStatus } =
-  require('../test-lib/api-responses.js');
-const {
+import hubCiStatus from '../index.js';
+import {
+  makeCheckRuns,
+  makeCombinedStatus,
+} from '../test-lib/api-responses.js';
+import {
   fetchCiStatusMockSymbol,
   getProjectNameMockSymbol,
   resolveCommitMockSymbol,
-} = require('../lib/symbols.js');
+} from '../lib/symbols.js';
 
 const { match } = sinon;
 

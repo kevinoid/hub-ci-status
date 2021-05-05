@@ -3,11 +3,9 @@
  * @license MIT
  */
 
-'use strict';
+import assert from 'assert';
 
-const assert = require('assert');
-
-const exponential = require('../../../lib/retry-async/exponential.js');
+import exponential from '../../../lib/retry-async/exponential.js';
 
 describe('retryAsync.exponential', () => {
   it('returns an iterable of count exponentially increasing values', () => {

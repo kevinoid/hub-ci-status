@@ -4,16 +4,14 @@
  * @module hub-ci-status/cli.js
  */
 
-'use strict';
-
-const {
+import {
   Command,
   InvalidOptionArgumentError,
   Option,
-} = require('commander');
+} from 'commander';
 
-const hubCiStatus = require('.');
-const getPackageJson = require('./lib/get-package-json.js');
+import getPackageJson from './lib/get-package-json.js';
+import hubCiStatus from './index.js';
 
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];
@@ -72,7 +70,7 @@ function countOption(optarg, previous) {
  * @returns {!Promise<number>} Promise for exit code.  Only rejected for
  * arguments with invalid type (or args.length < 2).
  */
-async function hubCiStatusMain(args, options) {
+export default async function hubCiStatusMain(args, options) {
   if (!Array.isArray(args) || args.length < 2) {
     throw new TypeError('args must be an Array with at least 2 items');
   }
@@ -169,5 +167,3 @@ async function hubCiStatusMain(args, options) {
     return 1;
   }
 }
-
-module.exports = hubCiStatusMain;

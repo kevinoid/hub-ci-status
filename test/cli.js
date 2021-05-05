@@ -7,13 +7,18 @@
 
 // TODO [engine:node@>=12.16]: require('assert');
 const assert = require('@kevinoid/assert-shim');
+const { readFile } = require('fs').promises;
+const path = require('path');
 const sinon = require('sinon');
 const stream = require('stream');
 
 const hubCiStatusCmd = require('../cli.js');
-const packageJson = require('../package.json');
 
 const { match } = sinon;
+
+const packageJsonPromise =
+  readFile(path.join(__dirname, '..', 'package.json'), { encoding: 'utf8' })
+    .then(JSON.parse);
 
 // Simulate arguments passed by the node runtime
 const RUNTIME_ARGS = ['node', 'hub-ci-status'];
@@ -102,6 +107,7 @@ describe('hub-ci-status command', () => {
 
   for (const versionOpt of ['--version', '-V']) {
     it(`${versionOpt} prints version message to stdout`, async () => {
+      const packageJson = await packageJsonPromise;
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
       const exitCode = await hubCiStatusCmd(args, options);

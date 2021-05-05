@@ -11,8 +11,9 @@ const {
   InvalidOptionArgumentError,
   Option,
 } = require('commander');
+const { readFile } = require('fs').promises;
+const path = require('path');
 
-const packageJson = require('./package.json');
 const hubCiStatus = require('.');
 
 // Same --color options as hub(1)
@@ -46,6 +47,11 @@ function coerceWait(arg) {
  */
 function countOption(optarg, previous) {
   return (previous || 0) + 1;
+}
+
+async function readJson(pathOrUrl, options) {
+  const content = await readFile(pathOrUrl, { encoding: 'utf8', ...options });
+  return JSON.parse(content);
 }
 
 /** Options for command entry points.
@@ -111,6 +117,9 @@ async function hubCiStatusMain(args, options) {
     )
     .option('-q, --quiet', 'Print less output', countOption)
     .option('-v, --verbose', 'Print more output', countOption)
+    // TODO: Replace with .version(packageJson.version) loaded as JSON module
+    // https://github.com/nodejs/node/issues/37141
+    .option('-V, --version', 'output the version number')
     .option(
       '-w, --wait [seconds]',
       'Retry while combined status is pending (with optional max time in sec)',
@@ -119,8 +128,7 @@ async function hubCiStatusMain(args, options) {
     .option(
       '-W, --wait-all',
       'Retry while any status is pending (implies --wait)',
-    )
-    .version(packageJson.version);
+    );
 
   try {
     command.parse(args);
@@ -130,6 +138,14 @@ async function hubCiStatusMain(args, options) {
   }
 
   const argOpts = command.opts();
+
+  if (argOpts.version) {
+    const packageJson =
+      await readJson(path.join(__dirname, 'package.json'));
+    options.stdout.write(`${packageJson.version}\n`);
+    return 0;
+  }
+
   const maxTotalMs =
     typeof argOpts.wait === 'number' ? argOpts.wait * 1000
       : argOpts.wait || argOpts.waitAll ? Infinity

@@ -89,11 +89,11 @@ describe('hub-ci-status command', () => {
       const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
       const exitCode = await hubCiStatusCmd(args, options);
-      assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
       assert(output, 'produces help output');
       assert.match(output, /--wait\b/);
+      assert.strictEqual(exitCode, 0);
     });
   }
 
@@ -103,10 +103,10 @@ describe('hub-ci-status command', () => {
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
       const exitCode = await hubCiStatusCmd(args, options);
-      assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
       assert.strictEqual(output, `${packageJson.version}\n`);
+      assert.strictEqual(exitCode, 0);
     });
   }
 
@@ -262,9 +262,9 @@ describe('hub-ci-status command', () => {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
       const exitCode = await hubCiStatusCmd(allArgs, options);
-      assert.strictEqual(exitCode, 1);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     });
   }
 
@@ -293,9 +293,9 @@ describe('hub-ci-status command', () => {
       hubCiStatus,
     };
     const exitCode = await hubCiStatusCmd(RUNTIME_ARGS, options);
-    assert.strictEqual(exitCode, 1);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), `${errTest}\n`);
+    assert.strictEqual(exitCode, 1);
   });
 
   it('prints hubCiStatus rejection stack if very verbose', async () => {
@@ -307,8 +307,8 @@ describe('hub-ci-status command', () => {
       hubCiStatus,
     };
     const exitCode = await hubCiStatusCmd(args, options);
-    assert.strictEqual(exitCode, 1);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), `${errTest.stack}\n`);
+    assert.strictEqual(exitCode, 1);
   });
 });

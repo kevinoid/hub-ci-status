@@ -11,6 +11,7 @@
 
 'use strict';
 
+// TODO [engine:node@>=12.16]: require('assert');
 const assert = require('@kevinoid/assert-shim');
 const { dir: makeTempDir } = require('tmp-promise');
 

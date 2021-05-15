@@ -11,9 +11,9 @@ const path = require('path');
 const { dir: makeTempDir } = require('tmp-promise');
 const { pathToFileURL } = require('url');
 
-const gitInit = require('../../test-lib/git-init');
-const gitUtils = require('../../lib/git-utils');
-const execFileOut = require('../../lib/exec-file-out');
+const gitInit = require('../../test-lib/git-init.js');
+const gitUtils = require('../../lib/git-utils.js');
+const execFileOut = require('../../lib/exec-file-out.js');
 const packageJson = require('../../package.json');
 
 const defaultBranch = 'main';

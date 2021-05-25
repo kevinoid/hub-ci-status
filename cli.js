@@ -89,6 +89,7 @@ export default async function hubCiStatusMain(args, options) {
     throw new TypeError('options.stderr must be a stream.Writable');
   }
 
+  let errVersion;
   const command = new Command()
     .exitOverride()
     .configureOutput({
@@ -113,6 +114,12 @@ export default async function hubCiStatusMain(args, options) {
     // TODO: Replace with .version(packageJson.version) loaded as JSON module
     // https://github.com/nodejs/node/issues/37141
     .option('-V, --version', 'output the version number')
+    // throw exception to stop option parsing early, as commander does
+    // (e.g. to avoid failing due to missing required arguments)
+    .on('option:version', () => {
+      errVersion = new Error('version');
+      throw errVersion;
+    })
     .option(
       '-w, --wait [seconds]',
       'retry while combined status is pending (with optional max time in sec)',
@@ -126,17 +133,17 @@ export default async function hubCiStatusMain(args, options) {
   try {
     command.parse(args);
   } catch (errParse) {
+    if (errVersion) {
+      const packageJson = await getPackageJson();
+      options.stdout.write(`${packageJson.version}\n`);
+      return 0;
+    }
+
     // Note: Error message already printed to stderr by Commander
     return errParse.exitCode !== undefined ? errParse.exitCode : 1;
   }
 
   const argOpts = command.opts();
-
-  if (argOpts.version) {
-    const packageJson = await getPackageJson();
-    options.stdout.write(`${packageJson.version}\n`);
-    return 0;
-  }
 
   const maxTotalMs =
     typeof argOpts.wait === 'number' ? argOpts.wait * 1000

@@ -23,13 +23,15 @@ const { resolveCommit } = require('../../lib/git-utils.js');
 
 const defaultBranch = 'main';
 const isWindows = /^win/i.test(process.platform);
+// Since git is often slow in shared CI systems, especially on Windows,
+// increase the timeout to avoid failures.
+const timeoutMs = isWindows ? 8000 : 4000;
 
 /** Path to repository in which tests are run. */
 let testRepoPath;
 let gitOptions;
 before('setup test repository', async function() {
-  // Some git versions can run quite slowly on Windows
-  this.timeout(isWindows ? 8000 : 4000);
+  this.timeout(timeoutMs);
 
   const tempDir = await makeTempDir({
     prefix: `${packageJson.name}-test`,
@@ -45,7 +47,9 @@ before('setup test repository', async function() {
 // Prefer consistent formatting of arrow functions passed to it()
 /* eslint-disable arrow-body-style */
 
-describe('githubUtils', () => {
+describe('githubUtils', function() {
+  this.timeout(timeoutMs);
+
   describe('.getProjectName', () => {
     describe('with init repo', () => {
       it('throws UnknownProjectError', () => {

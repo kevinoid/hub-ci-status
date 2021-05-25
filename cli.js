@@ -108,19 +108,19 @@ export default async function hubCiStatusMain(args, options) {
       new Option('--color [when]', 'Colorize verbose output')
         .choices(colorOptions),
     )
-    .option('-q, --quiet', 'Print less output', countOption)
-    .option('-v, --verbose', 'Print more output', countOption)
+    .option('-q, --quiet', 'print less output', countOption)
+    .option('-v, --verbose', 'print more output', countOption)
     // TODO: Replace with .version(packageJson.version) loaded as JSON module
     // https://github.com/nodejs/node/issues/37141
     .option('-V, --version', 'output the version number')
     .option(
       '-w, --wait [seconds]',
-      'Retry while combined status is pending (with optional max time in sec)',
+      'retry while combined status is pending (with optional max time in sec)',
       coerceWait,
     )
     .option(
       '-W, --wait-all',
-      'Retry while any status is pending (implies --wait)',
+      'retry while any status is pending (implies --wait)',
     );
 
   try {

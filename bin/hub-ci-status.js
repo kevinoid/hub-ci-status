@@ -9,7 +9,7 @@
 
 'use strict';
 
-const Yargs = require('yargs/yargs');
+const yargs = require('yargs/yargs');
 
 const packageJson = require('../package.json');
 const hubCiStatus = require('..');
@@ -18,6 +18,10 @@ const hubCiStatus = require('..');
 const colorOptions = ['always', 'never', 'auto'];
 
 function coerceColor(arg) {
+  if (arg === undefined) {
+    return arg;
+  }
+
   if (arg === true) {
     // Treat --color without argument as 'always'.
     return 'always';
@@ -34,6 +38,10 @@ function coerceColor(arg) {
 }
 
 function coerceWait(arg) {
+  if (arg === undefined) {
+    return arg;
+  }
+
   if (arg === true) {
     // Treat --wait without argument as infinite wait.
     return Infinity;
@@ -109,7 +117,7 @@ function hubCiStatusCmd(args, options, callback) {
     args = [];
   }
 
-  const yargs = new Yargs()
+  const yargsObj = yargs(args)
     .parserConfiguration({
       'parse-numbers': false,
       'parse-positional-numbers': false,
@@ -153,7 +161,7 @@ function hubCiStatusCmd(args, options, callback) {
     .version(`${packageJson.name} ${packageJson.version}`)
     .alias('version', 'V')
     .strict();
-  yargs.parse(args, async (errYargs, argOpts, output) => {
+  yargsObj.parse(args, async (errYargs, argOpts, output) => {
     if (errYargs) {
       options.stderr.write(`${output || errYargs}\n`);
       callback(1);

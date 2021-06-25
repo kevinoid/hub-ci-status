@@ -100,10 +100,6 @@ export default async function hubCiStatusMain(args, options) {
     })
     .arguments('[ref]')
     .allowExcessArguments(false)
-    // Check for required/excess arguments.
-    // Workaround https://github.com/tj/commander.js/issues/1493
-    // TODO [commander@>=8]: Remove if fixed
-    .action(() => {})
     .description('Command description.')
     .addOption(
       new Option('--color [when]', 'Colorize verbose output')

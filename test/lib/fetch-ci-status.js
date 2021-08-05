@@ -13,7 +13,7 @@ const timers = require('timers');
 const { promisify } = require('util');
 
 const fetchCiStatus = require('../../lib/fetch-ci-status.js');
-const packageJson = require('../../package.json');
+const getPackageJson = require('../../lib/get-package-json.js');
 const { makeCheckRuns, makeCombinedStatus } =
   require('../../test-lib/api-responses.js');
 
@@ -501,6 +501,7 @@ describe('fetchCiStatus', () => {
 
     it('constructs Octokit with userAgent by default', async () => {
       await fetchCiStatus(apiArgs);
+      const packageJson = await getPackageJson();
       sinon.assert.calledOnceWithExactly(Octokit, match({
         request: undefined,
         userAgent: `${packageJson.name}/${packageJson.version}`,

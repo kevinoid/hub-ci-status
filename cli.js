@@ -11,10 +11,9 @@ const {
   InvalidOptionArgumentError,
   Option,
 } = require('commander');
-const { readFile } = require('fs').promises;
-const path = require('path');
 
 const hubCiStatus = require('.');
+const getPackageJson = require('./lib/get-package-json.js');
 
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];
@@ -47,11 +46,6 @@ function coerceWait(arg) {
  */
 function countOption(optarg, previous) {
   return (previous || 0) + 1;
-}
-
-async function readJson(pathOrUrl, options) {
-  const content = await readFile(pathOrUrl, { encoding: 'utf8', ...options });
-  return JSON.parse(content);
 }
 
 /** Options for command entry points.
@@ -140,8 +134,7 @@ async function hubCiStatusMain(args, options) {
   const argOpts = command.opts();
 
   if (argOpts.version) {
-    const packageJson =
-      await readJson(path.join(__dirname, 'package.json'));
+    const packageJson = await getPackageJson();
     options.stdout.write(`${packageJson.version}\n`);
     return 0;
   }

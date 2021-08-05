@@ -15,9 +15,9 @@ const assert = require('assert');
 const { dir: makeTempDir } = require('tmp-promise');
 
 const execFileOut = require('../../lib/exec-file-out.js');
+const getPackageJson = require('../../lib/get-package-json.js');
 const gitInit = require('../../test-lib/git-init.js');
 const { getProjectName } = require('../../lib/github-utils.js');
-const packageJson = require('../../package.json');
 const { resolveCommit } = require('../../lib/git-utils.js');
 
 const defaultBranch = 'main';
@@ -32,6 +32,7 @@ let gitOptions;
 before('setup test repository', async function() {
   this.timeout(timeoutMs);
 
+  const packageJson = await getPackageJson();
   const tempDir = await makeTempDir({
     prefix: `${packageJson.name}-test`,
     unsafeCleanup: true,

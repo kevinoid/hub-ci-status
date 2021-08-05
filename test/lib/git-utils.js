@@ -10,10 +10,10 @@ const path = require('path');
 const { dir: makeTempDir } = require('tmp-promise');
 const { pathToFileURL } = require('url');
 
+const getPackageJson = require('../../lib/get-package-json.js');
 const gitInit = require('../../test-lib/git-init.js');
 const gitUtils = require('../../lib/git-utils.js');
 const execFileOut = require('../../lib/exec-file-out.js');
-const packageJson = require('../../package.json');
 
 const defaultBranch = 'main';
 const isWindows = /^win/i.test(process.platform);
@@ -46,6 +46,7 @@ before('setup test repository', async function() {
   // Some git versions can run quite slowly on Windows
   this.timeout(isWindows ? 8000 : 4000);
 
+  const packageJson = await getPackageJson();
   const tempDir = await makeTempDir({
     prefix: `${packageJson.name}-test`,
     unsafeCleanup: true,

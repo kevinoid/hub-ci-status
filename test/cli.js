@@ -5,8 +5,7 @@
 
 'use strict';
 
-// TODO [engine:node@>=12.16]: require('assert');
-const assert = require('@kevinoid/assert-shim');
+const assert = require('assert');
 const { readFile } = require('fs').promises;
 const path = require('path');
 const sinon = require('sinon');

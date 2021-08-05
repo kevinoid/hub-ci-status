@@ -165,9 +165,9 @@ describe('hub-ci-status command', () => {
         hubCiStatus,
       };
       const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,

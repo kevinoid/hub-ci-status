@@ -9,6 +9,11 @@
 const fetchCiStatus = require('./lib/fetch-ci-status.js');
 const { resolveCommit } = require('./lib/git-utils.js');
 const { getProjectName } = require('./lib/github-utils.js');
+const {
+  fetchCiStatusMockSymbol,
+  getProjectNameMockSymbol,
+  resolveCommitMockSymbol,
+} = require('./lib/symbols.js');
 
 // Use same "severity" as hub(1) for determining state
 // https://github.com/github/hub/blob/v2.14.2/commands/ci_status.go#L60-L69
@@ -163,6 +168,9 @@ module.exports =
 async function hubCiStatus(
   rev = 'HEAD',
   {
+    [fetchCiStatusMockSymbol]: fetchCiStatusMock,
+    [getProjectNameMockSymbol]: getProjectNameMock,
+    [resolveCommitMockSymbol]: resolveCommitMock,
     gitOptions,
     octokit,
     octokitOptions,
@@ -176,9 +184,11 @@ async function hubCiStatus(
 ) {
   verbosity = Number(verbosity) || 0;
 
+  const getProjectNameOrMock = getProjectNameMock || getProjectName;
+  const resolveCommitOrMock = resolveCommitMock || resolveCommit;
   const [[owner, repo], ref] = await Promise.all([
-    getProjectName(gitOptions),
-    resolveCommit(rev, gitOptions),
+    getProjectNameOrMock(gitOptions),
+    resolveCommitOrMock(rev, gitOptions),
   ]);
   const statusOptions = {
     octokit,
@@ -189,8 +199,9 @@ async function hubCiStatus(
   if (verbosity > 1) {
     statusOptions.debug = (msg) => stderr.write(`DEBUG: ${msg}\n`);
   }
+  const fetchCiStatusOrMock = fetchCiStatusMock || fetchCiStatus;
   const [combinedStatus, checksList] =
-    await fetchCiStatus({ owner, repo, ref }, statusOptions);
+    await fetchCiStatusOrMock({ owner, repo, ref }, statusOptions);
 
   const statuses = [
     ...combinedStatus.statuses,

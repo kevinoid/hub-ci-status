@@ -7,26 +7,23 @@
 
 const ansiStyles = require('ansi-styles');
 const assert = require('assert');
-const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const { PassThrough } = require('stream');
 
+const hubCiStatus = require('..');
 const { makeCheckRuns, makeCombinedStatus } =
   require('../test-lib/api-responses.js');
+const {
+  fetchCiStatusMockSymbol,
+  getProjectNameMockSymbol,
+  resolveCommitMockSymbol,
+} = require('../lib/symbols.js');
 
 const { match } = sinon;
 
 const fetchCiStatus = sinon.stub();
 const getProjectName = sinon.stub();
 const resolveCommit = sinon.stub();
-const hubCiStatus = proxyquire(
-  '..',
-  {
-    './lib/fetch-ci-status.js': fetchCiStatus,
-    './lib/git-utils.js': { resolveCommit },
-    './lib/github-utils.js': { getProjectName },
-  },
-);
 
 const testOwner = 'owner';
 const testRepo = 'repo';
@@ -40,6 +37,10 @@ let testOptions;
 
 beforeEach(() => {
   testOptions = {
+    [fetchCiStatusMockSymbol]: fetchCiStatus,
+    [getProjectNameMockSymbol]: getProjectName,
+    [resolveCommitMockSymbol]: resolveCommit,
+
     stdout: new PassThrough({ encoding: 'utf8' }),
     stderr: new PassThrough({ encoding: 'utf8' }),
   };

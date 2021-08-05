@@ -7,7 +7,6 @@
 
 const FakeTimers = require('@sinonjs/fake-timers');
 const assert = require('assert');
-const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const timers = require('timers');
 const { promisify } = require('util');
@@ -16,6 +15,11 @@ const fetchCiStatus = require('../../lib/fetch-ci-status.js');
 const getPackageJson = require('../../lib/get-package-json.js');
 const { makeCheckRuns, makeCombinedStatus } =
   require('../../test-lib/api-responses.js');
+const {
+  HttpAgentMockSymbol,
+  HttpsAgentMockSymbol,
+  OctokitMockSymbol,
+} = require('../../lib/symbols.js');
 
 // TODO [engine:node@>=15]: import { setImmediate } from 'timers/promises';
 const setImmediateP = promisify(timers.setImmediate);
@@ -468,15 +472,12 @@ describe('fetchCiStatus', () => {
     const httpsAgent = { destroy: sinon.stub() };
     const https = { Agent: sinon.stub().returns(httpsAgent) };
 
-    // eslint-disable-next-line no-shadow
-    const fetchCiStatus = proxyquire(
-      '../../lib/fetch-ci-status.js',
-      {
-        '@octokit/rest': { Octokit },
-        http,
-        https,
-      },
-    );
+    const mockOptions = Object.freeze({
+      [HttpAgentMockSymbol]: http.Agent,
+      [HttpsAgentMockSymbol]: https.Agent,
+      [OctokitMockSymbol]: Octokit,
+    });
+
     beforeEach(() => {
       Octokit.resetHistory();
       listForRef.resetHistory();
@@ -490,6 +491,7 @@ describe('fetchCiStatus', () => {
 
     it('does not construct Octokit with options.options', async () => {
       const options = {
+        ...mockOptions,
         octokit: {
           checks: { listForRef },
           repos: { getCombinedStatusForRef },
@@ -500,7 +502,7 @@ describe('fetchCiStatus', () => {
     });
 
     it('constructs Octokit with userAgent by default', async () => {
-      await fetchCiStatus(apiArgs);
+      await fetchCiStatus(apiArgs, mockOptions);
       const packageJson = await getPackageJson();
       sinon.assert.calledOnceWithExactly(Octokit, match({
         request: undefined,
@@ -510,23 +512,30 @@ describe('fetchCiStatus', () => {
     });
 
     it('passes octokitOptions to Octokit constructor', async () => {
-      const octokitOptions = {
-        foo: 'bar',
-        userAgent: 'testagent',
+      const options = {
+        ...mockOptions,
+        octokitOptions: {
+          foo: 'bar',
+          userAgent: 'testagent',
+        },
       };
-      await fetchCiStatus(apiArgs, { octokitOptions });
-      sinon.assert.calledOnceWithExactly(Octokit, match(octokitOptions));
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.calledOnceWithExactly(
+        Octokit,
+        match(options.octokitOptions),
+      );
       sinon.assert.calledWithNew(Octokit);
     });
 
     it('does not create Agent by default', async () => {
-      await fetchCiStatus(apiArgs);
+      await fetchCiStatus(apiArgs, mockOptions);
       sinon.assert.callCount(http.Agent, 0);
       sinon.assert.callCount(https.Agent, 0);
     });
 
     it('uses https.Agent with keep-alive for retries', async () => {
       const options = {
+        ...mockOptions,
         retry: timeOptions,
       };
       await fetchCiStatus(apiArgs, options);
@@ -547,6 +556,7 @@ describe('fetchCiStatus', () => {
 
     it('uses http.Agent with keep-alive for http baseUrl', async () => {
       const options = {
+        ...mockOptions,
         octokitOptions: {
           baseUrl: 'http://example.com',
           request: {},
@@ -571,6 +581,7 @@ describe('fetchCiStatus', () => {
 
     it('does not create Agent for unrecognized baseUrl', async () => {
       const options = {
+        ...mockOptions,
         octokitOptions: {
           baseUrl: 'foo://bar',
         },
@@ -583,6 +594,7 @@ describe('fetchCiStatus', () => {
 
     it('does not create Agent if null passed', async () => {
       const options = {
+        ...mockOptions,
         octokitOptions: {
           baseUrl: 'foo://bar',
           request: {

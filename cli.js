@@ -161,7 +161,7 @@ export default async function hubCiStatusMain(args, options) {
 
   const gcs = options.hubCiStatus || hubCiStatus;
   try {
-    await gcs(ref, {
+    return await gcs(ref, {
       octokitOptions: {
         auth: options.env ? options.env.GITHUB_TOKEN : undefined,
       },
@@ -172,7 +172,6 @@ export default async function hubCiStatusMain(args, options) {
       wait: maxTotalMs === undefined ? undefined : { maxTotalMs },
       waitAll: !!argOpts.waitAll,
     });
-    return 0;
   } catch (err) {
     options.stderr.write(`${verbosity > 1 ? err.stack : err}\n`);
     return 1;

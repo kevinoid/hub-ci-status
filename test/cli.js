@@ -139,6 +139,20 @@ describe('hub-ci-status command', () => {
     assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
   });
 
+  for (const code of [0, 1]) {
+    it(`exits with code ${code} from hubCiStatus`, async () => {
+      const hubCiStatus = sinon.stub().resolves(code);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmd(RUNTIME_ARGS, options);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, code);
+    });
+  }
+
   function expectArgsAs(args, expectRef, expectOptions) {
     const testDesc =
       `interprets ${args.join(' ')} as ${expectRef}, ${expectOptions}`;

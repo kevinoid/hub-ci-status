@@ -25,134 +25,118 @@ section section section section {
     <section class="suite">
       <h1>hub-ci-status command</h1>
       <dl>
-        <dt>throws TypeError with no arguments</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
-        <dd><pre><code>assert.throws(
+        <dt>rejects TypeError with no arguments</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
+        <dd><pre><code>return assert.rejects(
   hubCiStatusCmd,
   TypeError,
 );</code></pre></dd>
-        <dt>throws TypeError for non-array-like args</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
-        <dd><pre><code>assert.throws(
-  () =&#x3E; hubCiStatusCmd({}, getTestOptions(), neverCalled),
+        <dt>rejects TypeError for non-array-like args</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
+        <dd><pre><code>return assert.rejects(
+  () =&#x3E; hubCiStatusCmd({}, getTestOptions()),
   TypeError,
 );</code></pre></dd>
-        <dt>throws TypeError for non-function callback</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
-        <dd><pre><code>assert.throws(
-  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, getTestOptions(), true); },
+        <dt>rejects TypeError for non-object options</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
+        <dd><pre><code>return assert.rejects(
+  () =&#x3E; hubCiStatusCmd(RUNTIME_ARGS, true),
   TypeError,
 );</code></pre></dd>
-        <dt>throws TypeError for non-object options</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
-        <dd><pre><code>assert.throws(
-  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, true, neverCalled); },
-  TypeError,
-);</code></pre></dd>
-        <dt>throws TypeError for non-Readable stdin</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>rejects TypeError for non-Readable stdin</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>const options = {
   ...getTestOptions(),
   stdin: {},
 };
-assert.throws(
-  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+return assert.rejects(
+  () =&#x3E; hubCiStatusCmd(RUNTIME_ARGS, options),
   TypeError,
 );</code></pre></dd>
-        <dt>throws TypeError for non-Writable stdout</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>rejects TypeError for non-Writable stdout</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>const options = {
   ...getTestOptions(),
   stdout: new stream.Readable(),
 };
-assert.throws(
-  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+return assert.rejects(
+  () =&#x3E; hubCiStatusCmd(RUNTIME_ARGS, options),
   TypeError,
 );</code></pre></dd>
-        <dt>throws TypeError for non-Writable stderr</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>rejects TypeError for non-Writable stderr</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>const options = {
   ...getTestOptions(),
   stderr: new stream.Readable(),
 };
-assert.throws(
-  () =&#x3E; { hubCiStatusCmd(RUNTIME_ARGS, options, neverCalled); },
+return assert.rejects(
+  () =&#x3E; hubCiStatusCmd(RUNTIME_ARGS, options),
   TypeError,
 );</code></pre></dd>
         <dt>--help prints help message to stdout</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
       assert(output, &#x27;produces help output&#x27;);
       assert.match(output, /--wait\b/);
+      assert.strictEqual(exitCode, 0);
     }</code></pre></dd>
         <dt>-h prints help message to stdout</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const args = [...RUNTIME_ARGS, helpOpt];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
       assert(output, &#x27;produces help output&#x27;);
       assert.match(output, /--wait\b/);
-    }</code></pre></dd>
-        <dt>-? prints help message to stdout</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
-        <dd><pre><code>async () =&#x3E; {
-      const args = [...RUNTIME_ARGS, helpOpt];
-      const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
       assert.strictEqual(exitCode, 0);
-      assert.strictEqual(options.stderr.read(), null);
-      const output = options.stdout.read();
-      assert(output, &#x27;produces help output&#x27;);
-      assert.match(output, /--wait\b/);
     }</code></pre></dd>
         <dt>--version prints version message to stdout</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
+      const packageJson = await getPackageJson();
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert.strictEqual(output, &#x60;hub-ci-status ${packageJson.version}\n&#x60;);
+      assert.strictEqual(output, &#x60;${packageJson.version}\n&#x60;);
+      assert.strictEqual(exitCode, 0);
     }</code></pre></dd>
         <dt>-V prints version message to stdout</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
+      const packageJson = await getPackageJson();
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(args, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert.strictEqual(output, &#x60;hub-ci-status ${packageJson.version}\n&#x60;);
+      assert.strictEqual(output, &#x60;${packageJson.version}\n&#x60;);
+      assert.strictEqual(exitCode, 0);
     }</code></pre></dd>
         <dt>passes through options.stdout and stderr</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
     const hubCiStatus = sinon.stub().resolves(0);
     const options = {
       ...getTestOptions(),
       hubCiStatus,
     };
-    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    await hubCiStatusCmd(RUNTIME_ARGS, options);
     sinon.assert.callCount(hubCiStatus, 1);
     const gcsOptions = hubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.stderr, options.stderr);
     assert.strictEqual(gcsOptions.stdout, options.stdout);
   }</code></pre></dd>
         <dt>passes $GITHUB_TOKEN as options.octokitOptions.auth</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
     const hubCiStatus = sinon.stub().resolves(0);
     const testToken = &#x27;123abc&#x27;;
@@ -163,13 +147,39 @@ assert.throws(
       },
       hubCiStatus,
     };
-    await hubCiStatusCmdP(RUNTIME_ARGS, options);
+    await hubCiStatusCmd(RUNTIME_ARGS, options);
     sinon.assert.callCount(hubCiStatus, 1);
     const gcsOptions = hubCiStatus.getCall(0).args[1];
     assert.strictEqual(gcsOptions.octokitOptions.auth, testToken);
   }</code></pre></dd>
+        <dt>exits with code 0 from hubCiStatus</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const hubCiStatus = sinon.stub().resolves(code);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmd(RUNTIME_ARGS, options);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, code);
+    }</code></pre></dd>
+        <dt>exits with code 1 from hubCiStatus</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const hubCiStatus = sinon.stub().resolves(code);
+      const options = {
+        ...getTestOptions(),
+        hubCiStatus,
+      };
+      const exitCode = await hubCiStatusCmd(RUNTIME_ARGS, options);
+      assert.strictEqual(options.stderr.read(), null);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, code);
+    }</code></pre></dd>
         <dt>interprets  as undefined, match(auth: undefined, useColor: undefined, verbosity: 0, wait: undefined)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -177,10 +187,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -188,7 +198,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets ref as ref, match(auth: undefined, useColor: undefined, verbosity: 0, wait: undefined)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -196,10 +206,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -207,7 +217,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets 1234 as 1234, match(auth: undefined, useColor: undefined, verbosity: 0, wait: undefined)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -215,10 +225,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -226,7 +236,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --color as undefined, match(useColor: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -234,10 +244,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -245,7 +255,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --color=always as undefined, match(useColor: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -253,10 +263,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -264,7 +274,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --color=never as undefined, match(useColor: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -272,10 +282,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -283,7 +293,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --color never as undefined, match(useColor: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -291,10 +301,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -302,7 +312,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --quiet as undefined, match(verbosity: -1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -310,10 +320,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -321,7 +331,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --quiet ref as ref, match(verbosity: -1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -329,10 +339,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -340,7 +350,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -q as undefined, match(verbosity: -1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -348,10 +358,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -359,7 +369,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -q ref as ref, match(verbosity: -1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -367,10 +377,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -378,7 +388,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -qq as undefined, match(verbosity: -2)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -386,10 +396,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -397,7 +407,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --verbose as undefined, match(verbosity: 1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -405,10 +415,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -416,7 +426,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --verbose ref as ref, match(verbosity: 1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -424,10 +434,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -435,7 +445,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -v as undefined, match(verbosity: 1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -443,10 +453,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -454,7 +464,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -v ref as ref, match(verbosity: 1)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -462,10 +472,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -473,7 +483,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -vv as undefined, match(verbosity: 2)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -481,10 +491,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -492,7 +502,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -qv as undefined, match(verbosity: 0)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -500,10 +510,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -511,7 +521,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -519,10 +529,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -530,7 +540,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait=60 as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -538,10 +548,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -549,7 +559,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait 60 as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -557,10 +567,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -568,7 +578,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -w as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -576,10 +586,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -587,7 +597,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -w60 as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -595,10 +605,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -606,7 +616,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -w 60 as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -614,10 +624,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -625,7 +635,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait-all as undefined, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -633,10 +643,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -644,7 +654,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait-all 10 as 10, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -652,10 +662,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -663,7 +673,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait-all --wait 10 as undefined, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -671,10 +681,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -682,7 +692,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait 10 --wait-all as undefined, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -690,10 +700,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -701,7 +711,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -W as undefined, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -709,10 +719,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -720,7 +730,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets -w 10 -W as undefined, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -728,10 +738,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -739,7 +749,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait 0 as undefined, match(wait: [object Object], waitAll: false)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -747,10 +757,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -758,7 +768,7 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>interprets --wait-all --wait 0 as undefined, match(wait: [object Object], waitAll: true)</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const hubCiStatus = sinon.stub().resolves(0);
@@ -766,10 +776,10 @@ assert.throws(
         ...getTestOptions(),
         hubCiStatus,
       };
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 0);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stderr.read(), null);
       assert.strictEqual(options.stdout.read(), null);
+      assert.strictEqual(exitCode, 0);
       sinon.assert.calledOnceWithExactly(
         hubCiStatus,
         expectRef,
@@ -777,117 +787,117 @@ assert.throws(
       );
     }</code></pre></dd>
         <dt>prints error and exits for --color=maybe</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for --color=</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for --wait=nope</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for --wait=</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for --wait=-1</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
-    }</code></pre></dd>
-        <dt>prints error and exits for --wait -1</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
-        <dd><pre><code>async () =&#x3E; {
-      const allArgs = [...RUNTIME_ARGS, ...args];
-      const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
       assert.strictEqual(exitCode, 1);
-      assert.strictEqual(options.stdout.read(), null);
-      assert.match(options.stderr.read(), expectErrMsg);
     }</code></pre></dd>
         <dt>prints error and exits for -wnope</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for -w-1</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
+    }</code></pre></dd>
+        <dt>prints error and exits for --wait -1</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
+        <dd><pre><code>async () =&#x3E; {
+      const allArgs = [...RUNTIME_ARGS, ...args];
+      const options = getTestOptions();
+      const exitCode = await hubCiStatusCmd(allArgs, options);
+      assert.strictEqual(options.stdout.read(), null);
+      assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for -w -1</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for --unknown123</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints error and exits for ref1 ref2</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
       const allArgs = [...RUNTIME_ARGS, ...args];
       const options = getTestOptions();
-      const exitCode = await hubCiStatusCmdP(allArgs, options);
-      assert.strictEqual(exitCode, 1);
+      const exitCode = await hubCiStatusCmd(allArgs, options);
       assert.strictEqual(options.stdout.read(), null);
       assert.match(options.stderr.read(), expectErrMsg);
+      assert.strictEqual(exitCode, 1);
     }</code></pre></dd>
         <dt>prints hubCiStatus rejection to stderr</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
     const errTest = new RangeError(&#x27;test&#x27;);
     const hubCiStatus = sinon.stub().rejects(errTest);
@@ -895,13 +905,13 @@ assert.throws(
       ...getTestOptions(),
       hubCiStatus,
     };
-    const exitCode = await hubCiStatusCmdP(RUNTIME_ARGS, options);
-    assert.strictEqual(exitCode, 1);
+    const exitCode = await hubCiStatusCmd(RUNTIME_ARGS, options);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), &#x60;${errTest}\n&#x60;);
+    assert.strictEqual(exitCode, 1);
   }</code></pre></dd>
         <dt>prints hubCiStatus rejection stack if very verbose</dt>
-        <dt>/home/kevin/src/node-projects/hub-ci-status/test/bin/hub-ci-status.js</dt>
+        <dt>/home/kevin/src/node-projects/hub-ci-status/test/cli.js</dt>
         <dd><pre><code>async () =&#x3E; {
     const args = [...RUNTIME_ARGS, &#x27;-vv&#x27;];
     const errTest = new RangeError(&#x27;test&#x27;);
@@ -910,10 +920,10 @@ assert.throws(
       ...getTestOptions(),
       hubCiStatus,
     };
-    const exitCode = await hubCiStatusCmdP(args, options);
-    assert.strictEqual(exitCode, 1);
+    const exitCode = await hubCiStatusCmd(args, options);
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(options.stderr.read(), &#x60;${errTest.stack}\n&#x60;);
+    assert.strictEqual(exitCode, 1);
   }</code></pre></dd>
       </dl>
     </section>
@@ -2320,6 +2330,7 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
       const options = {
+        ...mockOptions,
         octokit: {
           checks: { listForRef },
           repos: { getCombinedStatusForRef },
@@ -2331,7 +2342,8 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>constructs Octokit with userAgent by default</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
-      await fetchCiStatus(apiArgs);
+      await fetchCiStatus(apiArgs, mockOptions);
+      const packageJson = await getPackageJson();
       sinon.assert.calledOnceWithExactly(Octokit, match({
         request: undefined,
         userAgent: &#x60;${packageJson.name}/${packageJson.version}&#x60;,
@@ -2341,18 +2353,24 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>passes octokitOptions to Octokit constructor</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
-      const octokitOptions = {
-        foo: &#x27;bar&#x27;,
-        userAgent: &#x27;testagent&#x27;,
+      const options = {
+        ...mockOptions,
+        octokitOptions: {
+          foo: &#x27;bar&#x27;,
+          userAgent: &#x27;testagent&#x27;,
+        },
       };
-      await fetchCiStatus(apiArgs, { octokitOptions });
-      sinon.assert.calledOnceWithExactly(Octokit, match(octokitOptions));
+      await fetchCiStatus(apiArgs, options);
+      sinon.assert.calledOnceWithExactly(
+        Octokit,
+        match(options.octokitOptions),
+      );
       sinon.assert.calledWithNew(Octokit);
     }</code></pre></dd>
             <dt>does not create Agent by default</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
-      await fetchCiStatus(apiArgs);
+      await fetchCiStatus(apiArgs, mockOptions);
       sinon.assert.callCount(http.Agent, 0);
       sinon.assert.callCount(https.Agent, 0);
     }</code></pre></dd>
@@ -2360,6 +2378,7 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
       const options = {
+        ...mockOptions,
         retry: timeOptions,
       };
       await fetchCiStatus(apiArgs, options);
@@ -2381,6 +2400,7 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
       const options = {
+        ...mockOptions,
         octokitOptions: {
           baseUrl: &#x27;http://example.com&#x27;,
           request: {},
@@ -2406,6 +2426,7 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
       const options = {
+        ...mockOptions,
         octokitOptions: {
           baseUrl: &#x27;foo://bar&#x27;,
         },
@@ -2419,6 +2440,7 @@ return execFileOut(process.execPath, testArgs).then(
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/fetch-ci-status.js</dt>
             <dd><pre><code>async () =&#x3E; {
       const options = {
+        ...mockOptions,
         octokitOptions: {
           baseUrl: &#x27;foo://bar&#x27;,
           request: {

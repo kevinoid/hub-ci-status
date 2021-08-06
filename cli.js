@@ -1,7 +1,7 @@
 /**
  * @copyright Copyright 2017-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
- * @module hub-ci-status/cli.js
+ * @module "hub-ci-status/cli.js"
  */
 
 import {

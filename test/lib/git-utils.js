@@ -120,7 +120,10 @@ function checkoutDefault() {
   return execFileOut('git', ['checkout', '-q', defaultBranch], gitOptions);
 }
 
-describe('gitUtils', () => {
+describe('gitUtils', function() {
+  // Some git versions can run quite slowly on Windows CI
+  this.timeout(isWindows ? 4000 : 2000);
+
   describe('.getBranch', () => {
     after(checkoutDefault);
 

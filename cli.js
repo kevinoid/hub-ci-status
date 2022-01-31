@@ -6,7 +6,7 @@
 
 import {
   Command,
-  InvalidOptionArgumentError,
+  InvalidArgumentError,
   Option,
 } from 'commander';
 
@@ -25,11 +25,11 @@ function coerceWait(arg) {
   // Note: Don't treat '' as 0 (no wait), since it's more likely user error
   const val = Number(arg);
   if (arg === '' || Number.isNaN(val)) {
-    throw new InvalidOptionArgumentError(`Invalid number "${arg}"`);
+    throw new InvalidArgumentError(`Invalid number "${arg}"`);
   }
 
   if (val < 0) {
-    throw new InvalidOptionArgumentError('--wait must not be negative');
+    throw new InvalidArgumentError('--wait must not be negative');
   }
 
   return val;
@@ -137,7 +137,7 @@ export default async function hubCiStatusMain(args, options) {
 
     // If a non-Commander error was thrown, treat it as unhandled.
     // It probably represents a bug and has not been written to stdout/stderr.
-    // throw commander.{CommanderError,InvalidOptionArgumentError} to avoid.
+    // throw commander.{CommanderError,InvalidArgumentError} to avoid.
     if (typeof errParse.code !== 'string'
       || !errParse.code.startsWith('commander.')) {
       throw errParse;

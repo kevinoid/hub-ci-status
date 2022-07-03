@@ -3,9 +3,9 @@
  * @license MIT
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import sinon from 'sinon';
-import stream from 'stream';
+import stream from 'node:stream';
 
 import getPackageJson from '../lib/get-package-json.js';
 import hubCiStatusCmd from '../cli.js';

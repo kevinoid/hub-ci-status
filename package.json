@@ -54,7 +54,7 @@
     "version-deps": "npm install conventional-changelog-cli david depcheck git-branch-is"
   },
   "dependencies": {
-    "@octokit/rest": "^18.0.12",
+    "@octokit/rest": "^19.0.3",
     "commander": "^9.0.0"
   },
   "devDependencies": {

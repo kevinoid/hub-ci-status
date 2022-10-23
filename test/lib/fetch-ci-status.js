@@ -4,10 +4,10 @@
  */
 
 import FakeTimers from '@sinonjs/fake-timers';
-import assert from 'assert';
+import assert from 'node:assert';
 import sinon from 'sinon';
-import timers from 'timers';
-import { promisify } from 'util';
+import timers from 'node:timers';
+import { promisify } from 'node:util';
 
 import fetchCiStatus from '../../lib/fetch-ci-status.js';
 import getPackageJson from '../../lib/get-package-json.js';

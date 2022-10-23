@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 
 import execFileOut from '../../lib/exec-file-out.js';
 

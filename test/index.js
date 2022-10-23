@@ -4,9 +4,9 @@
  */
 
 import ansiStyles from 'ansi-styles';
-import assert from 'assert';
+import assert from 'node:assert';
 import sinon from 'sinon';
-import { PassThrough } from 'stream';
+import { PassThrough } from 'node:stream';
 
 import hubCiStatus from '../index.js';
 import {

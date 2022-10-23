@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 
 import constant from '../../../lib/retry-async/constant.js';
 

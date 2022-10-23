@@ -3,10 +3,10 @@
  * @license MIT
  */
 
-import assert from 'assert';
-import path from 'path';
+import assert from 'node:assert';
+import path from 'node:path';
 import { dir as makeTempDir } from 'tmp-promise';
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
 
 import getPackageJson from '../../lib/get-package-json.js';
 import gitInit from '../../test-lib/git-init.js';

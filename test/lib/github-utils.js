@@ -9,7 +9,7 @@
  * @license MIT
  */
 
-import assert from 'assert';
+import assert from 'node:assert';
 import { dir as makeTempDir } from 'tmp-promise';
 
 import execFileOut from '../../lib/exec-file-out.js';

@@ -3,7 +3,7 @@ Hub CI Status
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/kevinoid/hub-ci-status/node.js.yml?branch=main&style=flat&label=build)](https://github.com/kevinoid/hub-ci-status/actions?query=branch%3Amain)
 [![Coverage](https://img.shields.io/codecov/c/github/kevinoid/hub-ci-status/main.svg?style=flat)](https://app.codecov.io/gh/kevinoid/hub-ci-status/branch/main)
-[![Dependency Status](https://img.shields.io/david/kevinoid/hub-ci-status.svg?style=flat)](https://david-dm.org/kevinoid/hub-ci-status)
+[![Dependency Status](https://img.shields.io/librariesio/release/npm/hub-ci-status.svg?style=flat)](https://libraries.io/npm/hub-ci-status)
 [![Supported Node Version](https://img.shields.io/node/v/hub-ci-status.svg?style=flat)](https://www.npmjs.com/package/hub-ci-status)
 [![Version on NPM](https://img.shields.io/npm/v/hub-ci-status.svg?style=flat)](https://www.npmjs.com/package/hub-ci-status)
 

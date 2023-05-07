@@ -6,7 +6,7 @@
 import FakeTimers from '@sinonjs/fake-timers';
 import assert from 'node:assert';
 import sinon from 'sinon';
-import timers from 'node:timers';
+import { setImmediate as setImmediateP } from 'node:timers/promises';
 import { promisify } from 'node:util';
 
 import fetchCiStatus from '../../lib/fetch-ci-status.js';
@@ -20,9 +20,6 @@ import {
   HttpsAgentMockSymbol,
   OctokitMockSymbol,
 } from '../../lib/symbols.js';
-
-// TODO [engine:node@>=15]: import { setImmediate } from 'timers/promises';
-const setImmediateP = promisify(timers.setImmediate);
 
 const { match } = sinon;
 

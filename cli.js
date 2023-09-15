@@ -10,8 +10,8 @@ import {
   Option,
 } from 'commander';
 
-import getPackageJson from './lib/get-package-json.js';
 import hubCiStatus from './index.js';
+import getPackageJson from './lib/get-package-json.js';
 
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];

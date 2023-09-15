@@ -3,23 +3,24 @@
  * @license MIT
  */
 
-import FakeTimers from '@sinonjs/fake-timers';
 import assert from 'node:assert';
-import sinon from 'sinon';
 import { setImmediate as setImmediateP } from 'node:timers/promises';
 import { promisify } from 'node:util';
 
+import FakeTimers from '@sinonjs/fake-timers';
+import sinon from 'sinon';
+
 import fetchCiStatus from '../../lib/fetch-ci-status.js';
 import getPackageJson from '../../lib/get-package-json.js';
-import {
-  makeCheckRuns,
-  makeCombinedStatus,
-} from '../../test-lib/api-responses.js';
 import {
   HttpAgentMockSymbol,
   HttpsAgentMockSymbol,
   OctokitMockSymbol,
 } from '../../lib/symbols.js';
+import {
+  makeCheckRuns,
+  makeCombinedStatus,
+} from '../../test-lib/api-responses.js';
 
 const { match } = sinon;
 

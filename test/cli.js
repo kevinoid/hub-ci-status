@@ -4,11 +4,12 @@
  */
 
 import assert from 'node:assert';
-import sinon from 'sinon';
 import stream from 'node:stream';
 
-import getPackageJson from '../lib/get-package-json.js';
+import sinon from 'sinon';
+
 import hubCiStatusCmd from '../cli.js';
+import getPackageJson from '../lib/get-package-json.js';
 
 const { match } = sinon;
 

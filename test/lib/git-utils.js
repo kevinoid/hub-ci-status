@@ -5,13 +5,14 @@
 
 import assert from 'node:assert';
 import path from 'node:path';
-import { dir as makeTempDir } from 'tmp-promise';
 import { pathToFileURL } from 'node:url';
 
-import getPackageJson from '../../lib/get-package-json.js';
-import gitInit from '../../test-lib/git-init.js';
-import * as gitUtils from '../../lib/git-utils.js';
+import { dir as makeTempDir } from 'tmp-promise';
+
 import execFileOut from '../../lib/exec-file-out.js';
+import getPackageJson from '../../lib/get-package-json.js';
+import * as gitUtils from '../../lib/git-utils.js';
+import gitInit from '../../test-lib/git-init.js';
 
 const defaultBranch = 'main';
 const isWindows = /^win/i.test(process.platform);

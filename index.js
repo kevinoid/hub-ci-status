@@ -129,7 +129,7 @@ function checkRunToStatus(checkRun) {
  *
  * @typedef {!object} GithubCiStatusOptions
  * @property {!module:child_process.ExecFileOptions=} gitOptions Options to
- * pass to {@link child_process.execFile} when invoking git.
+ * pass to {@link module:child_process.execFile} when invoking git.
  * @property {!module:"@octokit/core".Octokit=} octokit Octokit instance to
  * use for requests.
  * @property {!module:"@octokit/core".OctokitOptions=} octokitOptions Options

@@ -10,13 +10,14 @@
  */
 
 import assert from 'node:assert';
+
 import { dir as makeTempDir } from 'tmp-promise';
 
 import execFileOut from '../../lib/exec-file-out.js';
 import getPackageJson from '../../lib/get-package-json.js';
-import gitInit from '../../test-lib/git-init.js';
-import { getProjectName } from '../../lib/github-utils.js';
 import { resolveCommit } from '../../lib/git-utils.js';
+import { getProjectName } from '../../lib/github-utils.js';
+import gitInit from '../../test-lib/git-init.js';
 
 const defaultBranch = 'main';
 const isWindows = /^win/i.test(process.platform);

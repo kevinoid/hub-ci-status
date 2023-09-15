@@ -3,21 +3,22 @@
  * @license MIT
  */
 
-import ansiStyles from 'ansi-styles';
 import assert from 'node:assert';
-import sinon from 'sinon';
 import { PassThrough } from 'node:stream';
 
+import ansiStyles from 'ansi-styles';
+import sinon from 'sinon';
+
 import hubCiStatus from '../index.js';
-import {
-  makeCheckRuns,
-  makeCombinedStatus,
-} from '../test-lib/api-responses.js';
 import {
   fetchCiStatusMockSymbol,
   getProjectNameMockSymbol,
   resolveCommitMockSymbol,
 } from '../lib/symbols.js';
+import {
+  makeCheckRuns,
+  makeCombinedStatus,
+} from '../test-lib/api-responses.js';
 
 const { match } = sinon;
 

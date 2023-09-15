@@ -3,11 +3,12 @@
  * @license MIT
  */
 
-import FakeTimers from '@sinonjs/fake-timers';
 import assert from 'node:assert';
-import sinon from 'sinon';
 import { setImmediate as setImmediateP } from 'node:timers/promises';
 import { promisify } from 'node:util';
+
+import FakeTimers from '@sinonjs/fake-timers';
+import sinon from 'sinon';
 
 import retryAsync from '../../lib/retry-async.js';
 

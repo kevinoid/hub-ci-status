@@ -291,11 +291,8 @@ describe('hub-ci-status command', () => {
   expectArgsErr(['--wait=-1'], /\bwait\b/);
   expectArgsErr(['-wnope'], /\bwait\b/);
   expectArgsErr(['-w-1'], /\bwait\b/);
-  // Note: commander treats negative values for optional arguments as unknown
-  // https://github.com/tj/commander.js/issues/61
-  // https://github.com/tj/commander.js/pull/583#issuecomment-486819992
-  expectArgsErr(['--wait', '-1'], /\bunknown option\b/);
-  expectArgsErr(['-w', '-1'], /\bunknown option\b/);
+  expectArgsErr(['--wait', '-1'], /\bwait\b/);
+  expectArgsErr(['-w', '-1'], /\bwait\b/);
   expectArgsErr(['--unknown123'], /\bunknown123\b/);
   // Note: Differs from hub(1), which ignores unexpected ci-status arguments.
   expectArgsErr(['ref1', 'ref2'], /\barguments?\b/i);

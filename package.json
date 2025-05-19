@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^21.0.0",
-    "commander": "^13.0.0"
+    "commander": "^14.0.0"
   },
   "devDependencies": {
     "@kevinoid/eslint-config": "^33.0.0",

@@ -52,7 +52,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -71,7 +71,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -95,7 +95,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -120,7 +120,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -139,7 +139,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -200,7 +200,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -219,7 +219,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },
@@ -238,7 +238,7 @@ describe('githubUtils', function() {
         return assert.rejects(
           () => getProjectName(gitOptions),
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.strictEqual(err.name, 'UnknownProjectError');
             return true;
           },

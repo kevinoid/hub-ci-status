@@ -149,7 +149,7 @@ describe('gitUtils', function() {
         .then(
           neverCalled,
           (err) => {
-            assert(err instanceof Error);
+            assert.ok(err instanceof Error);
             assert.match(err.message, /branch/i);
           },
         );
@@ -171,7 +171,7 @@ describe('gitUtils', function() {
     it('resolves to object mapping all config keys to values', async () => {
       const config = await gitUtils.getConfig(undefined, gitOptions);
       assert.strictEqual(typeof config, 'object');
-      assert(
+      assert.ok(
         !(config instanceof Object),
         'does not inherit from Object to avoid proto key confusion',
       );
@@ -181,7 +181,7 @@ describe('gitUtils', function() {
     it('resolves to local config', async () => {
       const config = await gitUtils.getConfig('local', gitOptions);
       assert.strictEqual(typeof config, 'object');
-      assert(
+      assert.ok(
         !(config instanceof Object),
         'does not inherit from Object to avoid proto key confusion',
       );
@@ -193,7 +193,7 @@ describe('gitUtils', function() {
     xit('resolves to global config', async () => {
       const config = await gitUtils.getConfig('global', gitOptions);
       assert.strictEqual(typeof config, 'object');
-      assert(
+      assert.ok(
         !(config instanceof Object),
         'does not inherit from Object to avoid proto key confusion',
       );
@@ -206,7 +206,7 @@ describe('gitUtils', function() {
     xit('resolves to system config', async () => {
       const config = await gitUtils.getConfig('system', gitOptions);
       assert.strictEqual(typeof config, 'object');
-      assert(
+      assert.ok(
         !(config instanceof Object),
         'does not inherit from Object to avoid proto key confusion',
       );
@@ -357,7 +357,7 @@ describe('gitUtils', function() {
       return gitUtils.resolveCommit('notabranch', gitOptions).then(
         neverCalled,
         (err) => {
-          assert(err instanceof Error);
+          assert.ok(err instanceof Error);
         },
       );
     });

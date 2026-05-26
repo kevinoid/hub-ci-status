@@ -84,7 +84,7 @@ describe('execFileOut', () => {
     return execFileOut(process.execPath, testArgs).then(
       neverCalled,
       (err) => {
-        assert(err.message.includes(testErr), 'stderr is in message');
+        assert.ok(err.message.includes(testErr), 'stderr is in message');
         assert.strictEqual(
           err.cmd,
           [process.execPath, ...testArgs].join(' '),
@@ -104,7 +104,7 @@ describe('execFileOut', () => {
     return execFileOut(process.execPath, testArgs, options).then(
       neverCalled,
       (err) => {
-        assert(err.message.includes(testErr), 'stderr is in message');
+        assert.ok(err.message.includes(testErr), 'stderr is in message');
         assert.strictEqual(
           err.cmd,
           [process.execPath, ...testArgs].join(' '),
@@ -126,7 +126,7 @@ describe('execFileOut', () => {
     return execFileOut(process.execPath, testArgs).then(
       neverCalled,
       (err) => {
-        assert(err.message.includes(testErr), 'stderr is in message');
+        assert.ok(err.message.includes(testErr), 'stderr is in message');
         assert.strictEqual(
           err.cmd,
           [process.execPath, ...testArgs].join(' '),

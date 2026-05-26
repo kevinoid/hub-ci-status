@@ -92,7 +92,7 @@ describe('hub-ci-status command', () => {
       const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert(output, 'produces help output');
+      assert.ok(output, 'produces help output');
       assert.match(output, /--wait\b/);
       assert.strictEqual(exitCode, 0);
     });

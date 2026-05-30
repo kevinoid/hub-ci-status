@@ -1,3 +1,21 @@
+# [2.0.0](https://github.com/kevinoid/hub-ci-status/compare/v1.0.0...v2.0.0) (2026-05-30)
+
+### BREAKING CHANGES
+
+* Require Node.js >=20 ([3fb3a6b](https://github.com/kevinoid/hub-ci-status/commit/3fb3a6bf206967708bcf2bdc44000f3dd4fb8753))
+
+### Bug Fixes
+
+* use `InvalidArgumentError` for commander errors ([aa7e251](https://github.com/kevinoid/hub-ci-status/commit/aa7e251517a13f11f4dc4dec962f932acc7e8610))
+
+### Features
+
+* bump commander from 8.0.0 to 15.0.0 ([a733f64](https://github.com/kevinoid/hub-ci-status/commit/a733f6419b91553ff6dfcb9fe455b0222a9e8d31))
+* bump @octokit/rest from 18.0.12 to 22.0.0 ([90ebc89](https://github.com/kevinoid/hub-ci-status/commit/90ebc89c42f2811a1dde0f6e2a2d34d633a19ba0))
+* **package:** use git+https for repository.url ([99b1907](https://github.com/kevinoid/hub-ci-status/commit/99b1907c15340115097910d2249b43e60190aafe))
+* implement trusted publishing from GitHub ([1d75856](https://github.com/kevinoid/hub-ci-status/commit/1d7585615b741ca4df50f28b9cf8c971fda36248))
+
+
 # [1.0.0](https://github.com/kevinoid/hub-ci-status/compare/v0.1.0...v1.0.0) (2021-08-06)
 
 ### BREAKING CHANGES

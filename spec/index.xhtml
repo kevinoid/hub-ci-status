@@ -81,7 +81,7 @@ return assert.rejects(
       const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert(output, &#x27;produces help output&#x27;);
+      assert.ok(output, &#x27;produces help output&#x27;);
       assert.match(output, /--wait\b/);
       assert.strictEqual(exitCode, 0);
     }</code></pre></dd>
@@ -93,7 +93,7 @@ return assert.rejects(
       const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert(output, &#x27;produces help output&#x27;);
+      assert.ok(output, &#x27;produces help output&#x27;);
       assert.match(output, /--wait\b/);
       assert.strictEqual(exitCode, 0);
     }</code></pre></dd>
@@ -1856,7 +1856,7 @@ const testArgs = [&#x27;-e&#x27;, makeScript(testOut, testErr)];
 return execFileOut(process.execPath, testArgs).then(
   neverCalled,
   (err) =&#x3E; {
-    assert(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
+    assert.ok(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
     assert.strictEqual(
       err.cmd,
       [process.execPath, ...testArgs].join(&#x27; &#x27;),
@@ -1875,7 +1875,7 @@ const options = { encoding: &#x27;buffer&#x27; };
 return execFileOut(process.execPath, testArgs, options).then(
   neverCalled,
   (err) =&#x3E; {
-    assert(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
+    assert.ok(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
     assert.strictEqual(
       err.cmd,
       [process.execPath, ...testArgs].join(&#x27; &#x27;),
@@ -1893,7 +1893,7 @@ const testArgs = [&#x27;-e&#x27;, makeScript(testOut, testErr)];
 return execFileOut(process.execPath, testArgs).then(
   neverCalled,
   (err) =&#x3E; {
-    assert(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
+    assert.ok(err.message.includes(testErr), &#x27;stderr is in message&#x27;);
     assert.strictEqual(
       err.cmd,
       [process.execPath, ...testArgs].join(&#x27; &#x27;),
@@ -2471,28 +2471,28 @@ return execFileOut(process.execPath, testArgs).then(
           <dl>
             <dt>resolves main on main</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>gitUtils.getBranch(gitOptions)
-        .then((branch) =&#x3E; {
-          assert.strictEqual(branch, defaultBranch);
-        })</code></pre></dd>
+            <dd><pre><code>return gitUtils.getBranch(gitOptions)
+  .then((branch) =&#x3E; {
+    assert.strictEqual(branch, defaultBranch);
+  });</code></pre></dd>
             <dt>resolves branch1 on branch1</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>execFileOut(&#x27;git&#x27;, [&#x27;checkout&#x27;, &#x27;-q&#x27;, &#x27;branch1&#x27;], gitOptions)
-        .then(() =&#x3E; gitUtils.getBranch(gitOptions))
-        .then((branch) =&#x3E; {
-          assert.strictEqual(branch, &#x27;branch1&#x27;);
-        })</code></pre></dd>
+            <dd><pre><code>return execFileOut(&#x27;git&#x27;, [&#x27;checkout&#x27;, &#x27;-q&#x27;, &#x27;branch1&#x27;], gitOptions)
+  .then(() =&#x3E; gitUtils.getBranch(gitOptions))
+  .then((branch) =&#x3E; {
+    assert.strictEqual(branch, &#x27;branch1&#x27;);
+  });</code></pre></dd>
             <dt>rejects with Error not on branch</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>execFileOut(&#x27;git&#x27;, [&#x27;checkout&#x27;, &#x27;-q&#x27;, &#x27;HEAD^&#x27;], gitOptions)
-        .then(() =&#x3E; gitUtils.getBranch(gitOptions))
-        .then(
-          neverCalled,
-          (err) =&#x3E; {
-            assert(err instanceof Error);
-            assert.match(err.message, /branch/i);
-          },
-        )</code></pre></dd>
+            <dd><pre><code>return execFileOut(&#x27;git&#x27;, [&#x27;checkout&#x27;, &#x27;-q&#x27;, &#x27;HEAD^&#x27;], gitOptions)
+  .then(() =&#x3E; gitUtils.getBranch(gitOptions))
+  .then(
+    neverCalled,
+    (err) =&#x3E; {
+      assert.ok(err instanceof Error);
+      assert.match(err.message, /branch/i);
+    },
+  );</code></pre></dd>
           </dl>
         </section>
         <section class="suite">
@@ -2500,16 +2500,16 @@ return execFileOut(process.execPath, testArgs).then(
           <dl>
             <dt>rejects with RangeError for invalid scope</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>assert.rejects(
-        () =&#x3E; gitUtils.getConfig(&#x27;invalid&#x27;, gitOptions),
-        RangeError,
-      )</code></pre></dd>
+            <dd><pre><code>return assert.rejects(
+  () =&#x3E; gitUtils.getConfig(&#x27;invalid&#x27;, gitOptions),
+  RangeError,
+);</code></pre></dd>
             <dt>resolves to object mapping all config keys to values</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
             <dd><pre><code>async () =&#x3E; {
       const config = await gitUtils.getConfig(undefined, gitOptions);
       assert.strictEqual(typeof config, &#x27;object&#x27;);
-      assert(
+      assert.ok(
         !(config instanceof Object),
         &#x27;does not inherit from Object to avoid proto key confusion&#x27;,
       );
@@ -2520,7 +2520,7 @@ return execFileOut(process.execPath, testArgs).then(
             <dd><pre><code>async () =&#x3E; {
       const config = await gitUtils.getConfig(&#x27;local&#x27;, gitOptions);
       assert.strictEqual(typeof config, &#x27;object&#x27;);
-      assert(
+      assert.ok(
         !(config instanceof Object),
         &#x27;does not inherit from Object to avoid proto key confusion&#x27;,
       );
@@ -2652,15 +2652,15 @@ assert.deepStrictEqual(
           <dl>
             <dt>can resolve the hash of HEAD</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>gitUtils.resolveCommit(&#x27;HEAD&#x27;, gitOptions).then((hash) =&#x3E; {
-        assert.match(hash, /^[a-fA-F0-9]{40}$/);
-        headHash = hash;
-      })</code></pre></dd>
+            <dd><pre><code>return gitUtils.resolveCommit(&#x27;HEAD&#x27;, gitOptions).then((hash) =&#x3E; {
+  assert.match(hash, /^[a-fA-F0-9]{40}$/);
+  headHash = hash;
+});</code></pre></dd>
             <dt>can resolve a hash to itself</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>gitUtils.resolveCommit(headHash, gitOptions).then((hash) =&#x3E; {
-        assert.strictEqual(hash, headHash);
-      })</code></pre></dd>
+            <dd><pre><code>return gitUtils.resolveCommit(headHash, gitOptions).then((hash) =&#x3E; {
+  assert.strictEqual(hash, headHash);
+});</code></pre></dd>
             <dt>can resolve branch name to commit hash</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
             <dd><pre><code>const branchName = Object.keys(BRANCH_REMOTES)[0];
@@ -2669,17 +2669,17 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
 });</code></pre></dd>
             <dt>can resolve tag name to commit hash</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>gitUtils.resolveCommit(TAGS[0], gitOptions).then((hash) =&#x3E; {
-        assert.match(hash, /^[a-fA-F0-9]{40}$/);
-      })</code></pre></dd>
+            <dd><pre><code>return gitUtils.resolveCommit(TAGS[0], gitOptions).then((hash) =&#x3E; {
+  assert.match(hash, /^[a-fA-F0-9]{40}$/);
+});</code></pre></dd>
             <dt>rejects with Error for unresolvable name</dt>
             <dt>/home/kevin/src/node-projects/hub-ci-status/test/lib/git-utils.js</dt>
-            <dd><pre><code>gitUtils.resolveCommit(&#x27;notabranch&#x27;, gitOptions).then(
-        neverCalled,
-        (err) =&#x3E; {
-          assert(err instanceof Error);
-        },
-      )</code></pre></dd>
+            <dd><pre><code>return gitUtils.resolveCommit(&#x27;notabranch&#x27;, gitOptions).then(
+  neverCalled,
+  (err) =&#x3E; {
+    assert.ok(err instanceof Error);
+  },
+);</code></pre></dd>
           </dl>
         </section>
       </dl>
@@ -2698,7 +2698,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2713,7 +2713,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2728,7 +2728,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2743,7 +2743,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2758,7 +2758,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2799,7 +2799,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2814,7 +2814,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },
@@ -2829,7 +2829,7 @@ return gitUtils.resolveCommit(branchName, gitOptions).then((hash) =&#x3E; {
                 <dd><pre><code>return assert.rejects(
   () =&#x3E; getProjectName(gitOptions),
   (err) =&#x3E; {
-    assert(err instanceof Error);
+    assert.ok(err instanceof Error);
     assert.strictEqual(err.name, &#x27;UnknownProjectError&#x27;);
     return true;
   },

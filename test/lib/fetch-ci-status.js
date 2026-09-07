@@ -11,12 +11,12 @@ import FakeTimers from '@sinonjs/fake-timers';
 import sinon from 'sinon';
 
 import fetchCiStatus from '../../lib/fetch-ci-status.js';
-import getPackageJson from '../../lib/get-package-json.js';
 import {
   HttpAgentMockSymbol,
   HttpsAgentMockSymbol,
   OctokitMockSymbol,
 } from '../../lib/symbols.js';
+import packageConfig from '../../package.json' with { type: 'json' };
 import {
   makeCheckRuns,
   makeCombinedStatus,
@@ -501,10 +501,9 @@ describe('fetchCiStatus', () => {
 
     it('constructs Octokit with userAgent by default', async () => {
       await fetchCiStatus(apiArgs, mockOptions);
-      const packageJson = await getPackageJson();
       sinon.assert.calledOnceWithExactly(Octokit, match({
         request: undefined,
-        userAgent: `${packageJson.name}/${packageJson.version}`,
+        userAgent: `${packageConfig.name}/${packageConfig.version}`,
       }));
       sinon.assert.calledWithNew(Octokit);
     });

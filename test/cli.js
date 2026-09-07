@@ -9,7 +9,7 @@ import stream from 'node:stream';
 import sinon from 'sinon';
 
 import hubCiStatusCmd from '../cli.js';
-import getPackageJson from '../lib/get-package-json.js';
+import packageConfig from '../package.json' with { type: 'json' };
 
 const { match } = sinon;
 
@@ -100,13 +100,12 @@ describe('hub-ci-status command', () => {
 
   for (const versionOpt of ['--version', '-V']) {
     it(`${versionOpt} prints version message to stdout`, async () => {
-      const packageJson = await getPackageJson();
       const args = [...RUNTIME_ARGS, versionOpt];
       const options = getTestOptions();
       const exitCode = await hubCiStatusCmd(args, options);
       assert.strictEqual(options.stderr.read(), null);
       const output = options.stdout.read();
-      assert.strictEqual(output, `${packageJson.version}\n`);
+      assert.strictEqual(output, `${packageConfig.version}\n`);
       assert.strictEqual(exitCode, 0);
     });
   }

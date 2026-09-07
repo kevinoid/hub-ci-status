@@ -11,7 +11,7 @@ import {
 } from 'commander';
 
 import hubCiStatus from './index.js';
-import getPackageJson from './lib/get-package-json.js';
+import packageConfig from './package.json' with { type: 'json' };
 
 // Same --color options as hub(1)
 const colorOptions = ['always', 'never', 'auto'];
@@ -135,8 +135,7 @@ export default async function hubCiStatusMain(args, options) {
     command.parse(args);
   } catch (errParse) {
     if (errVersion) {
-      const packageJson = await getPackageJson();
-      options.stdout.write(`${packageJson.version}\n`);
+      options.stdout.write(`${packageConfig.version}\n`);
       return 0;
     }
 

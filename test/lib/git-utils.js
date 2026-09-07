@@ -10,8 +10,8 @@ import { pathToFileURL } from 'node:url';
 import { dir as makeTempDir } from 'tmp-promise';
 
 import execFileOut from '../../lib/exec-file-out.js';
-import getPackageJson from '../../lib/get-package-json.js';
 import * as gitUtils from '../../lib/git-utils.js';
+import packageConfig from '../../package.json' with { type: 'json' };
 import gitInit from '../../test-lib/git-init.js';
 
 const defaultBranch = 'main';
@@ -45,9 +45,8 @@ before('setup test repository', async function() {
   // Some git versions can run quite slowly on Windows
   this.timeout(isWindows ? 8000 : 4000);
 
-  const packageJson = await getPackageJson();
   const tempDir = await makeTempDir({
-    prefix: `${packageJson.name}-test`,
+    prefix: `${packageConfig.name}-test`,
     unsafeCleanup: true,
   });
   testRepoPath = tempDir.path;

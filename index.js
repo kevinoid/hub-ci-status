@@ -64,7 +64,7 @@ function formatStatus(status, contextWidth, useColor) {
 
 function formatStatuses(statuses, useColor) {
   // If no status has a target_url, there's no need to size context
-  const contextWidth = !statuses.some((status) => status.target_url) ? 0
+  const contextWidth = statuses.every((status) => !status.target_url) ? 0
     : statuses.reduce(
       (max, { context }) => Math.max(max, context.length),
       0,

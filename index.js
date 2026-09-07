@@ -165,9 +165,11 @@ function checkRunToStatus(checkRun) {
 export default async function hubCiStatus(
   rev = 'HEAD',
   {
+    /* eslint-disable unicorn/no-unreadable-object-destructuring */
     [fetchCiStatusMockSymbol]: fetchCiStatusMock,
     [getProjectNameMockSymbol]: getProjectNameMock,
     [resolveCommitMockSymbol]: resolveCommitMock,
+    /* eslint-enable unicorn/no-unreadable-object-destructuring */
     gitOptions,
     octokit,
     octokitOptions,

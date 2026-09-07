@@ -28,7 +28,7 @@ const stateBySeverity = [
 
 function getStateMarker(state, useColor) {
   function colorize(string, code) {
-    return useColor ? `\u001B[${code}m${string}\u001B[39m` : string;
+    return useColor ? `\u{1B}[${code}m${string}\u{1B}[39m` : string;
   }
 
   // Use same status markers as `hub ci-status`

@@ -37,6 +37,7 @@ const matchOwnerRepoRef = match({
 let testOptions;
 
 beforeEach(() => {
+  // eslint-disable-next-line unicorn/no-top-level-assignment-in-function
   testOptions = {
     [fetchCiStatusMockSymbol]: fetchCiStatus,
     [getProjectNameMockSymbol]: getProjectName,

@@ -49,8 +49,10 @@ before('setup test repository', async function() {
     prefix: `${packageConfig.name}-test`,
     unsafeCleanup: true,
   });
+  /* eslint-disable unicorn/no-top-level-assignment-in-function */
   testRepoPath = tempDir.path;
   gitOptions = { cwd: testRepoPath };
+  /* eslint-enable unicorn/no-top-level-assignment-in-function */
   after('remove test repository', () => tempDir.cleanup());
 
   await gitInit(testRepoPath, defaultBranch);

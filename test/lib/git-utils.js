@@ -165,7 +165,7 @@ describe('gitUtils', function() {
 
     // Use branch remote configuration to test local config
     const localConfigKey = `branch.${defaultBranch}.remote`;
-    const localConfigValue = BRANCH_REMOTES[defaultBranch].split('/')[0];
+    const localConfigValue = BRANCH_REMOTES[defaultBranch].split('/', 1)[0];
 
     it('resolves to object mapping all config keys to values', async () => {
       const config = await gitUtils.getConfig(undefined, gitOptions);

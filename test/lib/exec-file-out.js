@@ -40,102 +40,98 @@ function makeScript(outStr, errStr, exitCode) {
 }
 
 describe('execFileOut', () => {
-  it('returns a Promise with stdout', () => {
+  it('returns a Promise with stdout', async () => {
     const testOut = 'stdout content';
     const testArgs = ['-e', makeScript(testOut)];
-    return execFileOut(process.execPath, testArgs)
-      .then((stdout) => {
-        assert.strictEqual(stdout, testOut);
-      });
+    const stdout = await execFileOut(process.execPath, testArgs);
+    assert.strictEqual(stdout, testOut);
   });
 
-  it('returns a Promise with stdout as Buffer', () => {
+  it('returns a Promise with stdout as Buffer', async () => {
     const testOut = 'stdout content';
     const testArgs = ['-e', makeScript(testOut)];
     const options = { encoding: 'buffer' };
-    return execFileOut(process.execPath, testArgs, options)
-      .then((stdout) => {
-        assert.deepStrictEqual(stdout, Buffer.from(testOut));
-      });
+    const stdout = await execFileOut(process.execPath, testArgs, options);
+    assert.deepStrictEqual(stdout, Buffer.from(testOut));
   });
 
-  it('rejects Promise with Error for non-0 exit code', () => {
+  it('rejects Promise with Error for non-0 exit code', async () => {
     const testOut = 'stdout content';
     const testCode = 2;
     const testArgs = ['-e', makeScript(testOut, null, testCode)];
-    return execFileOut(process.execPath, testArgs).then(
-      neverCalled,
-      (err) => {
-        assert.strictEqual(
-          err.cmd,
-          [process.execPath, ...testArgs].join(' '),
-        );
-        assert.strictEqual(err.code, testCode);
-        assert.strictEqual(err.stderr, '');
-        assert.strictEqual(err.stdout, testOut);
-      },
-    );
+    try {
+      await execFileOut(process.execPath, testArgs);
+      neverCalled();
+    } catch (err) {
+      assert.strictEqual(
+        err.cmd,
+        [process.execPath, ...testArgs].join(' '),
+      );
+      assert.strictEqual(err.code, testCode);
+      assert.strictEqual(err.stderr, '');
+      assert.strictEqual(err.stdout, testOut);
+    }
   });
 
-  it('rejects Promise with Error for non-empty stderr', () => {
+  it('rejects Promise with Error for non-empty stderr', async () => {
     const testOut = 'stdout content';
     const testErr = 'stderr content';
     const testArgs = ['-e', makeScript(testOut, testErr)];
-    return execFileOut(process.execPath, testArgs).then(
-      neverCalled,
-      (err) => {
-        assert.ok(err.message.includes(testErr), 'stderr is in message');
-        assert.strictEqual(
-          err.cmd,
-          [process.execPath, ...testArgs].join(' '),
-        );
-        assert.strictEqual(err.code, 0);
-        assert.strictEqual(err.stderr, testErr);
-        assert.strictEqual(err.stdout, testOut);
-      },
-    );
+    try {
+      await execFileOut(process.execPath, testArgs);
+      neverCalled();
+    } catch (err) {
+      assert.ok(err.message.includes(testErr), 'stderr is in message');
+      assert.strictEqual(
+        err.cmd,
+        [process.execPath, ...testArgs].join(' '),
+      );
+      assert.strictEqual(err.code, 0);
+      assert.strictEqual(err.stderr, testErr);
+      assert.strictEqual(err.stdout, testOut);
+    }
   });
 
-  it('rejects Promise with Error for non-empty stderr Buffer', () => {
+  it('rejects Promise with Error for non-empty stderr Buffer', async () => {
     const testOut = 'stdout content';
     const testErr = 'stderr content';
     const testArgs = ['-e', makeScript(testOut, testErr)];
     const options = { encoding: 'buffer' };
-    return execFileOut(process.execPath, testArgs, options).then(
-      neverCalled,
-      (err) => {
-        assert.ok(err.message.includes(testErr), 'stderr is in message');
-        assert.strictEqual(
-          err.cmd,
-          [process.execPath, ...testArgs].join(' '),
-        );
-        assert.strictEqual(err.code, 0);
-        assert.deepStrictEqual(err.stderr, Buffer.from(testErr));
-        assert.deepStrictEqual(err.stdout, Buffer.from(testOut));
-      },
-    );
+    try {
+      await execFileOut(process.execPath, testArgs, options);
+      neverCalled();
+    } catch (err) {
+      assert.ok(err.message.includes(testErr), 'stderr is in message');
+      assert.strictEqual(
+        err.cmd,
+        [process.execPath, ...testArgs].join(' '),
+      );
+      assert.strictEqual(err.code, 0);
+      assert.deepStrictEqual(err.stderr, Buffer.from(testErr));
+      assert.deepStrictEqual(err.stdout, Buffer.from(testOut));
+    }
   });
 
   // Previously ignored whitespace on stderr.
   // Changed due to perf and maintenance cost of feature with no known use.
   // If there is a need for this in the future, reconsider ignoring.
-  it('rejects stderr with only whitespace', () => {
+  it('rejects stderr with only whitespace', async () => {
     const testOut = 'stdout content';
     const testErr = '\n\t\t  \n';
     const testArgs = ['-e', makeScript(testOut, testErr)];
-    return execFileOut(process.execPath, testArgs).then(
-      neverCalled,
-      (err) => {
-        assert.ok(err.message.includes(testErr), 'stderr is in message');
-        assert.strictEqual(
-          err.cmd,
-          [process.execPath, ...testArgs].join(' '),
-        );
-        assert.strictEqual(err.code, 0);
-        assert.deepStrictEqual(err.stderr, testErr);
-        assert.deepStrictEqual(err.stdout, testOut);
-      },
-    );
+    try {
+      await execFileOut(process.execPath, testArgs);
+      neverCalled();
+    } catch (err) {
+      assert.ok(err.message.includes(testErr), 'stderr is in message');
+      assert.strictEqual(
+        err.cmd,
+        [process.execPath, ...testArgs].join(' '),
+      );
+      assert.strictEqual(err.code, 0);
+      assert.deepStrictEqual(err.stderr, testErr);
+      assert.deepStrictEqual(err.stdout, testOut);
+    }
   });
 
   // Note: use node (i.e. process.execPath) to test, since it will not exit

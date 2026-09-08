@@ -127,31 +127,26 @@ describe('gitUtils', function() {
   describe('.getBranch', () => {
     after(checkoutDefault);
 
-    it(`resolves ${defaultBranch} on ${defaultBranch}`, () => {
-      return gitUtils.getBranch(gitOptions)
-        .then((branch) => {
-          assert.strictEqual(branch, defaultBranch);
-        });
+    it(`resolves ${defaultBranch} on ${defaultBranch}`, async () => {
+      const branch = await gitUtils.getBranch(gitOptions);
+      assert.strictEqual(branch, defaultBranch);
     });
 
-    it('resolves branch1 on branch1', () => {
-      return execFileOut('git', ['checkout', '-q', 'branch1'], gitOptions)
-        .then(() => gitUtils.getBranch(gitOptions))
-        .then((branch) => {
-          assert.strictEqual(branch, 'branch1');
-        });
+    it('resolves branch1 on branch1', async () => {
+      await execFileOut('git', ['checkout', '-q', 'branch1'], gitOptions);
+      const branch = await gitUtils.getBranch(gitOptions);
+      assert.strictEqual(branch, 'branch1');
     });
 
-    it('rejects with Error not on branch', () => {
-      return execFileOut('git', ['checkout', '-q', 'HEAD^'], gitOptions)
-        .then(() => gitUtils.getBranch(gitOptions))
-        .then(
-          neverCalled,
-          (err) => {
-            assert.ok(err instanceof Error);
-            assert.match(err.message, /branch/i);
-          },
-        );
+    it('rejects with Error not on branch', async () => {
+      await execFileOut('git', ['checkout', '-q', 'HEAD^'], gitOptions);
+      try {
+        await gitUtils.getBranch(gitOptions);
+        neverCalled();
+      } catch (err) {
+        assert.ok(err instanceof Error);
+        assert.match(err.message, /branch/i);
+      }
     });
   });
 
@@ -326,39 +321,35 @@ describe('gitUtils', function() {
 
   describe('.resolveCommit', () => {
     let headHash;
-    it('can resolve the hash of HEAD', () => {
-      return gitUtils.resolveCommit('HEAD', gitOptions).then((hash) => {
-        assert.match(hash, /^[a-fA-F0-9]{40}$/);
-        headHash = hash;
-      });
+    it('can resolve the hash of HEAD', async () => {
+      const hash = await gitUtils.resolveCommit('HEAD', gitOptions);
+      assert.match(hash, /^[a-fA-F0-9]{40}$/);
+      headHash = hash;
     });
 
-    it('can resolve a hash to itself', () => {
-      return gitUtils.resolveCommit(headHash, gitOptions).then((hash) => {
-        assert.strictEqual(hash, headHash);
-      });
+    it('can resolve a hash to itself', async () => {
+      const hash = await gitUtils.resolveCommit(headHash, gitOptions);
+      assert.strictEqual(hash, headHash);
     });
 
-    it('can resolve branch name to commit hash', () => {
+    it('can resolve branch name to commit hash', async () => {
       const branchName = Object.keys(BRANCH_REMOTES)[0];
-      return gitUtils.resolveCommit(branchName, gitOptions).then((hash) => {
-        assert.match(hash, /^[a-fA-F0-9]{40}$/);
-      });
+      const hash = await gitUtils.resolveCommit(branchName, gitOptions);
+      assert.match(hash, /^[a-fA-F0-9]{40}$/);
     });
 
-    it('can resolve tag name to commit hash', () => {
-      return gitUtils.resolveCommit(TAGS[0], gitOptions).then((hash) => {
-        assert.match(hash, /^[a-fA-F0-9]{40}$/);
-      });
+    it('can resolve tag name to commit hash', async () => {
+      const hash = await gitUtils.resolveCommit(TAGS[0], gitOptions);
+      assert.match(hash, /^[a-fA-F0-9]{40}$/);
     });
 
-    it('rejects with Error for unresolvable name', () => {
-      return gitUtils.resolveCommit('notabranch', gitOptions).then(
-        neverCalled,
-        (err) => {
-          assert.ok(err instanceof Error);
-        },
-      );
+    it('rejects with Error for unresolvable name', async () => {
+      try {
+        await gitUtils.resolveCommit('notabranch', gitOptions);
+        neverCalled();
+      } catch (err) {
+        assert.ok(err instanceof Error);
+      }
     });
   });
 });

@@ -555,6 +555,7 @@ describe('fetchCiStatus', () => {
       const options = {
         ...mockOptions,
         octokitOptions: {
+          // eslint-disable-next-line unicorn/prefer-https
           baseUrl: 'http://example.com',
           request: {},
         },

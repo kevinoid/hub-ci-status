@@ -1,0 +1,15 @@
+{
+  "ignoreBinaries": [
+    // Ignore version binaries.  Install by running version-deps script.
+    "conventional-changelog",
+    "depcheck",
+    "david",
+    "git-branch-is"
+  ],
+  "ignoreIssues": {
+    // Can't import both retryAsync and retryAsync.DEFAULT_OPTIONS
+    "lib/retry-async.js": ["exports"]
+  },
+  "treatConfigHintsAsErrors": true,
+  "treatTagHintsAsErrors": true
+}

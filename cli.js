@@ -156,10 +156,8 @@ export default async function hubCiStatusMain(args, options) {
     typeof argOpts.wait === 'number' ? argOpts.wait * 1000
       : argOpts.wait || argOpts.waitAll ? Infinity
         : undefined;
-  const useColor =
-    argOpts.color === 'never' ? false
-      : argOpts.color === 'always' || argOpts.color === true ? true
-        : undefined;
+  const useColor = argOpts.color !== 'never'
+    && (argOpts.color === 'always' || argOpts.color === true || undefined);
   const ref = command.args[0];
   const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
 

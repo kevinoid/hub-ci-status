@@ -208,9 +208,8 @@ export default async function hubCiStatus(
   ];
   const state = getState(statuses);
   if (verbosity >= 0) {
-    const useColorOrIsTTY = useColor === false ? false
-      : useColor === true ? true
-        : stdout.isTTY;
+    const useColorOrIsTTY =
+      useColor !== false && (useColor === true || stdout.isTTY);
     const formatted = verbosity === 0 ? state
       : formatStatuses(statuses, useColorOrIsTTY);
     stdout.write(`${formatted || 'no status'}\n`);

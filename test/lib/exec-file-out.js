@@ -27,7 +27,7 @@ function quote(str) {
  *
  * @private
  */
-function makeScript(outStr, errStr, exitCode) {
+function makeScript(outStr, errStr, exitCode = 0) {
   let script = '';
   if (outStr) {
     script += `process.stdout.write(${quote(outStr)});`;
@@ -35,7 +35,7 @@ function makeScript(outStr, errStr, exitCode) {
   if (errStr) {
     script += `process.stderr.write(${quote(errStr)});`;
   }
-  script += `process.exit(${exitCode || '0'})`;
+  script += `process.exit(${exitCode})`;
   return script;
 }
 
